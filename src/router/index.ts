@@ -1,25 +1,61 @@
-import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
-import Home from '../views/Home.vue'
+import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
+import map from "../page/map.vue";
+import info from "../page/info.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home
+    path: "/:pathMatch(.*)*",
+    redirect: "/404",
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  }
-]
+    path: "/404",
+    component: () => import("../page/404.vue"),
+  },
+  {
+    path: "/",
+    component: () => import("../page/login.vue"),
+  },
+  {
+    path: "/login",
+    component: () => import("../page/login.vue"),
+  },
+  {
+    path: "/register",
+    component: () => import("../page/register.vue"),
+  },
+  {
+    path: "/manage",
+    component: () => import("../page/manage.vue"),
+    name: "",
+    children: [
+      {
+        path: "/map",
+        component: map,
+      },
+      {
+        path: "",
+        component: info,
+        meta: { desc: ["文件查看"] },
+      },
+      {
+        path: "/info",
+        name: "info",
+        component: info,
+        meta: { desc: ["文件查看"] },
+      },
+      {
+        path: "/userInfo",
+        name: "userInfo",
+        component: () => import("../page/userInfo.vue"),
+        meta: { desc: ["个人信息"] },
+      },
+    ],
+  },
+];
 
 const router = createRouter({
   history: createWebHashHistory(),
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;
