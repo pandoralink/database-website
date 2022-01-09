@@ -1,24 +1,16 @@
-# database-website
+# 技术栈
 
-## Project setup
-```
-npm install
-```
+1. vue3
+2. typescript
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+# 环境介绍
 
-### Compiles and minifies for production
-```
-npm run build
-```
+vue3 + volar + element-plus + axios + vue-router + vs code + mock.js
 
-### Lints and fixes files
-```
-npm run lint
-```
+# 内容介绍
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+用于展示数据库的一些内容
+
+# 总结
+
+typescript + `<script setup lang="ts">` 用起来就是爽啊！家人们！
