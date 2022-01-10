@@ -1,3 +1,4 @@
+<!-- 暂被废弃 -->
 <template>
   <span v-for="(item, index) in list" :key="index">
     {{ item.key }}: {{ item.value }}

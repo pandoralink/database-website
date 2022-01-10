@@ -1,7 +1,6 @@
 <template>
   <el-row
-    ><el-col :span="24">
-      <head-top></head-top> </el-col
+    ><el-col :span="24"> <head-top></head-top> </el-col
   ></el-row>
   <el-row class="main-page">
     <el-col :span="4" class="store-sidebar">
@@ -17,13 +16,13 @@
         <el-menu-item index="1" route="info">首页</el-menu-item>
         <el-sub-menu index="2">
           <template #title>新闻</template>
-          <el-menu-item index="2-1" route="userInfo">军事新闻</el-menu-item>
-          <el-menu-item index="2-2" route="userInfo">政治新闻</el-menu-item>
+          <el-menu-item index="2-1" route="MilitaryNews">军事新闻</el-menu-item>
+          <el-menu-item index="2-2" route="PoliticalNews">政治新闻</el-menu-item>
         </el-sub-menu>
-        <el-menu-item index="3" route="userInfo">部门</el-menu-item>
-        <el-menu-item index="4" route="userInfo">军事设备</el-menu-item>
+        <el-menu-item index="3" route="department">部门</el-menu-item>
+        <el-menu-item index="4" route="militaryEquipment">军事设备</el-menu-item>
         <el-menu-item index="5" route="map">越南地图</el-menu-item>
-        <el-menu-item index="6" route="userInfo">爬虫管理</el-menu-item>
+        <el-menu-item index="6" route="bugManage">爬虫管理</el-menu-item>
       </el-menu>
     </el-col>
     <el-col
@@ -41,5 +40,15 @@
 </template>
 
 <script lang="ts" setup>
+import { ElNotification } from "element-plus";
+import { onMounted } from "vue";
 import headTop from "../components/headTop.vue";
+
+onMounted(() => {
+  ElNotification({
+    title: "项目地址",
+    message: "https://github.com/pandoralink/database-website",
+    position: "bottom-right",
+  });
+});
 </script>

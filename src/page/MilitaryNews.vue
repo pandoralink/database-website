@@ -14,24 +14,14 @@
     <div class="filter-content" style="margin-top: 10px">
       <!-- 没有选择和 button 一起循环是为了方便扩展 -->
       <el-input
-        v-model="filterList.department"
-        placeholder="部门"
-        v-if="activeFilterOption === 0"
-      ></el-input>
-      <el-input
         v-model="filterList.name"
-        placeholder="名称"
+        placeholder="姓名"
+        v-if="activeFilterOption === 0 && filterOptions.length !== 0"
+      ></el-input>
+      <el-input
+        v-model="filterList.time"
+        placeholder="时间"
         v-if="activeFilterOption === 1"
-      ></el-input>
-      <el-input
-        v-model="filterList.id"
-        placeholder="身份证"
-        v-if="activeFilterOption === 2"
-      ></el-input>
-      <el-input
-        v-model="filterList.employName"
-        placeholder="职位"
-        v-if="activeFilterOption === 3"
       ></el-input>
     </div>
   </base-filter>
@@ -41,21 +31,17 @@
       :key="index"
       :index="index + 1"
       :src="item.image"
+      :img-height="130"
+      :img-width="250"
       @click-content="toInfoDetail"
     >
       <template #default>
-        <span>姓名: {{ item.name }}</span
+        <span class="new-title">{{ item.title }}</span
         ><br />
-        <span>年龄: {{ item.age }}</span
+        <p class="new-briefIntroduction">{{ item.briefIntroduction }}</p
         ><br />
-        <span>国籍: {{ item.nationality }}</span
-        ><br />
-        <span>身份证号: {{ item.number }}</span
-        ><br />
-        <span>党派: {{ item.parties }}</span
-        ><br />
-        <span>学历: {{ item.education }}</span
-        ><br />
+        <span class="new-author">{{ item.author }}</span>
+        <span>{{ item.time }}</span>
       </template>
     </base-list-item>
   </div>
@@ -69,46 +55,43 @@
 import { ref } from "vue";
 import BaseFilter from "../components/BaseFilter.vue";
 import BaseListItem from "../components/BaseListItem.vue";
-import { People } from "../model/model";
+import { New } from "../model/model";
 import { FilterInfo } from "../model/filter";
+import { useRouter } from "vue-router";
 
-const list = [
+const list: New[] = [
   {
-    name: "罗通",
-    age: 21,
-    nationality: "中国",
-    image:
-      "https://img0.baidu.com/it/u=1479178160,1916382043&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=505",
-    number: 372523198009045752,
-    parties: "中国共产党",
-    education: "本科",
+    title: "好家伙，这标题这么牛牛！！！！！！！！",
+    image: "http://inews.gtimg.com/newsapp_ls/0/14407484937_640330/0",
+    briefIntroduction:
+      "好家伙，这简介这么长XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    details: "",
+    url: "https://news.qq.com/",
+    time: "2021/1/6",
+    author: "罗通",
   },
 ];
 for (let i = 0; i < 9; i++) {
   list.push(list[0]);
 }
 
-const filterOptions: string[] = ["部门", "时间", "身份证", "职位"];
+const filterOptions: string[] = ["姓名", "时间"];
 const filterList = ref<FilterInfo>({
-  department: "",
   name: "",
-  id: "",
-  employName: "",
+  time: "",
 });
 let activeFilterOption = ref(0);
+const router = useRouter();
 
 function deleteFilterOption(key: string) {
-  if (key === "department") {
-    filterList.value.department = "";
-  } else if (key === "name") {
+  if (key === "name") {
     filterList.value.name = "";
-  } else if (key === "id") {
-    filterList.value.id = "";
-  } else if (key === "employName") {
-    filterList.value.employName = "";
+  } else if (key === "time") {
+    filterList.value.time = "";
   }
 }
 function toInfoDetail(index: number) {
   console.log(index);
+  router.push("/newDetail");
 }
 </script>
