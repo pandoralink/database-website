@@ -335,6 +335,7 @@ body {
   /* 56 + 10 = 筛选, 12*2 = 父 padding */
   height: calc(100% - (56px + 10px) - 12px * 2);
   background-color: white;
+  overflow: scroll;
 }
 
 #base-pagination {
@@ -368,6 +369,27 @@ body {
 .equipment-detail {
   width: 500px;
   padding: 20px;
+  word-break: break-all;
+  margin: 0;
+}
+
+.empoly-relation {
+  display: flex;
+  margin-top: 20px;
+}
+
+.empoly-relation > div {
+  margin-right: 20px;
+}
+
+.empoly-relation-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.empoly-detail {
+  width: 500px;
   word-break: break-all;
   margin: 0;
 }

@@ -35,6 +35,7 @@
       ></el-input>
     </div>
   </base-filter>
+  <slot name="header-tag"> </slot>
   <div class="base-content">
     <base-list-item
       v-for="(item, index) in list"
@@ -71,6 +72,7 @@ import BaseFilter from "../components/BaseFilter.vue";
 import BaseListItem from "../components/BaseListItem.vue";
 import { People } from "../model/model";
 import { FilterInfo } from "../model/filter";
+import { useRouter } from "vue-router";
 
 const list = [
   {
@@ -96,6 +98,7 @@ const filterList = ref<FilterInfo>({
   employName: "",
 });
 let activeFilterOption = ref(0);
+const router = useRouter();
 
 function deleteFilterOption(key: string) {
   if (key === "department") {
@@ -109,6 +112,6 @@ function deleteFilterOption(key: string) {
   }
 }
 function toInfoDetail(index: number) {
-  console.log(index);
+  router.push("/infoDetail");
 }
 </script>

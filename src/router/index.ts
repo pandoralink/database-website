@@ -9,6 +9,8 @@ import NewDetail from "../page/NewDetail.vue";
 import BugManage from "../page/BugManage.vue";
 import EquipmentDetail from "../page/EquipmentDetail.vue";
 import DepartmentDetail from "../page/DepartmentDetail.vue";
+import DepartDetail from "../page/DepartDetail.vue";
+import InfoDetail from "../page/InfoDetail.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -48,6 +50,16 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/info",
         component: info,
+        meta: { desc: ["文件查看"] },
+      },
+      {
+        path: "/departDetail",
+        component: DepartDetail,
+        meta: { desc: ["文件查看"] },
+      },
+      {
+        path: "/infoDetail",
+        component: InfoDetail,
         meta: { desc: ["文件查看"] },
       },
       {

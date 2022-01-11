@@ -113,6 +113,6 @@ function deleteFilterOption(key: string) {
   }
 }
 function toInfoDetail(index: number) {
-  router.push("/departmentDetail");
+  router.push("/departDetail");
 }
 </script>

@@ -13,6 +13,7 @@
     </div>
     <div class="filter-content" style="margin-top: 10px"></div>
   </base-filter>
+  <slot name="header-tag"> </slot>
   <div class="base-content">
     <base-list-item
       v-for="(item, index) in list"
