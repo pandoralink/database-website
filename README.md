@@ -13,7 +13,8 @@ vue3 + volar + element-plus + axios + vue-router + vs code + mock.js
 
 # 待补充
 
-可以加上面包屑导航，到第三级路由的时候就没有地方返回了
+1. 可以加上面包屑导航，到第三级路由的时候就没有地方返回了
+2. 登录退出部分
 
 # 总结
 
