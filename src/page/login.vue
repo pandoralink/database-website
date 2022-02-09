@@ -35,7 +35,7 @@ import axios from "../utils/axios";
 import { reactive } from "@vue/reactivity";
 import { ElMessage } from "element-plus";
 import { ElNotification } from "element-plus";
-import path from "../utils/constant";
+import path from "../utils/constant.js";
 import { Right, Plus } from "@element-plus/icons";
 import { onMounted } from "vue";
 
@@ -43,7 +43,7 @@ export default {
   setup() {
     onMounted(() => {
       ElMessage({
-        message: "暂时不需要输入密码，可直接点击登录",
+        message: "暂时不需要输入密码, 可直接点击登录",
         duration: 3000,
         showClose: true,
       });

@@ -1,21 +1,27 @@
-import axios from 'axios'
-import router from '../router/index'
+import axios from "axios";
+import { ElMessage } from "element-plus";
 
-// axios.defaults.baseURL = "http://116.63.152.202:8084"
-// axios.defaults.baseURL = "http://192.168.43.112:8080"
-axios.defaults.withCredentials = true
-axios.defaults.baseURL = 'http://localhost:8080'
+// 生产环境 URL
+const url = "";
+const developmentUrl = "http://localhost:8081";
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL =
+  process.env.NODE_ENV === "development" ? developmentUrl : url;
 
-axios.interceptors.response.use(response => {
-  return response
-}, error => {
-  if (error.response) {
-    switch (error.response.status) {
-      case 401:
-        router.push({ path: 'login' })
+axios.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response) {
+      ElMessage({
+        showClose: true,
+        message: "服务器出错了",
+        type: "error",
+      });
+      return Promise.reject(error.response.data);
     }
-    return Promise.reject(error.response.data)
   }
-})
+);
 
-export default axios
+export default axios;

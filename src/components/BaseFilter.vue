@@ -26,7 +26,7 @@
             <el-icon :size="24" :color="black">
               <Filter />
             </el-icon>
-            <p style="margin: 0">筛选</p>
+            <p style="margin: 0; user-select: none;">筛选</p>
           </div>
         </div>
         <div class="filter-text">

@@ -19,8 +19,6 @@ export interface FilterDepartment {
 }
 
 export interface FilterInfo {
-  department: string;
   name: string;
   id: string;
-  employName: string;
 }

@@ -12,26 +12,17 @@
       </el-button>
     </div>
     <div class="filter-content" style="margin-top: 10px">
-      <!-- 没有选择和 button 一起循环是为了方便扩展 -->
-      <el-input
-        v-model="filterList.department"
-        placeholder="部门"
-        v-if="activeFilterOption === 0"
-      ></el-input>
       <el-input
         v-model="filterList.name"
-        placeholder="名称"
-        v-if="activeFilterOption === 1"
+        placeholder="姓名"
+        v-if="activeFilterOption === 0"
+        @change="filterChange"
       ></el-input>
       <el-input
         v-model="filterList.id"
         placeholder="身份证"
-        v-if="activeFilterOption === 2"
-      ></el-input>
-      <el-input
-        v-model="filterList.employName"
-        placeholder="职位"
-        v-if="activeFilterOption === 3"
+        v-if="activeFilterOption === 1"
+        @change="filterChange"
       ></el-input>
     </div>
   </base-filter>
@@ -61,57 +52,96 @@
     </base-list-item>
   </div>
   <div id="base-pagination">
-    <el-pagination background layout="prev, pager, next" :total="100">
+    <el-pagination
+      v-model:currentPage="currentPage"
+      background
+      layout="prev, pager, next"
+      :total="100"
+    >
     </el-pagination>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import BaseFilter from "../components/BaseFilter.vue";
 import BaseListItem from "../components/BaseListItem.vue";
 import { People } from "../model/model";
 import { FilterInfo } from "../model/filter";
 import { useRouter } from "vue-router";
+import { getPeopleList, getPeopleById, getPeopleByName } from "@/api/people";
 
-const list = [
-  {
-    name: "罗通",
-    age: 21,
-    nationality: "中国",
-    image:
-      "https://img0.baidu.com/it/u=1479178160,1916382043&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=505",
-    number: 372523198009045752,
-    parties: "中国共产党",
-    education: "本科",
-  },
-];
-for (let i = 0; i < 9; i++) {
-  list.push(list[0]);
-}
-
-const filterOptions: string[] = ["部门", "时间", "身份证", "职位"];
-const filterList = ref<FilterInfo>({
-  department: "",
-  name: "",
-  id: "",
-  employName: "",
-});
-let activeFilterOption = ref(0);
 const router = useRouter();
 
+let list = ref<People[]>([]);
+
+const filterOptions: string[] = ["姓名", "身份证"];
+const filterList = ref<FilterInfo>({
+  name: "",
+  id: "",
+});
+let activeFilterOption = ref(0);
+
 function deleteFilterOption(key: string) {
-  if (key === "department") {
-    filterList.value.department = "";
-  } else if (key === "name") {
+  if (key === "name") {
     filterList.value.name = "";
+    filterChange();
   } else if (key === "id") {
     filterList.value.id = "";
-  } else if (key === "employName") {
-    filterList.value.employName = "";
+    filterChange();
+  }
+  if (!filterList.value.name && !filterList.value.id) {
+    getList(currentPage.value);
   }
 }
 function toInfoDetail(index: number) {
   router.push("/infoDetail");
 }
+
+const currentPage = ref(1);
+const getList = async (num = 1) => {
+  const { data } = await getPeopleList(num);
+  list.value = data;
+};
+getList();
+
+watch(currentPage, (newCurrentPage, oldCurrentPage) => {
+  getList(newCurrentPage);
+});
+
+// filter
+const filterChange = async () => {
+  let nameFilterList: People[] = [];
+  let idFilterList: People[] = [];
+  let res: People[] = [];
+  if (filterList.value.name !== "") {
+    const { data } = await getPeopleByName(filterList.value.name);
+    if (data instanceof Array) {
+      nameFilterList.push(...data);
+    } else nameFilterList.push(data);
+  } else if (filterList.value.id !== "") {
+    const { data } = await getPeopleById(filterList.value.id);
+    // 后端 data 可能不为 array 而是 object, 因此全部采用 push
+    if (data instanceof Array) {
+      idFilterList.push(...data);
+    } else idFilterList.push(data);
+  }
+  const allFilterlist = [nameFilterList, idFilterList];
+  for (let i = 0; i < allFilterlist.length; i++) {
+    if (allFilterlist[i].length > 0 && res.length > 0) {
+      allFilterlist[i].forEach((i) => {
+        const temp: People[] = [];
+        res.forEach((j) => {
+          if (i.number === j.number) {
+            temp.push(j);
+          }
+        });
+        res = temp;
+      });
+    } else if (allFilterlist[i].length > 0 && res.length === 0) {
+      res.push(...allFilterlist[i]);
+    }
+  }
+  list.value = res;
+};
 </script>
