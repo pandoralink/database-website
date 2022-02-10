@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
+// TODO: 修改组件为动态化加载
 import map from "../page/map.vue";
 import info from "../page/info.vue";
 import department from "../page/Department.vue";
@@ -47,19 +48,20 @@ const routes: Array<RouteRecordRaw> = [
         component: info,
         meta: { desc: ["文件查看"] },
       },
+      // TODO: 修改 info 和 infoDetail 在路由层级上的关系, 参考 https://hooray.gitee.io/fantastic-admin/guide/router.html#%E5%B0%8F%E6%8A%80%E5%B7%A7
       {
         path: "/info",
         component: info,
         meta: { desc: ["文件查看"] },
       },
       {
-        path: "/departDetail",
-        component: DepartDetail,
+        path: "/infoDetail",
+        component: InfoDetail,
         meta: { desc: ["文件查看"] },
       },
       {
-        path: "/infoDetail",
-        component: InfoDetail,
+        path: "/departDetail",
+        component: DepartDetail,
         meta: { desc: ["文件查看"] },
       },
       {

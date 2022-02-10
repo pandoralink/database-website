@@ -67,28 +67,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import BaseFilter from "../components/BaseFilter.vue";
 import BaseListItem from "../components/BaseListItem.vue";
 import { Department } from "../model/model";
 import { FilterDepartment } from "../model/filter";
 import { useRouter } from "vue-router";
+import { getDepartmentList } from "@/api/department";
 
-const list: Department[] = [
-  {
-    name: "社联",
-    position: "很高",
-    location: "507",
-    type: 1,
-    id: "0001",
-    contactInformation: "10086",
-    image:
-      "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fwww.mbakswang.com%2Fuploadfile%2F2020%2F0425%2F20200425054659410.jpg&refer=http%3A%2F%2Fwww.mbakswang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1644415969&t=c71534513d63c7ee74835957b8ca3478",
-  },
-];
-for (let i = 0; i < 9; i++) {
-  list.push(list[0]);
-}
+let list = ref<Department[]>([]);
 
 const filterOptions: string[] = ["部门", "编号", "名称", "地点"];
 const filterList = ref<FilterDepartment>({
@@ -115,4 +102,15 @@ function deleteFilterOption(key: string) {
 function toInfoDetail(index: number) {
   router.push("/departDetail");
 }
+
+const currentPage = ref(1);
+const getList = async (num = 1) => {
+  const { data } = await getDepartmentList(num);
+  list.value = data;
+};
+getList();
+
+watch(currentPage, (newCurrentPage, oldCurrentPage) => {
+  getList(newCurrentPage);
+});
 </script>

@@ -63,9 +63,9 @@
         <template v-if="dataType === 1">
           <span>名称: {{ item.name }}</span
           ><br />
-          <span>编号: {{ item.id }}</span
+          <span>编号: {{ item.number }}</span
           ><br />
-          <span>功能: {{ item.features }}</span
+          <span>功能: {{ item.function }}</span
           ><br />
           <span>部署地点: {{ item.location }}</span
           ><br />

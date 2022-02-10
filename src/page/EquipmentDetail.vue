@@ -24,9 +24,9 @@
       <template #default>
         <span>名称: {{ item.name }}</span
         ><br />
-        <span>编号: {{ item.id }}</span
+        <span>编号: {{ item.number }}</span
         ><br />
-        <span>功能: {{ item.features }}</span
+        <span>功能: {{ item.function }}</span
         ><br />
         <span>部署地点: {{ item.location }}</span
         ><br />
@@ -53,8 +53,8 @@ import { useRouter } from "vue-router";
 const list: MilitaryEquipment[] = [
   {
     name: "巴雷特M82A1",
-    id: "0001",
-    features: "开炮！",
+    number: "0001",
+    function: "开炮！",
     details: "连发狙击枪",
     location: "10#507",
     dpNumber: "0001",

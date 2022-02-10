@@ -70,6 +70,7 @@ import { People } from "../model/model";
 import { FilterInfo } from "../model/filter";
 import { useRouter } from "vue-router";
 import { getPeopleList, getPeopleById, getPeopleByName } from "@/api/people";
+import { usePeopleStore } from "@/store/people";
 
 const router = useRouter();
 
@@ -95,6 +96,8 @@ function deleteFilterOption(key: string) {
   }
 }
 function toInfoDetail(index: number) {
+  const peopleStore = usePeopleStore();
+  peopleStore.updatePeople(list.value[index - 1]);
   router.push("/infoDetail");
 }
 
@@ -119,7 +122,8 @@ const filterChange = async () => {
     if (data instanceof Array) {
       nameFilterList.push(...data);
     } else nameFilterList.push(data);
-  } else if (filterList.value.id !== "") {
+  }
+  if (filterList.value.id !== "") {
     const { data } = await getPeopleById(filterList.value.id);
     // 后端 data 可能不为 array 而是 object, 因此全部采用 push
     if (data instanceof Array) {

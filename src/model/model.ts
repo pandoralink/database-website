@@ -18,6 +18,25 @@ export interface People {
   education: string;
 }
 
+export interface PeopleDetails extends People {
+  eventDetails: string;
+  department: string;
+  hierarchy: string;
+  father: Paternity;
+  son: Paternity[];
+  spouse: string;
+}
+
+/**
+ * 我不是很明白为啥叫这个
+ */
+export interface Paternity {
+  fnumber: string;
+  cnumber: string;
+  fname: string;
+  cname: string;
+}
+
 export interface Department {
   name: string;
   position: string;
@@ -30,8 +49,8 @@ export interface Department {
 
 export interface MilitaryEquipment {
   name: string;
-  id: string;
-  features: string;
+  number: string;
+  function: string;
   details: string;
   location: string;
   dpNumber: string;

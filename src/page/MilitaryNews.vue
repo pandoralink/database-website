@@ -38,8 +38,8 @@
       <template #default>
         <span class="new-title">{{ item.title }}</span
         ><br />
-        <p class="new-briefIntroduction">{{ item.briefIntroduction }}</p
-        ><br />
+        <p class="new-briefIntroduction">{{ item.briefIntroduction }}</p>
+        <br />
         <span class="new-author">{{ item.author }}</span>
         <span>{{ item.time }}</span>
       </template>
@@ -52,31 +52,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import BaseFilter from "../components/BaseFilter.vue";
 import BaseListItem from "../components/BaseListItem.vue";
 import { New } from "../model/model";
-import { FilterInfo } from "../model/filter";
+import { FilterInfo, FilterNew } from "../model/filter";
 import { useRouter } from "vue-router";
+import { getNewList } from "@/api/news";
 
-const list: New[] = [
-  {
-    title: "好家伙，这标题这么牛牛！！！！！！！！",
-    image: "http://inews.gtimg.com/newsapp_ls/0/14407484937_640330/0",
-    briefIntroduction:
-      "好家伙，这简介这么长XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-    details: "",
-    url: "https://news.qq.com/",
-    time: "2021/1/6",
-    author: "罗通",
-  },
-];
-for (let i = 0; i < 9; i++) {
-  list.push(list[0]);
-}
+let list = ref<New[]>([]);
 
 const filterOptions: string[] = ["姓名", "时间"];
-const filterList = ref<FilterInfo>({
+const filterList = ref<FilterNew>({
   name: "",
   time: "",
 });
@@ -94,4 +81,15 @@ function toInfoDetail(index: number) {
   console.log(index);
   router.push("/newDetail");
 }
+
+const currentPage = ref(1);
+const getList = async (num = 1) => {
+  const { data } = await getNewList(num);
+  list.value = data;
+};
+getList();
+
+watch(currentPage, (newCurrentPage, oldCurrentPage) => {
+  getList(newCurrentPage);
+});
 </script>

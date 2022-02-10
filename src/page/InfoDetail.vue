@@ -37,17 +37,21 @@
       </template>
     </base-list-item>
     <div style="margin-left: 20px">
-      <el-tag type="primary" effect="dark" size="large"> 人物关系 </el-tag>
+      <el-tag effect="dark" size="large"> 人物关系 </el-tag>
       <br />
       <!-- 可以考虑使用 v-for 遍历人物关系 -->
       <div class="empoly-relation">
-        <div class="empoly-relation-detail">
+        <div
+          class="empoly-relation-detail"
+          v-for="(item, index) in peopleDetails.son"
+          :key="index"
+        >
           <img
             :src="EmpolyImg"
             style="width: 60px; height: 60px; border-radius: 30px"
           />
           <br />
-          <span>儿子 罗小通</span>
+          <span>{{ "子女：" + item.cname }}</span>
         </div>
         <div class="empoly-relation-detail">
           <img
@@ -55,7 +59,7 @@
             style="width: 60px; height: 60px; border-radius: 30px"
           />
           <br />
-          <span>妻子 罗通的妻子</span>
+          <span>{{ "配偶：" + peopleDetails.spouse }}</span>
         </div>
         <div class="empoly-relation-detail">
           <img
@@ -63,12 +67,12 @@
             style="width: 60px; height: 60px; border-radius: 30px"
           />
           <br />
-          <span>父亲 罗通他爸</span>
+          <span>{{ "父亲：" + peopleDetails.father.fname }}</span>
         </div>
       </div>
     </div>
     <div style="margin: 10px 0 0 20px">
-      <el-tag type="primary" effect="dark" size="large"> 上下级 </el-tag>
+      <el-tag effect="dark" size="large"> 上下级 </el-tag>
       <br />
       <!-- 可以考虑使用 v-for 遍历人物关系 -->
       <div class="empoly-relation">
@@ -78,29 +82,29 @@
             style="width: 60px; height: 60px; border-radius: 30px"
           />
           <br />
-          <span>联系人 梁祖豪</span>
+          <span>{{ peopleDetails.hierarchy }}</span>
         </div>
       </div>
     </div>
     <div style="margin: 10px 0 0 20px">
-      <el-tag type="primary" effect="dark" size="large"> 所属部门 </el-tag>
+      <el-tag effect="dark" size="large"> 所属部门 </el-tag>
       <br />
       <!-- 可以考虑使用 v-for 遍历人物关系 -->
       <div class="empoly-relation">
         <div class="empoly-relation-detail">
-          <span>大日本 + 军统</span>
+          <span>{{ peopleDetails.department }}</span>
         </div>
       </div>
     </div>
     <!-- 得把这个 relation 封装成组件 -->
     <div style="margin: 10px 0 0 20px">
-      <el-tag type="primary" effect="dark" size="large"> 所属部门 </el-tag>
+      <el-tag effect="dark" size="large"> 个人经历 </el-tag>
       <br />
       <!-- 可以考虑使用 v-for 遍历人物关系 -->
       <div class="empoly-relation">
         <div class="empoly-relation-detail">
           <p class="empoly-detail">
-            鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯
+            {{ peopleDetails.eventDetails }}
           </p>
         </div>
       </div>
@@ -111,24 +115,21 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import BaseFilter from "../components/BaseFilter.vue";
-import { People } from "../model/model";
+import { People, PeopleDetails, Paternity } from "../model/model";
 import { FilterNew } from "../model/filter";
 import BaseListItem from "../components/BaseListItem.vue";
 import { useRouter } from "vue-router";
 import { EmpolyImg } from "../utils/constant";
+import { usePeopleStore } from "@/store/people";
+import {
+  getPeopleDepartmentsById,
+  getPeopleEventDetailsById,
+  getPeopleFatherById,
+  getPeopleSonById,
+  getPeopleSpouseById,
+} from "@/api/people";
 
-const list = [
-  {
-    name: "罗通",
-    age: 21,
-    nationality: "中国",
-    image:
-      "https://img0.baidu.com/it/u=1479178160,1916382043&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=505",
-    number: 372523198009045752,
-    parties: "中国共产党",
-    education: "本科",
-  },
-];
+const list: People[] = [];
 
 const filterOptions: string[] = ["姓名", "时间"];
 const filterList = ref<FilterNew>({
@@ -144,4 +145,31 @@ function deleteFilterOption(key: string) {
     filterList.value.time = "";
   }
 }
+
+const peopleStore = usePeopleStore();
+const people = peopleStore.people;
+const peopleDetails: PeopleDetails = Object.assign(people, {
+  eventDetails: "",
+  department: "",
+  hierarchy: "",
+  father: {} as Paternity,
+  son: [],
+  spouse: "",
+});
+list.push(people);
+
+const init = async () => {
+  const { data: eventDetails } = await getPeopleEventDetailsById(people.number);
+  // const { data: department } = await getPeopleDepartmentsById(people.number);
+  // const { data: spouse } = await getPeopleSpouseById(people.number);
+  // const { data: son } = await getPeopleFatherById(people.number);
+  // const { data: father } = await getPeopleSonById(people.number);
+  peopleDetails.eventDetails = eventDetails.eventDetails;
+  // peopleDetails.department = department.department;
+  // peopleDetails.spouse =
+  //   spouse.wname === peopleDetails.name ? spouse.mname : spouse.wname;
+  // peopleDetails.father = father as Paternity;
+  // peopleDetails.son = son as Paternity[];
+};
+init();
 </script>
