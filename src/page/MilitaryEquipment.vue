@@ -1,18 +1,21 @@
 <template>
-  <base-filter :show-text-list="filterList" @delete="deleteFilterOption">
-    <div class="filter-content">
-      <el-button
-        class="filter-content-button"
-        v-for="(item, index) in filterOptions"
-        :key="item"
-        @click="activeFilterOption = index"
-        :class="{ active: activeFilterOption === index }"
-      >
-        {{ item }}
-      </el-button>
-    </div>
-    <div class="filter-content" style="margin-top: 10px"></div>
-  </base-filter>
+  <div class="content-head">
+    <base-filter :show-text-list="filterList" @delete="deleteFilterOption">
+      <div class="filter-content">
+        <el-button
+          class="filter-content-button"
+          v-for="(item, index) in filterOptions"
+          :key="item"
+          @click="activeFilterOption = index"
+          :class="{ active: activeFilterOption === index }"
+        >
+          {{ item }}
+        </el-button>
+      </div>
+      <div class="filter-content" style="margin-top: 10px"></div>
+    </base-filter>
+    <el-button type="primary" :icon="Plus">新增</el-button>
+  </div>
   <slot name="header-tag"> </slot>
   <div class="base-content">
     <base-list-item
@@ -43,6 +46,7 @@
 </template>
 
 <script setup lang="ts">
+import { Plus } from "@element-plus/icons";
 import { getMilitaryEquipmentList } from "@/api/militaryEquipment";
 import { useMilitaryEquipmentStore } from "@/store/militaryEquipment";
 import { ref, watch } from "vue";

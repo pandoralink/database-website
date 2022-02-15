@@ -301,6 +301,13 @@ body {
   cursor: pointer;
 }
 
+/* 内容展示页头部 */
+.content-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 /* 直接修改 element-plus 的样式 */
 .el-popper.el-popover {
   border-radius: 10px;

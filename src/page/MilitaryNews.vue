@@ -59,6 +59,7 @@ import { New } from "../model/model";
 import { FilterInfo, FilterNew } from "../model/filter";
 import { useRouter } from "vue-router";
 import { getNewList } from "@/api/news";
+import { useNewsStore } from "@/store/new";
 
 let list = ref<New[]>([]);
 
@@ -78,7 +79,8 @@ function deleteFilterOption(key: string) {
   }
 }
 function toInfoDetail(index: number) {
-  console.log(index);
+  const newsStore = useNewsStore();
+  newsStore.updateNewsUrl(list.value[index - 1].url);
   router.push("/newDetail");
 }
 

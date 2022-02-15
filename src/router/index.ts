@@ -80,11 +80,6 @@ const routes: Array<RouteRecordRaw> = [
         meta: { desc: ["文件查看"] },
       },
       {
-        path: "/newDetail",
-        component: NewDetail,
-        meta: { desc: ["文件查看"] },
-      },
-      {
         path: "/department",
         component: department,
         meta: { desc: ["文件查看"] },
@@ -93,10 +88,17 @@ const routes: Array<RouteRecordRaw> = [
         path: "/militaryNews",
         component: MilitaryNews,
         meta: { desc: ["文件查看"] },
+        props: true,
       },
       {
         path: "/politicalNews",
         component: PoliticalNews,
+        meta: { desc: ["文件查看"] },
+      },
+      {
+        path: "/newDetail",
+        name: "newDetail",
+        component: NewDetail,
         meta: { desc: ["文件查看"] },
       },
       {

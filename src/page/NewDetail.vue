@@ -26,12 +26,7 @@
     </div>
   </base-filter>
   <div class="base-content new">
-    <iframe
-      src="https://new.qq.com/omn/20220110/20220110A06IUI00.html"
-      frameborder="0"
-      height="100%"
-      width="100%"
-    ></iframe>
+    <iframe :src="newsUrl" frameborder="0" height="100%" width="100%"></iframe>
   </div>
 </template>
 
@@ -41,7 +36,7 @@ import BaseFilter from "../components/BaseFilter.vue";
 import { New } from "../model/model";
 import { FilterNew } from "../model/filter";
 import { useRouter } from "vue-router";
-// 考虑使用 router 去传递链接信息
+import { useNewsStore } from "@/store/new";
 
 const list: New[] = [
   {
@@ -73,4 +68,7 @@ function deleteFilterOption(key: string) {
     filterList.value.time = "";
   }
 }
+
+const newsStore = useNewsStore();
+const newsUrl = newsStore.url;
 </script>
