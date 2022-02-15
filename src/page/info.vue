@@ -148,4 +148,45 @@ const filterChange = async () => {
   }
   list.value = res;
 };
+
+const filterChangeTemp = async () => {
+  let nameFilterList: People[] = [];
+  let idFilterList: People[] = [];
+  let res: People[] = [];
+  const set = new Set();
+  if (filterList.value.name !== "") {
+    const { data } = await getPeopleByName(filterList.value.name);
+    if (data instanceof Array) {
+      nameFilterList.push(...data);
+    } else nameFilterList.push(data);
+  }
+  if (filterList.value.id !== "") {
+    const { data } = await getPeopleById(filterList.value.id);
+    // 后端 data 可能不为 array 而是 object, 因此全部采用 push
+    if (data instanceof Array) {
+      idFilterList.push(...data);
+    } else idFilterList.push(data);
+  }
+  const allFilterlist = [nameFilterList, idFilterList];
+  for (let i = 0; i < allFilterlist.length; i++) {
+    if (allFilterlist[i].length > 0 && res.length > 0) {
+      res = intersect(allFilterlist[i], res);
+    } else if (allFilterlist[i].length > 0 && res.length === 0) {
+      allFilterlist[i].forEach((item) => set.add(item.name));
+      res.push(...allFilterlist[i]);
+    }
+  }
+  list.value = res;
+};
+const intersect = (arr1: People[], arr2: People[]): People[] => {
+  const set = new Set();
+  const res: People[] = [];
+  arr1.forEach((item) => set.add(item.name));
+  arr2.forEach((item) => {
+    if (set.has(item.name)) {
+      res.push(item);
+    }
+  });
+  return res;
+};
 </script>

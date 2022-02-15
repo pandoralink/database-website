@@ -34,7 +34,7 @@
         ><br />
       </template>
     </base-list-item>
-    <el-tag type="primary" effect="dark" size="large" style="margin-left: 20px;"> 设备详情 </el-tag>
+    <el-tag effect="dark" size="large" style="margin-left: 20px;"> 设备详情 </el-tag>
     <p class="equipment-detail">
       鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯鸡汤来咯
     </p>
@@ -48,20 +48,10 @@ import { MilitaryEquipment, New } from "../model/model";
 import { FilterNew } from "../model/filter";
 import BaseListItem from "../components/BaseListItem.vue";
 import { useRouter } from "vue-router";
+import { useMilitaryEquipmentStore } from "@/store/militaryEquipment";
 // 考虑使用 router 去传递链接信息
 
-const list: MilitaryEquipment[] = [
-  {
-    name: "巴雷特M82A1",
-    number: "0001",
-    function: "开炮！",
-    details: "连发狙击枪",
-    location: "10#507",
-    dpNumber: "0001",
-    image:
-      "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fbkimg.cdn.bcebos.com%2Fpic%2F9345d688d43f87943d5954f4dc1b0ef41ad53a41&refer=http%3A%2F%2Fbkimg.cdn.bcebos.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1644416765&t=7cbbd4b4ff1b260b0b342bd4891cec35",
-  },
-];
+const list: MilitaryEquipment[] = [];
 
 const filterOptions: string[] = ["姓名", "时间"];
 const filterList = ref<FilterNew>({
@@ -77,4 +67,8 @@ function deleteFilterOption(key: string) {
     filterList.value.time = "";
   }
 }
+
+const militaryEquipmentStore = useMilitaryEquipmentStore();
+const militaryEquipment = militaryEquipmentStore.militaryEquipment;
+list.push(militaryEquipment);
 </script>

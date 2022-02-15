@@ -44,6 +44,7 @@
 
 <script setup lang="ts">
 import { getMilitaryEquipmentList } from "@/api/militaryEquipment";
+import { useMilitaryEquipmentStore } from "@/store/militaryEquipment";
 import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import BaseFilter from "../components/BaseFilter.vue";
@@ -61,6 +62,8 @@ function deleteFilterOption(key: string) {
   console.log(key);
 }
 function toInfoDetail(index: number) {
+  const militaryEquipmentStore = useMilitaryEquipmentStore();
+  militaryEquipmentStore.updateMilitaryEquipment(list.value[index - 1]);
   router.push("/equipmentDetail");
 }
 

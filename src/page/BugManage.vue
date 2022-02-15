@@ -2,10 +2,9 @@
   <el-table :data="tableData" style="width: 100%" :border="true">
     <el-table-column type="index" label="序号" width="60" />
     <el-table-column prop="url" label="爬虫链接" width="340">
-      https://modao.cc/app/design/pbky1nx34ah18zcs
     </el-table-column>
-    <el-table-column prop="desc" label="功能备注"> 墨刀 </el-table-column>
-    <el-table-column prop="author" label="作者"> 罗豪 </el-table-column>
+    <el-table-column prop="remarks" label="功能备注"></el-table-column>
+    <el-table-column prop="auther" label="作者"></el-table-column>
     <el-table-column prop="state" label="状态">
       <el-tag type="success">正常</el-tag>
     </el-table-column>
@@ -19,5 +18,15 @@
 </template>
 
 <script lang="ts" setup>
-const tableData = [{},{},{},{},{},{},{},{},{},{}];
+import { getBugList } from "@/api/bug";
+import { Bug } from "@/model/model";
+import { ref } from "vue";
+
+const tableData = ref<Bug[]>([]);
+
+const getList = async () => {
+  const { data } = await getBugList("何首其");
+  tableData.value = data;
+};
+getList();
 </script>

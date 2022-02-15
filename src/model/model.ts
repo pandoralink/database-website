@@ -89,3 +89,12 @@ export interface NewResult {
     data<T>(): T;
   };
 }
+
+// TODO: rule, switchs, remarks 是什么 
+export interface Bug {
+  url: string;
+  rule: string;
+  remarks: string;
+  switchs: number;
+  auther: string;
+}
