@@ -10,3 +10,44 @@ export const getDepartmentList = (num: number) => {
     },
   });
 };
+
+export const getDepartmentByNumber = (number: string) => {
+  return axios({
+    url: "/department/selectByNumber",
+    method: "get",
+    params: {
+      number,
+    },
+  });
+};
+
+export const getDepartmentByName = (name: string) => {
+  return axios({
+    url: "/department/searchByName",
+    method: "get",
+    params: {
+      name,
+    },
+  });
+};
+
+export const getDepartmentByPosition = (position: string) => {
+  return axios({
+    url: "/department/searchByPosition",
+    method: "get",
+    params: {
+      position,
+    },
+  });
+};
+
+export const getDepartmentByLocation = (location: string) => {
+  return axios({
+    url: "/department/searchByLocation",
+    method: "get",
+    params: {
+      location,
+    },
+  });
+};
+

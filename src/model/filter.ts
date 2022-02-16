@@ -1,9 +1,10 @@
 /**
  * 筛选部分的实体
  */
-export interface FilterNew {
-  name: string;
+export interface FilterNews {
   time: string;
+  title: string;
+  details: string;
 }
 
 export interface FilterNew {
@@ -12,9 +13,9 @@ export interface FilterNew {
 }
 
 export interface FilterDepartment {
-  type?: 0 | 1;
+  number: string;
   name: string;
-  id: string;
+  position: string;
   address: string;
 }
 

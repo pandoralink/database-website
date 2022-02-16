@@ -42,7 +42,7 @@ export interface Department {
   position: string;
   location: string;
   type: number;
-  id: string;
+  number: string;
   contactInformation: string;
   image: string;
 }
@@ -57,7 +57,7 @@ export interface MilitaryEquipment {
   image: string;
 }
 
-export interface New {
+export interface News {
   title: string;
   image: string;
   briefIntroduction: string;
@@ -90,7 +90,7 @@ export interface NewResult {
   };
 }
 
-// TODO: rule, switchs, remarks 是什么 
+// TODO: rule, switchs, remarks 是什么
 export interface Bug {
   url: string;
   rule: string;

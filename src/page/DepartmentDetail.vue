@@ -14,12 +14,12 @@
     <div class="filter-content" style="margin-top: 10px">
       <!-- 没有选择和 button 一起循环是为了方便扩展 -->
       <el-input
-        v-model="filterList.type"
+        v-model="filterList.number"
         placeholder="部门"
         v-if="activeFilterOption === 0"
       ></el-input>
       <el-input
-        v-model="filterList.id"
+        v-model="filterList.position"
         placeholder="编号"
         v-if="activeFilterOption === 1"
       ></el-input>
@@ -117,10 +117,10 @@ for (let i = 0; i < 9; i++) {
 
 const filterOptions: string[] = empolyFilterOptions;
 const filterList = ref<FilterDepartment>({
-  type: undefined,
+  number: undefined,
   name: "",
   address: "",
-  id: "",
+  position: "",
 });
 let activeFilterOption = ref(0);
 let dataType = ref<DepartmentDataType>(0);
@@ -130,11 +130,11 @@ function deleteFilterOption(key: string) {
   if (key === "name") {
     filterList.value.name = "";
   } else if (key === "type") {
-    filterList.value.type = undefined;
+    filterList.value.number = undefined;
   } else if (key === "address") {
     filterList.value.address = "";
   } else if (key === "id") {
-    filterList.value.id = "";
+    filterList.value.position = "";
   }
 }
 function toInfoDetail(index: number) {

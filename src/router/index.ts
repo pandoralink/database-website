@@ -1,17 +1,17 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
-// TODO: 修改组件为动态化加载
-import map from "../page/map.vue";
-import info from "../page/info.vue";
-import department from "../page/Department.vue";
-import MilitaryEquipment from "../page/MilitaryEquipment.vue";
-import MilitaryNews from "../page/MilitaryNews.vue";
-import PoliticalNews from "../page/PoliticalNews.vue";
-import NewDetail from "../page/NewDetail.vue";
-import BugManage from "../page/BugManage.vue";
-import EquipmentDetail from "../page/EquipmentDetail.vue";
-import DepartmentDetail from "../page/DepartmentDetail.vue";
-import DepartDetail from "../page/DepartDetail.vue";
-import InfoDetail from "../page/InfoDetail.vue";
+
+const map = () => import("../page/map.vue");
+const info = () => import("../page/info.vue");
+const department = () => import("../page/Department.vue");
+const MilitaryEquipment = () => import("../page/MilitaryEquipment.vue");
+const MilitaryNews = () => import("../page/MilitaryNews.vue");
+const PoliticalNews = () => import("../page/PoliticalNews.vue");
+const NewDetail = () => import("../page/NewDetail.vue");
+const BugManage = () => import("../page/BugManage.vue");
+const EquipmentDetail = () => import("../page/EquipmentDetail.vue");
+const DepartmentDetail = () => import("../page/DepartmentDetail.vue");
+const DepartDetail = () => import("../page/DepartDetail.vue");
+const InfoDetail = () => import("../page/InfoDetail.vue");
 
 const routes: Array<RouteRecordRaw> = [
   {

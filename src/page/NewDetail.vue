@@ -33,12 +33,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import BaseFilter from "../components/BaseFilter.vue";
-import { New } from "../model/model";
-import { FilterNew } from "../model/filter";
+import { News } from "../model/model";
+import { FilterNews } from "../model/filter";
 import { useRouter } from "vue-router";
 import { useNewsStore } from "@/store/new";
 
-const list: New[] = [
+const list: News[] = [
   {
     title: "好家伙，这标题这么牛牛！！！！！！！！",
     image: "http://inews.gtimg.com/newsapp_ls/0/14407484937_640330/0",
@@ -55,7 +55,7 @@ for (let i = 0; i < 9; i++) {
 }
 
 const filterOptions: string[] = ["姓名", "时间"];
-const filterList = ref<FilterNew>({
+const filterList = ref<FilterNews>({
   name: "",
   time: "",
 });

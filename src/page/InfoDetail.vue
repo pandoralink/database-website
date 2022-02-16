@@ -116,7 +116,7 @@
 import { ref } from "vue";
 import BaseFilter from "../components/BaseFilter.vue";
 import { People, PeopleDetails, Paternity } from "../model/model";
-import { FilterNew } from "../model/filter";
+import { FilterNews } from "../model/filter";
 import BaseListItem from "../components/BaseListItem.vue";
 import { useRouter } from "vue-router";
 import { EmpolyImg } from "../utils/constant";
@@ -132,7 +132,7 @@ import {
 const list: People[] = [];
 
 const filterOptions: string[] = ["姓名", "时间"];
-const filterList = ref<FilterNew>({
+const filterList = ref<FilterNews>({
   name: "",
   time: "",
 });

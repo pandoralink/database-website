@@ -117,42 +117,6 @@ const filterChange = async () => {
   let nameFilterList: People[] = [];
   let idFilterList: People[] = [];
   let res: People[] = [];
-  if (filterList.value.name !== "") {
-    const { data } = await getPeopleByName(filterList.value.name);
-    if (data instanceof Array) {
-      nameFilterList.push(...data);
-    } else nameFilterList.push(data);
-  }
-  if (filterList.value.id !== "") {
-    const { data } = await getPeopleById(filterList.value.id);
-    // 后端 data 可能不为 array 而是 object, 因此全部采用 push
-    if (data instanceof Array) {
-      idFilterList.push(...data);
-    } else idFilterList.push(data);
-  }
-  const allFilterlist = [nameFilterList, idFilterList];
-  for (let i = 0; i < allFilterlist.length; i++) {
-    if (allFilterlist[i].length > 0 && res.length > 0) {
-      allFilterlist[i].forEach((i) => {
-        const temp: People[] = [];
-        res.forEach((j) => {
-          if (i.number === j.number) {
-            temp.push(j);
-          }
-        });
-        res = temp;
-      });
-    } else if (allFilterlist[i].length > 0 && res.length === 0) {
-      res.push(...allFilterlist[i]);
-    }
-  }
-  list.value = res;
-};
-
-const filterChangeTemp = async () => {
-  let nameFilterList: People[] = [];
-  let idFilterList: People[] = [];
-  let res: People[] = [];
   const set = new Set();
   if (filterList.value.name !== "") {
     const { data } = await getPeopleByName(filterList.value.name);
