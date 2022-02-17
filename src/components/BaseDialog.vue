@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="文件信息" :show-close="false" destroy-on-close>
+  <el-dialog :title="title" :show-close="false" destroy-on-close>
     <slot name="content"></slot>
     <template #footer>
       <el-button @click="close">关闭</el-button>
@@ -9,6 +9,10 @@
 </template>
 
 <script setup lang="ts">
+const props = defineProps<{
+  title?: string;
+}>();
+
 const emit = defineEmits(["close", "confirm"]);
 
 function close() {

@@ -1,11 +1,21 @@
 import axios from "@/utils/axios";
 import { People } from "@/model/model";
 
-export const addPeople = (data: People) => {
+export const insertPeople = (data: People) => {
   return axios({
     url: "/people/insert",
     method: "post",
     data,
+  });
+};
+
+export const deletePeople = (number: string) => {
+  return axios({
+    url: "/people/delete",
+    method: "delete",
+    params: {
+      number,
+    },
   });
 };
 

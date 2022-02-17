@@ -8,7 +8,21 @@ export enum DepartmentDataType {
   equipment,
 }
 
-export interface People {
+/**
+ * Item 是否删除
+ */
+export interface BaseItem {
+  isDel?: boolean;
+}
+
+/**
+ * 给对象的 key 取个中文名
+ */
+export interface KeyName<T> {
+  [key: string]: [keyof T];
+}
+
+export interface People extends BaseItem {
   name: string;
   age: number;
   nationality: string;
@@ -68,11 +82,9 @@ export interface News {
 }
 
 export interface Result {
-  data: {
-    code: number;
-    msg: string;
-    data: any;
-  };
+  code: number;
+  msg: string;
+  data?: any;
 }
 
 export interface UserInfo {

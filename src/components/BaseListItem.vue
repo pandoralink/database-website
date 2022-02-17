@@ -1,5 +1,5 @@
 <template>
-  <div class="base-list-item">
+  <div class="base-list-item" @click="clickItem">
     <div class="base-list-item-text">
       <span class="base-list-item-index" @click="clickIndex">{{ index }}</span>
       <div class="base-list-item-text-content" @click="clickContent">
@@ -34,6 +34,7 @@ const emits = defineEmits<{
   (e: "clickIndex", index: number): void;
   (e: "clickContent", index: number): void;
   (e: "clickImg", index: number): void;
+  (e: "clickItem", index: number): void;
 }>();
 
 function clickIndex() {
@@ -45,7 +46,9 @@ function clickContent() {
 function clickImg() {
   emits("clickImg", props.index);
 }
+function clickItem() {
+  emits("clickItem", props.index);
+}
 </script>
 
 <style></style>
-]
