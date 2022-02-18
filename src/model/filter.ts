@@ -23,3 +23,10 @@ export interface FilterInfo {
   name: string;
   id: string;
 }
+
+export interface FilterEquipment {
+  number: string;
+  DpNumber: string;
+  name: string;
+  location: string;
+}

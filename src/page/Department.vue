@@ -230,7 +230,7 @@ const filterChange = async () => {
     } else positionFilterList.push(data);
   }
   list.value = multipleFilter(
-    "title",
+    "number",
     numberFilterList,
     nameFilterList,
     addressFilterList,

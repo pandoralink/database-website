@@ -30,12 +30,12 @@ export const deleteMilitaryEquipment = (number: string) => {
   });
 };
 
-export const selectMilitaryEquipment = (DpNumber: string) => {
+export const selectMilitaryEquipmentByNumber = (number: string) => {
   return axios({
-    url: "/militaryEquipment/selectByDpNumber",
+    url: "/militaryEquipment/selectByNumber",
     method: "get",
     params: {
-      DpNumber,
+      number,
     },
   });
 };

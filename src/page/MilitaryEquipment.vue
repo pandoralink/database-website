@@ -19,7 +19,32 @@
           {{ item }}
         </el-button>
       </div>
-      <div class="filter-content" style="margin-top: 10px"></div>
+      <div class="filter-content" style="margin-top: 10px">
+        <el-input
+          v-model="filterList.number"
+          placeholder="设备编号"
+          v-if="activeFilterOption === 0"
+          @change="filterChange"
+        ></el-input>
+        <el-input
+          v-model="filterList.DpNumber"
+          placeholder="所属部门编号"
+          v-if="activeFilterOption === 1"
+          @change="filterChange"
+        ></el-input>
+        <el-input
+          v-model="filterList.name"
+          placeholder="设备名称"
+          v-if="activeFilterOption === 2"
+          @change="filterChange"
+        ></el-input>
+        <el-input
+          v-model="filterList.location"
+          placeholder="地点"
+          v-if="activeFilterOption === 3"
+          @change="filterChange"
+        ></el-input>
+      </div>
     </template>
   </content-header>
   <slot name="header-tag"> </slot>
@@ -100,6 +125,10 @@ import {
   deleteMilitaryEquipment,
   getMilitaryEquipmentList,
   insertMilitaryEquipment,
+  selectMilitaryEquipmentByDpNumber,
+  selectMilitaryEquipmentByLocation,
+  selectMilitaryEquipmentByName,
+  selectMilitaryEquipmentByNumber,
 } from "@/api/militaryEquipment";
 import { useMilitaryEquipmentStore } from "@/store/militaryEquipment";
 import { ref, watch } from "vue";
@@ -110,6 +139,8 @@ import BaseDialog from "../components/BaseDialog.vue";
 import { ElMessage } from "element-plus";
 import empty from "./empty.vue";
 import ContentHeader from "@/components/ContentHeader.vue";
+import { FilterEquipment } from "@/model/filter";
+import { multipleFilter } from "@/utils/filter";
 
 let list = ref<MilitaryEquipment[]>([]);
 
@@ -119,12 +150,34 @@ const filterOptions: string[] = [
   "设备名称",
   "地点",
 ];
-const filterList = ref({});
+const filterList = ref<FilterEquipment>({
+  name: "",
+  DpNumber: "",
+  location: "",
+  number: "",
+} as FilterEquipment);
 let activeFilterOption = ref(0);
 const router = useRouter();
 
 function deleteFilterOption(key: string) {
-  console.log(key);
+  if (key === "name") {
+    filterList.value.name = "";
+  } else if (key === "DpNumber") {
+    filterList.value.DpNumber = "";
+  } else if (key === "location") {
+    filterList.value.location = "";
+  } else {
+    filterList.value.number = "";
+  }
+  filterChange();
+  if (
+    !filterList.value.name &&
+    !filterList.value.DpNumber &&
+    !filterList.value.location &&
+    !filterList.value.number
+  ) {
+    getList(currentPage.value);
+  }
 }
 function toInfoDetail(index: number) {
   const militaryEquipmentStore = useMilitaryEquipmentStore();
@@ -142,6 +195,51 @@ getList();
 watch(currentPage, (newCurrentPage, oldCurrentPage) => {
   getList(newCurrentPage);
 });
+
+const filterChange = async () => {
+  let numberFilterList: MilitaryEquipment[] = [];
+  let dpNumberFilterList: MilitaryEquipment[] = [];
+  let nameFilterList: MilitaryEquipment[] = [];
+  let locationFilterList: MilitaryEquipment[] = [];
+  // 应该定义工具类去简化代码
+  if (filterList.value.number !== "") {
+    const { data } = await selectMilitaryEquipmentByNumber(
+      filterList.value.number
+    );
+    if (data instanceof Array) {
+      numberFilterList.push(...data);
+    } else numberFilterList.push(data);
+  }
+  if (filterList.value.DpNumber !== "") {
+    const { data } = await selectMilitaryEquipmentByDpNumber(
+      filterList.value.DpNumber
+    );
+    if (data instanceof Array) {
+      dpNumberFilterList.push(...data);
+    } else dpNumberFilterList.push(data);
+  }
+  if (filterList.value.name !== "") {
+    const { data } = await selectMilitaryEquipmentByName(filterList.value.name);
+    if (data instanceof Array) {
+      nameFilterList.push(...data);
+    } else nameFilterList.push(data);
+  }
+  if (filterList.value.location !== "") {
+    const { data } = await selectMilitaryEquipmentByLocation(
+      filterList.value.location
+    );
+    if (data instanceof Array) {
+      locationFilterList.push(...data);
+    } else locationFilterList.push(data);
+  }
+  list.value = multipleFilter(
+    "number",
+    numberFilterList,
+    dpNumberFilterList,
+    nameFilterList,
+    locationFilterList
+  );
+};
 
 let isDelete = ref(false);
 const del = (value: boolean) => {
