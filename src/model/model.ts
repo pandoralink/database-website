@@ -51,7 +51,7 @@ export interface Paternity {
   cname: string;
 }
 
-export interface Department {
+export interface Department extends BaseItem {
   name: string;
   position: string;
   location: string;
@@ -61,7 +61,7 @@ export interface Department {
   image: string;
 }
 
-export interface MilitaryEquipment {
+export interface MilitaryEquipment extends BaseItem {
   name: string;
   number: string;
   function: string;
@@ -71,7 +71,7 @@ export interface MilitaryEquipment {
   image: string;
 }
 
-export interface News {
+export interface News extends BaseItem {
   title: string;
   image: string;
   briefIntroduction: string;

@@ -1,6 +1,13 @@
 <template>
-  <div class="content-head">
-    <base-filter :show-text-list="filterList" @delete="deleteFilterOption">
+  <content-header
+    :show-text-list="filterList"
+    @option-delete="deleteFilterOption"
+    @insert="insert"
+    @cancel-del="cancelDel"
+    @confirm-del="confirmDel"
+    @on-is-delete="del"
+  >
+    <template #default>
       <div class="filter-content">
         <el-button
           class="filter-content-button"
@@ -26,21 +33,8 @@
           @change="filterChange"
         ></el-input>
       </div>
-    </base-filter>
-    <div class="header-option">
-      <el-button type="primary" :icon="Plus" @click="insert">新增</el-button>
-      <el-button type="primary" :icon="Delete" @click="del">{{
-        isDelete ? "取消删除" : "删除"
-      }}</el-button>
-      <el-button
-        type="danger"
-        :icon="Delete"
-        v-if="isDelete"
-        @click="confirmDel"
-        >确认删除</el-button
-      >
-    </div>
-  </div>
+    </template>
+  </content-header>
   <slot name="header-tag"> </slot>
   <div class="base-content">
     <base-list-item
@@ -120,9 +114,7 @@
 </template>
 
 <script setup lang="ts">
-import { Plus, Delete } from "@element-plus/icons";
 import { computed, ref, watch } from "vue";
-import BaseFilter from "../components/BaseFilter.vue";
 import BaseListItem from "../components/BaseListItem.vue";
 import { People, KeyName, Result } from "../model/model";
 import { FilterInfo } from "../model/filter";
@@ -139,6 +131,7 @@ import { initIsDel } from "../utils/init";
 import BaseDialog from "../components/BaseDialog.vue";
 import { ElMessage } from "element-plus";
 import empty from "./empty.vue";
+import ContentHeader from "@/components/ContentHeader.vue";
 
 const router = useRouter();
 
@@ -225,12 +218,13 @@ const intersect = (arr1: People[], arr2: People[]): People[] => {
 
 // 操作
 // 删除
+/**
+ * isDelete 是列表项删除状态，父组件依赖其维护是否具有选中状态
+ * 值需要和子组件保持一致
+ */
 let isDelete = ref(false);
-const del = () => {
-  isDelete.value = !isDelete.value;
-  if (isDelete.value === false) {
-    cancelDel();
-  }
+const del = (value: boolean) => {
+  isDelete.value = value;
 };
 const cancelDel = () => {
   const arr = list.value;
@@ -250,7 +244,6 @@ const confirmDel = async () => {
     }
   });
   list.value = list.value.filter((item) => !item.isDel);
-  isDelete.value = false;
 };
 const selectDel = (index: number, isDel = false) => {
   if (isDelete.value) {

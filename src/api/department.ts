@@ -1,5 +1,5 @@
 import axios from "@/utils/axios";
-import { People } from "@/model/model";
+import { Department } from "@/model/model";
 
 export const getDepartmentList = (num: number) => {
   return axios({
@@ -51,3 +51,20 @@ export const getDepartmentByLocation = (location: string) => {
   });
 };
 
+export const insertDepartment = (data: Department) => {
+  return axios({
+    url: "/department/insert",
+    method: "post",
+    data,
+  });
+};
+
+export const deleteDepartment = (number: string) => {
+  return axios({
+    url: "/department/delete",
+    method: "delete",
+    params: {
+      number,
+    },
+  });
+};

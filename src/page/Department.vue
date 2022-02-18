@@ -1,50 +1,61 @@
 <template>
-  <base-filter :show-text-list="filterList" @delete="deleteFilterOption">
-    <div class="filter-content">
-      <el-button
-        class="filter-content-button"
-        v-for="(item, index) in filterOptions"
-        :key="item"
-        @click="activeFilterOption = index"
-        :class="{ active: activeFilterOption === index }"
-      >
-        {{ item }}
-      </el-button>
-    </div>
-    <div class="filter-content" style="margin-top: 10px">
-      <!-- 没有选择和 button 一起循环是为了方便扩展 -->
-      <el-input
-        v-model="filterList.position"
-        placeholder="职位"
-        v-if="activeFilterOption === 0"
-        @change="filterChange"
-      ></el-input>
-      <el-input
-        v-model="filterList.number"
-        placeholder="编号"
-        v-if="activeFilterOption === 1"
-        @change="filterChange"
-      ></el-input>
-      <el-input
-        v-model="filterList.name"
-        placeholder="名称"
-        v-if="activeFilterOption === 2"
-        @change="filterChange"
-      ></el-input>
-      <el-input
-        v-model="filterList.address"
-        placeholder="地点"
-        v-if="activeFilterOption === 3"
-        @change="filterChange"
-      ></el-input>
-    </div>
-  </base-filter>
+  <content-header
+    :show-text-list="filterList"
+    @option-delete="deleteFilterOption"
+    @insert="insert"
+    @cancel-del="cancelDel"
+    @confirm-del="confirmDel"
+    @on-is-delete="del"
+  >
+    <template #default>
+      <div class="filter-content">
+        <el-button
+          class="filter-content-button"
+          v-for="(item, index) in filterOptions"
+          :key="item"
+          @click="activeFilterOption = index"
+          :class="{ active: activeFilterOption === index }"
+        >
+          {{ item }}
+        </el-button>
+      </div>
+      <div class="filter-content" style="margin-top: 10px">
+        <!-- 没有选择和 button 一起循环是为了方便扩展 -->
+        <el-input
+          v-model="filterList.position"
+          placeholder="职位"
+          v-if="activeFilterOption === 0"
+          @change="filterChange"
+        ></el-input>
+        <el-input
+          v-model="filterList.number"
+          placeholder="编号"
+          v-if="activeFilterOption === 1"
+          @change="filterChange"
+        ></el-input>
+        <el-input
+          v-model="filterList.name"
+          placeholder="名称"
+          v-if="activeFilterOption === 2"
+          @change="filterChange"
+        ></el-input>
+        <el-input
+          v-model="filterList.address"
+          placeholder="地点"
+          v-if="activeFilterOption === 3"
+          @change="filterChange"
+        ></el-input>
+      </div>
+    </template>
+  </content-header>
   <div class="base-content">
     <base-list-item
+      :class="{ delete: item.isDel }"
       v-for="(item, index) in list"
       :key="index"
       :index="index + 1"
       :src="item.image"
+      @click-item="selectDel($event, item.isDel)"
       @click-content="toInfoDetail"
     >
       <template #default>
@@ -63,28 +74,82 @@
         ><br />
       </template>
     </base-list-item>
+    <empty v-if="list.length === 0" desc="没有数据了"></empty>
   </div>
   <div id="base-pagination">
-    <el-pagination background layout="prev, pager, next" :total="100">
+    <el-pagination
+      v-model:currentPage="currentPage"
+      background
+      layout="prev, pager, next"
+      :total="100"
+    >
     </el-pagination>
   </div>
+  <!-- TODO: 必选项校验 -->
+  <base-dialog v-model="isOpen" @close="cancelInsert" @confirm="confirmInsert">
+    <template #content>
+      <el-form ref="form" :model="insertOb" label-width="80px">
+        <el-form-item label="部门编号">
+          <el-input
+            v-model="insertOb['number']"
+            placeholder="部门编号"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="部门类型">
+          <el-input
+            v-model="insertOb['type']"
+            placeholder="部门类型"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="部门名称">
+          <el-input
+            v-model="insertOb['name']"
+            placeholder="部门名称"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="部门地点">
+          <el-input
+            v-model="insertOb['location']"
+            placeholder="部门地点"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="部门职位">
+          <el-input
+            v-model="insertOb['position']"
+            placeholder="部门职位"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="联系方式">
+          <el-input
+            v-model="insertOb['contactInformation']"
+            placeholder="联系方式"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+    </template>
+  </base-dialog>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import BaseFilter from "../components/BaseFilter.vue";
 import BaseListItem from "../components/BaseListItem.vue";
-import { Department } from "../model/model";
+import { Department, Result } from "../model/model";
 import { FilterDepartment } from "../model/filter";
 import { useRouter } from "vue-router";
 import {
+  deleteDepartment,
   getDepartmentByLocation,
   getDepartmentByName,
   getDepartmentByNumber,
   getDepartmentByPosition,
   getDepartmentList,
+  insertDepartment,
 } from "@/api/department";
 import { multipleFilter } from "@/utils/filter";
+import { ElMessage } from "element-plus";
+import ContentHeader from "@/components/ContentHeader.vue";
+import BaseDialog from "../components/BaseDialog.vue";
+import empty from "./empty.vue";
 
 let list = ref<Department[]>([]);
 
@@ -171,5 +236,53 @@ const filterChange = async () => {
     addressFilterList,
     positionFilterList
   );
+};
+
+// XXX: del/insert 逻辑高度一致，或许可以进行再次封装
+let isDelete = ref(false);
+const del = (value: boolean) => {
+  isDelete.value = value;
+};
+const cancelDel = () => {
+  const arr = list.value;
+  for (let i = 0; i < arr.length; i++) {
+    arr[i].isDel = false;
+  }
+};
+const confirmDel = async () => {
+  list.value.forEach(async (item) => {
+    if (item.isDel) {
+      const { data } = await deleteDepartment(item.number);
+      const res = data as Result;
+      if (res.code !== 0) {
+        item.isDel = false;
+        ElMessage.error("操作失败，请重试");
+      }
+    }
+  });
+  list.value = list.value.filter((item) => !item.isDel);
+};
+const selectDel = (index: number, isDel = false) => {
+  if (isDelete.value) {
+    // <base-list-item> emit 的 index 以 1 为起点
+    list.value[index - 1].isDel = !isDel;
+  }
+};
+// 插入
+let insertOb = ref<Department>({} as Department);
+const isOpen = ref(false);
+const insert = () => (isOpen.value = true);
+const cancelInsert = () => (isOpen.value = false);
+const confirmInsert = async () => {
+  cancelInsert();
+  const { data } = await insertDepartment(insertOb.value);
+  const res = data as Result;
+  if (res.code === 0) {
+    list.value.unshift(insertOb.value);
+    // 展示页面需为 10
+    list.value.pop();
+    ElMessage.success(res.msg);
+  } else ElMessage.error("操作失败，请重试");
+  insertOb.value = {} as Department;
 };
 </script>
