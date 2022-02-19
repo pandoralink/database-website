@@ -9,7 +9,6 @@ const PoliticalNews = () => import("../page/PoliticalNews.vue");
 const NewDetail = () => import("../page/NewDetail.vue");
 const BugManage = () => import("../page/BugManage.vue");
 const EquipmentDetail = () => import("../page/EquipmentDetail.vue");
-const DepartmentDetail = () => import("../page/DepartmentDetail.vue");
 const DepartDetail = () => import("../page/DepartDetail.vue");
 const InfoDetail = () => import("../page/InfoDetail.vue");
 
@@ -65,11 +64,6 @@ const routes: Array<RouteRecordRaw> = [
         meta: { desc: ["文件查看"] },
       },
       {
-        path: "/departmentDetail",
-        component: DepartmentDetail,
-        meta: { desc: ["文件查看"] },
-      },
-      {
         path: "/equipmentDetail",
         component: EquipmentDetail,
         meta: { desc: ["文件查看"] },
@@ -86,12 +80,12 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "/militaryNews",
+        name: "MilitaryNews",
         component: MilitaryNews,
-        meta: { desc: ["文件查看"] },
-        props: true,
       },
       {
         path: "/politicalNews",
+        name: "PoliticalNews",
         component: PoliticalNews,
         meta: { desc: ["文件查看"] },
       },
@@ -105,7 +99,6 @@ const routes: Array<RouteRecordRaw> = [
         path: "/militaryEquipment",
         name: "militaryEquipment",
         component: MilitaryEquipment,
-        meta: { desc: ["文件查看"] },
       },
     ],
   },

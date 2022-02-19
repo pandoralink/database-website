@@ -17,10 +17,14 @@
         <el-sub-menu index="2">
           <template #title>新闻</template>
           <el-menu-item index="2-1" route="MilitaryNews">军事新闻</el-menu-item>
-          <el-menu-item index="2-2" route="PoliticalNews">政治新闻</el-menu-item>
+          <el-menu-item index="2-2" route="PoliticalNews"
+            >政治新闻</el-menu-item
+          >
         </el-sub-menu>
         <el-menu-item index="3" route="department">部门</el-menu-item>
-        <el-menu-item index="4" route="militaryEquipment">军事设备</el-menu-item>
+        <el-menu-item index="4" route="militaryEquipment"
+          >军事设备</el-menu-item
+        >
         <el-menu-item index="5" route="map">越南地图</el-menu-item>
         <el-menu-item index="6" route="bugManage">爬虫管理</el-menu-item>
       </el-menu>
@@ -34,6 +38,7 @@
         padding: 12px 24px;
       "
     >
+    <!-- TODO: 部分路由需要做 keep-alive -->
       <router-view />
     </el-col>
   </el-row>

@@ -130,20 +130,18 @@ import { useRouter } from "vue-router";
 import { useNewsStore } from "@/store/new";
 import empty from "./empty.vue";
 import {
-deletePoliticalNews,
-  getMilitaryNewsByDetails,
-  getMilitaryNewsByTime,
-  getMilitaryNewsByTitle,
+  deletePoliticalNews,
   getPoliticalNewsByDetails,
   getPoliticalNewsByTime,
   getPoliticalNewsByTitle,
   getPoliticalNewsList,
-insertPoliticalNews,
+  insertPoliticalNews,
 } from "@/api/news";
 import { multipleFilter } from "@/utils/filter";
 import ContentHeader from "@/components/ContentHeader.vue";
 import { ElMessage } from "element-plus";
 import BaseDialog from "../components/BaseDialog.vue";
+import { NewsType } from "@/types";
 
 let list = ref<News[]>([]);
 
@@ -178,6 +176,7 @@ function deleteFilterOption(key: string) {
 function toInfoDetail(index: number) {
   const newsStore = useNewsStore();
   newsStore.updateNewsUrl(list.value[index - 1].url);
+  newsStore.updateForm(list.value[index - 1], NewsType.POLITICAL);
   router.push("/newDetail");
 }
 

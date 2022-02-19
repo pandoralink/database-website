@@ -20,6 +20,14 @@ export const insertMilitaryEquipment = (data: MilitaryEquipment) => {
   });
 };
 
+export const updateMilitaryEquipment = (data: MilitaryEquipment) => {
+  return axios({
+    url: "/militaryEquipment/update",
+    method: "put",
+    data,
+  });
+};
+
 export const deleteMilitaryEquipment = (number: string) => {
   return axios({
     url: "/militaryEquipment/delete",

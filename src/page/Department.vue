@@ -56,7 +56,7 @@
       :index="index + 1"
       :src="item.image"
       @click-item="selectDel($event, item.isDel)"
-      @click-content="toInfoDetail"
+      @click-content="toDetail"
     >
       <template #default>
         <!-- 存在 <span> 吞空格的情况 -->
@@ -150,6 +150,7 @@ import { ElMessage } from "element-plus";
 import ContentHeader from "@/components/ContentHeader.vue";
 import BaseDialog from "../components/BaseDialog.vue";
 import empty from "./empty.vue";
+import { useDepartmentStore } from "@/store/department";
 
 let list = ref<Department[]>([]);
 
@@ -184,7 +185,9 @@ function deleteFilterOption(key: string) {
     getList(currentPage.value);
   }
 }
-function toInfoDetail(index: number) {
+function toDetail(index: number) {
+  const departmentStore = useDepartmentStore();
+  departmentStore.updateDepartment(list.value[index - 1]);
   router.push("/departDetail");
 }
 

@@ -68,3 +68,11 @@ export const deleteDepartment = (number: string) => {
     },
   });
 };
+
+export const updateDepartment = (data: Department) => {
+  return axios({
+    url: "/department/update",
+    method: "put",
+    data,
+  });
+};

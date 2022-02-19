@@ -6,6 +6,8 @@
     @cancel-del="cancelDel"
     @confirm-del="confirmDel"
     @on-is-delete="del"
+    :show-update="showUpdate"
+    @update="update"
   >
     <template #default>
       <div class="filter-content">
@@ -35,7 +37,7 @@
       </div>
     </template>
   </content-header>
-  <slot name="header-tag"> </slot>
+  <slot name="header-tag"></slot>
   <div class="base-content">
     <base-list-item
       :class="{ delete: item.isDel }"
@@ -114,9 +116,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import BaseListItem from "../components/BaseListItem.vue";
-import { People, KeyName, Result } from "../model/model";
+import { People, Result } from "../model/model";
 import { FilterInfo } from "../model/filter";
 import { useRouter } from "vue-router";
 import {
@@ -132,6 +134,23 @@ import BaseDialog from "../components/BaseDialog.vue";
 import { ElMessage } from "element-plus";
 import empty from "./empty.vue";
 import ContentHeader from "@/components/ContentHeader.vue";
+
+// info 作为 DepartDetail 子组件时需暴露 update, 给父组件更新部门信息
+interface Props {
+  showUpdate?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  showUpdate: false,
+});
+
+const emits = defineEmits<{
+  (e: "update"): void;
+}>();
+
+const update = () => {
+  emits("update");
+};
 
 const router = useRouter();
 
@@ -156,6 +175,7 @@ function deleteFilterOption(key: string) {
     getList(currentPage.value);
   }
 }
+
 function toInfoDetail(index: number) {
   const peopleStore = usePeopleStore();
   peopleStore.updatePeople(list.value[index - 1]);

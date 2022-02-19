@@ -6,28 +6,42 @@
       </template>
     </base-filter>
     <div class="header-option">
-      <el-button type="primary" :icon="Plus" @click="insert">新增</el-button>
-      <el-button type="primary" :icon="Delete" @click="del">{{
-        isDelete ? "取消删除" : "删除"
-      }}</el-button>
+      <el-button type="primary" v-if="showIns" :icon="Plus" @click="insert"
+        >新增
+      </el-button>
+      <el-button type="primary" v-if="showDel" :icon="Delete" @click="del"
+        >{{ isDelete ? "取消删除" : "删除" }}
+      </el-button>
       <el-button
         type="danger"
         :icon="Delete"
         v-if="isDelete"
         @click="confirmDel"
-        >确认删除</el-button
-      >
+        >确认删除
+      </el-button>
+      <el-button type="primary" v-if="showUpdate" :icon="Edit" @click="update"
+        >更新
+      </el-button>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 import { ref, watch } from "vue";
 import BaseFilter from "./BaseFilter.vue";
-import { Plus, Delete } from "@element-plus/icons";
+import { Plus, Delete, Edit } from "@element-plus/icons";
 
-const props = defineProps<{
+interface Props {
+  showDel?: boolean;
+  showIns?: boolean;
+  showUpdate?: boolean;
   showTextList?: Record<string, unknown>;
-}>();
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  showDel: true,
+  showIns: true,
+  showUpdate: false,
+});
 
 /**
  * onIsDelete: 当组件内部删除标志位发生改变时
@@ -36,6 +50,7 @@ const emits = defineEmits<{
   (e: "optionDelete", key: string): void;
   (e: "cancelDel"): void;
   (e: "insert"): void;
+  (e: "update"): void;
   (e: "confirmDel"): void;
   (e: "onIsDelete", value: boolean): void;
 }>();
@@ -61,8 +76,11 @@ const confirmDel = () => {
 const insert = () => {
   emits("insert");
 };
+const update = () => {
+  emits("update");
+};
 
 watch(isDelete, (newIsDelete, oldIsDelete) => {
-  emits("onIsDelete",newIsDelete);
+  emits("onIsDelete", newIsDelete);
 });
 </script>

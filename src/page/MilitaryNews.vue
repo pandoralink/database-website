@@ -120,7 +120,6 @@
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import BaseFilter from "../components/BaseFilter.vue";
 import BaseListItem from "../components/BaseListItem.vue";
 import { News, Result } from "../model/model";
 import { FilterNews } from "../model/filter";
@@ -139,6 +138,7 @@ import { multipleFilter } from "@/utils/filter";
 import ContentHeader from "@/components/ContentHeader.vue";
 import { ElMessage } from "element-plus";
 import BaseDialog from "../components/BaseDialog.vue";
+import { NewsType } from "@/types";
 
 let list = ref<News[]>([]);
 
@@ -171,6 +171,7 @@ function deleteFilterOption(key: string) {
 function toInfoDetail(index: number) {
   const newsStore = useNewsStore();
   newsStore.updateNewsUrl(list.value[index - 1].url);
+  newsStore.updateForm(list.value[index - 1], NewsType.MILITARY);
   router.push("/newDetail");
 }
 

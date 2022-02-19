@@ -6,6 +6,8 @@
     @cancel-del="cancelDel"
     @confirm-del="confirmDel"
     @on-is-delete="del"
+    :show-update="showUpdate"
+    @update="update"
   >
     <template #default>
       <div class="filter-content">
@@ -141,6 +143,22 @@ import empty from "./empty.vue";
 import ContentHeader from "@/components/ContentHeader.vue";
 import { FilterEquipment } from "@/model/filter";
 import { multipleFilter } from "@/utils/filter";
+
+interface Props {
+  showUpdate?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  showUpdate: false,
+});
+
+const emits = defineEmits<{
+  (e: "update"): void;
+}>();
+
+const update = () => {
+  emits("update");
+};
 
 let list = ref<MilitaryEquipment[]>([]);
 

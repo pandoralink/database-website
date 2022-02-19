@@ -61,6 +61,14 @@ export const deleteMilitaryNews = (url: string) => {
   });
 };
 
+export const updateMilitaryNews = (data: News) => {
+  return axios({
+    url: "/MilitaryNews/update",
+    method: "put",
+    data,
+  });
+};
+
 // TODO: 新闻部分有重复数据
 export const getPoliticalNewsList = (num: number) => {
   return axios({
@@ -88,6 +96,14 @@ export const deletePoliticalNews = (url: string) => {
     params: {
       url,
     },
+  });
+};
+
+export const updatePoliticalNews = (data: News) => {
+  return axios({
+    url: "/politicalNews/update",
+    method: "put",
+    data,
   });
 };
 
