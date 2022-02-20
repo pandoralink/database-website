@@ -1,6 +1,10 @@
 /**
  * 筛选部分的实体
  */
+ export interface FilterBug {
+  author: string;
+}
+
 export interface FilterNews {
   time: string;
   title: string;

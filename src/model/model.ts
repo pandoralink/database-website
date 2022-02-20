@@ -102,7 +102,11 @@ export interface NewResult {
   };
 }
 
-// TODO: rule, switchs, remarks 是什么
+// TODO: rule
+/**
+ * remarks: 功能备注
+ * switchs: 状态
+ */
 export interface Bug {
   url: string;
   rule: string;
