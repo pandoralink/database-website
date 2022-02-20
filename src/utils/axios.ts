@@ -2,7 +2,7 @@ import axios from "axios";
 import { ElMessage } from "element-plus";
 
 // 生产环境 URL
-const url = "";
+const url = "http://116.63.152.202:8085";
 const developmentUrl = "http://localhost:8081";
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL =

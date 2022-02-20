@@ -88,11 +88,9 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import BaseFilter from "../components/BaseFilter.vue";
-import { MilitaryEquipment, News, Result } from "../model/model";
-import { FilterEquipment, FilterNews } from "../model/filter";
+import { MilitaryEquipment, Result } from "../model/model";
+import { FilterEquipment } from "../model/filter";
 import BaseListItem from "../components/BaseListItem.vue";
-import { useRouter } from "vue-router";
 import { useMilitaryEquipmentStore } from "@/store/militaryEquipment";
 import { updateMilitaryEquipment } from "@/api/militaryEquipment";
 import { ElMessage } from "element-plus";
