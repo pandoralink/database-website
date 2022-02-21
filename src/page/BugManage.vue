@@ -4,7 +4,6 @@
     :show-del="false"
     @option-delete="deleteFilterOption"
     @insert="insert"
-    @on-is-delete="del"
   >
     <template #default>
       <div class="filter-content">
@@ -49,9 +48,16 @@
         </el-tooltip>
       </el-table-column>
       <el-table-column label="操作">
-        <template #default>
-          <el-button type="primary" round>更新</el-button>
-          <el-button type="danger" round>删除</el-button>
+        <template #default="scope">
+          <el-button type="primary" round @click="update(scope.$index)"
+            >更新</el-button
+          >
+          <el-button
+            type="danger"
+            round
+            @click="del(list[scope.$index], scope.$index)"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -69,17 +75,26 @@
     v-model="isOpen"
     :form-value="formValue"
     :method-type="methodType"
+    :index="updateDataIndex"
     @close="close"
-    @confirm="close"
+    @confirm="changeFormValue"
   ></bug-dialog>
 </template>
 
 <script lang="ts" setup>
-import { getBugList, searchBugByAuthor } from "@/api/bug";
+import {
+  getBugList,
+  searchBugByAuthor,
+  insertBug,
+  deleteBug,
+  updateBug,
+} from "@/api/bug";
 import ContentHeader from "@/components/ContentHeader.vue";
 import BugDialog from "@/components/dialog/BugDialog.vue";
 import { FilterBug } from "@/model/filter";
-import { Bug } from "@/model/model";
+import { Bug, Result } from "@/model/model";
+import { FormMethod } from "@/types";
+import { ElMessage } from "element-plus";
 import { ref, watch } from "vue";
 
 const list = ref<Bug[]>([]);
@@ -127,72 +142,56 @@ const changeBugState = (index: number) => {
   list.value[index].switchs = !state ? 1 : 0;
 };
 
-let formValue = {} as Bug;
-let methodType = "insert";
+let formValue = ref<Bug>({} as Bug);
+let methodType = ref<FormMethod>("insert");
+const updateDataIndex = ref(0);
 
 const isOpen = ref(false);
 const insert = () => {
   isOpen.value = true;
-
-  formValue = {} as Bug;
-  methodType = "insert";
+  formValue.value = {} as Bug;
+  methodType.value = "insert";
 };
+const insertData = async (value: Bug) => {
+  const { data } = await insertBug(value);
+  const res = data as Result;
+  if (res.code === 0) {
+    list.value.unshift(value);
+    if (list.value.length === 10) list.value.pop();
+    ElMessage.success(res.msg);
+  } else ElMessage.error("操作失败，请重试");
+};
+
 const update = (index: number) => {
-  formValue = list.value[index];
-  methodType = "update";
+  isOpen.value = true;
+  formValue.value = list.value[index];
+  methodType.value = "update";
+  updateDataIndex.value = index;
+};
+const updateData = async (value: Bug, index: number) => {
+  const { data } = await updateBug(value);
+  const res = data as Result;
+  if (res.code === 0) {
+    list.value[index] = value;
+    ElMessage.success(res.msg);
+  } else ElMessage.error("操作失败，请重试");
+};
+
+const del = async (value: Bug, index: number) => {
+  const { data } = await deleteBug(value.url);
+  const res = data as Result;
+  if (res.code === 0) {
+    list.value.splice(index, 1);
+    ElMessage.success(res.msg);
+  } else ElMessage.error("操作失败，请重试");
+};
+
+const changeFormValue = (bug: Bug, type: FormMethod, index?: number) => {
+  isOpen.value = false;
+  if (type === "insert") insertData(bug);
+  else updateData(bug, index as number);
 };
 const close = () => {
   isOpen.value = false;
-}
-
-let isDelete = ref(false);
-const del = (value: boolean) => {
-  isDelete.value = value;
 };
-// const cancelDel = () => {
-//   const arr = list.value;
-//   for (let i = 0; i < arr.length; i++) {
-//     arr[i].isDel = false;
-//   }
-// };
-// const confirmDel = async () => {
-//   list.value.forEach(async (item) => {
-//     if (item.isDel) {
-//       const { data } = await deleteMilitaryNews(item.url);
-//       const res = data as Result;
-//       if (res.code !== 0) {
-//         item.isDel = false;
-//         ElMessage.error("操作失败，请重试");
-//       }
-//     }
-//   });
-//   list.value = list.value.filter((item) => !item.isDel);
-// };
-// const selectDel = (index: number, isDel = false) => {
-//   if (isDelete.value) {
-//     // <base-list-item> emit 的 index 以 1 为起点
-//     list.value[index - 1].isDel = !isDel;
-//   }
-// };
-// // 插入
-// let insertOb = ref<News>({} as News);
-
-// const insert = () => (isOpen.value = true);
-// const cancelInsert = () => (isOpen.value = false);
-// const confirmInsert = async () => {
-//   cancelInsert();
-//   const { data } = await insertMilitaryNews(insertOb.value);
-//   const res = data as Result;
-//   if (res.code === 0) {
-//     list.value.unshift(insertOb.value);
-//     // 展示页面需为 10
-//     list.value.pop();
-//     ElMessage.success(res.msg);
-//   } else ElMessage.error("操作失败，请重试");
-//   insertOb.value = {} as News;
-// };
-
-// const update = () => {
-
-// }
 </script>

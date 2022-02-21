@@ -9,9 +9,15 @@
       <el-button type="primary" v-if="showIns" :icon="Plus" @click="insert"
         >新增
       </el-button>
-      <el-button type="primary" v-if="showDel" :icon="Delete" @click="del"
-        >{{ isDelete ? "取消删除" : "删除" }}
-      </el-button>
+      <el-tooltip
+        class="box-item"
+        effect="light"
+        content="选中删除"
+      >
+        <el-button type="primary" v-if="showDel" :icon="Delete" @click="del"
+          >{{ isDelete ? "取消删除" : "删除" }}
+        </el-button>
+      </el-tooltip>
       <el-button
         type="danger"
         :icon="Delete"
@@ -44,7 +50,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 /**
- * onIsDelete: 当组件内部删除标志位发生改变时
+ * onIsDelete: 当组件内部`删除`按钮标志位发生改变时
  */
 const emits = defineEmits<{
   (e: "optionDelete", key: string): void;

@@ -23,17 +23,19 @@
 </template>
 <script lang="ts" setup>
 import { Bug } from "@/model/model";
-import { unref } from "vue";
+import { FormMethod } from "@/types";
+import { computed, ref, shallowRef, toRef, toRefs, unref, watch } from "vue";
 import BaseDialog from "../BaseDialog.vue";
 
 const props = defineProps<{
   formValue: Bug;
-  methodType: string;
+  methodType: FormMethod;
+  index?: number;
 }>();
 
 const emits = defineEmits<{
   (e: "close"): void;
-  (e: "confirm", data: Bug): void;
+  (e: "confirm", data: Bug, methodType: FormMethod, index?: number): void;
 }>();
 
 function close() {
@@ -41,8 +43,17 @@ function close() {
 }
 
 function confirm() {
-  emits("confirm", data);
+  if (props.methodType === "insert")
+    emits("confirm", data.value, props.methodType);
+  else emits("confirm", data.value, props.methodType, props.index);
 }
 
-const data = unref(props.formValue);
+const { formValue } = toRefs(props);
+
+let data = ref(props.formValue);
+const updateData = () => {
+  data.value = Object.assign({}, props.formValue);
+};
+
+watch(formValue, updateData);
 </script>
