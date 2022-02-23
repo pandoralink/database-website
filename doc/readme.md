@@ -1,3 +1,12 @@
+<!--
+ * @Author: your name
+ * @Date: 2022-02-17 15:43:34
+ * @LastEditTime: 2022-02-23 15:58:16
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \database-website\doc\readme.md
+-->
+
 // TODO: 为什么下面的代码不能运行成功
 
 ```ts
@@ -52,3 +61,49 @@ watch(formValue, updateData);
 ```
 
 对 `props` 进行拷贝，`assign` 或者 `JSON` 组合拳都行
+
+- 内嵌网页 `iframe` 重定向到原网址的问题
+- 多级组件 `Event`, `Props` 继承问题，即使是父组件只有子组件一个元素
+- Mixin 似乎是兄弟组件逻辑复用的一种方式
+- refs 也是一种组件的传递方式
+- CSS 文件书写顺序 - CSScomb
+
+封装组件的问题
+
+- 继承官方 API，仅进行少量的增强
+- 支持自定义动态具名插槽
+
+# 已完善部分
+
+1. 部门信息表
+2. People 表
+3. 爬虫表（insert 存在 Bug）
+4. 军事新闻表
+5. 政治新闻表
+
+# 未完善部分
+
+1. 父子关系表
+2. 个人经历信息表
+3. 配偶关系表
+4. 政治军事上下级关系表
+5. 用户生理信息表
+6. 职位表 - 基本和 info.vue 一致，在 api 上创建接口然后按照 info.vue 里面写就行了
+
+1-5 的内容与 People 表的内容高度耦合，但是暂不清楚是否需要拆分，先不要动
+
+# 封装带回调函数
+
+注意，`ts` 箭头函数定义泛型的时候，这种情况需要注意
+
+```ts
+const getFilterData = <T>(filterList: T): T => {
+  return filterList;
+};
+```
+
+要在 `T` 后面加上 `T`，否则会报错
+
+参考[6 种方法](https://blog.csdn.net/weixin_45389051/article/details/118250554)
+
+**不应该封装回调函数数组**

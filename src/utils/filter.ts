@@ -1,4 +1,12 @@
-// TODO: 应该考虑泛型数组的问题，并使用 try/catch 判定错误
+export function toArray<T>(data: T[] | []): T[] {
+  const res: T[] = [];
+  if (data instanceof Array) {
+    res.push(...data);
+  } else res.push(data);
+  return res;
+}
+
+// 暂时被废弃
 export const multipleFilter = (filterKey: string, a: any[], ...b: any[]) => {
   let res: any[] = [];
   const allFilterlist = [a, ...b];
@@ -11,6 +19,19 @@ export const multipleFilter = (filterKey: string, a: any[], ...b: any[]) => {
   }
   return res;
 };
+
+export function multipleFilterByKey<T>(filterKey: keyof T, filterlist: T[][]): T[] {
+  let res: T[] = [];
+  for (let i = 0; i < filterlist.length; i++) {
+    if (filterlist[i].length > 0 && res.length > 0) {
+      // TODO: 或许要修改 intersect
+      res = intersect(filterlist[i], res, filterKey as string);
+    } else if (filterlist[i].length > 0 && res.length === 0) {
+      res.push(...filterlist[i]);
+    }
+  }
+  return res;
+}
 
 /**
  * 求交集

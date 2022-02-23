@@ -134,7 +134,7 @@ import {
 } from "@/api/news";
 import { useNewsStore } from "@/store/new";
 import empty from "./empty.vue";
-import { multipleFilter } from "@/utils/filter";
+import { multipleFilter, multipleFilterByKey, toArray } from "@/utils/filter";
 import ContentHeader from "@/components/ContentHeader.vue";
 import { ElMessage } from "element-plus";
 import BaseDialog from "../components/BaseDialog.vue";
@@ -187,34 +187,20 @@ watch(currentPage, (newCurrentPage, oldCurrentPage) => {
 });
 
 const filterChange = async () => {
-  let titleFilterList: News[] = [];
-  let timeFilterList: News[] = [];
-  let detailsFilterList: News[] = [];
-  // 应该定义工具类去简化代码
+  const res: News[][] = [];
   if (filterList.value.title !== "") {
     const { data } = await getMilitaryNewsByTitle(filterList.value.title);
-    if (data instanceof Array) {
-      titleFilterList.push(...data);
-    } else titleFilterList.push(data);
+    res.push(toArray<News>(data));
   }
   if (filterList.value.time !== "") {
     const { data } = await getMilitaryNewsByTime(filterList.value.time);
-    if (data instanceof Array) {
-      timeFilterList.push(...data);
-    } else timeFilterList.push(data);
+    res.push(toArray<News>(data));
   }
   if (filterList.value.details !== "") {
     const { data } = await getMilitaryNewsByDetails(filterList.value.details);
-    if (data instanceof Array) {
-      detailsFilterList.push(...data);
-    } else detailsFilterList.push(data);
+    res.push(toArray<News>(data));
   }
-  list.value = multipleFilter(
-    "title",
-    timeFilterList,
-    titleFilterList,
-    detailsFilterList
-  );
+  list.value = multipleFilterByKey<News>("title", res);
 };
 
 let isDelete = ref(false);

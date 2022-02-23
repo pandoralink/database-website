@@ -9,11 +9,7 @@
       <el-button type="primary" v-if="showIns" :icon="Plus" @click="insert"
         >新增
       </el-button>
-      <el-tooltip
-        class="box-item"
-        effect="light"
-        content="选中删除"
-      >
+      <el-tooltip class="box-item" effect="light" content="选中删除">
         <el-button type="primary" v-if="showDel" :icon="Delete" @click="del"
           >{{ isDelete ? "取消删除" : "删除" }}
         </el-button>
@@ -32,7 +28,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, watch } from "vue";
+import { ref, toRef, toRefs, watch } from "vue";
 import BaseFilter from "./BaseFilter.vue";
 import { Plus, Delete, Edit } from "@element-plus/icons";
 
@@ -40,7 +36,7 @@ interface Props {
   showDel?: boolean;
   showIns?: boolean;
   showUpdate?: boolean;
-  showTextList?: Record<string, unknown>;
+  showTextList: Record<string, unknown>;
 }
 
 const props = withDefaults(defineProps<Props>(), {
