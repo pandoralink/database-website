@@ -114,3 +114,11 @@ export interface Bug {
   switchs: number;
   auther: string;
 }
+
+
+export interface Paternity {
+  Fname: string;
+  Fnumber: string;
+  Cname: string;
+  Cnumber: string;
+}

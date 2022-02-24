@@ -74,6 +74,7 @@
         ><br />
       </template>
     </base-list-item>
+    <!-- TODO: 修改为单文件组件风格 -->
     <empty v-if="list.length === 0" desc="没有数据了"></empty>
   </div>
   <div id="base-pagination">
