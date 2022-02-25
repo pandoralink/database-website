@@ -11,20 +11,21 @@
 
 ```ts
 const confirmDel = () => {
-  let arr = list.value;
-  arr = arr.filter((item) => !item.isDel);
-  isDelete.value = false;
+    let arr = list.value;
+    arr = arr.filter((item) => !item.isDel);
+    isDelete.value = false;
 };
 // 这个能成功
 const confirmDel = () => {
-  list.value = list.value.filter((item) => !item.isDel);
-  isDelete.value = false;
+    list.value = list.value.filter((item) => !item.isDel);
+    isDelete.value = false;
 };
 ```
 
 // NODE: 实现了多组件插槽继承，代码如下
 
 ```html
+
 <template #default>
   <slot></slot>
 </template>
@@ -33,7 +34,7 @@ const confirmDel = () => {
 ```ts
 // 似乎可以反向映射 value 的类型
 interface Test {
-  enumName: keyof typeof Common.Enums; // "Enum1" | "Enum2" | "Enum3"
+    enumName: keyof typeof Common.Enums; // "Enum1" | "Enum2" | "Enum3"
 }
 ```
 
@@ -49,12 +50,12 @@ interface Test {
 
 ```ts
 // 监听响应式 props 的变化
-const { formValue } = toRefs(props);
+const {formValue} = toRefs(props);
 
 let data = ref(props.formValue);
 const updateData = () => {
-  // data.value =  JSON.parse(JSON.stringify(props.formValue));
-  data.value = Object.assign({}, props.formValue);
+    // data.value =  JSON.parse(JSON.stringify(props.formValue));
+    data.value = Object.assign({}, props.formValue);
 };
 
 watch(formValue, updateData);
@@ -98,7 +99,7 @@ watch(formValue, updateData);
 
 ```ts
 const getFilterData = <T>(filterList: T): T => {
-  return filterList;
+    return filterList;
 };
 ```
 
@@ -107,3 +108,49 @@ const getFilterData = <T>(filterList: T): T => {
 参考[6 种方法](https://blog.csdn.net/weixin_45389051/article/details/118250554)
 
 **不应该封装回调函数数组**
+
+TS 函数类型参数可以这么写
+
+```typescript
+export async function confirmInsert<T>(
+    callback: (data: T) => Promise<HttpResponse>
+): Promise<void> {
+}
+```
+
+`TS2345: Argument of type 'UnwrapRef<T>' is not assignable to parameter of type 'T'.   'T' could be instantiated with an arbitrary type which could be unrelated to 'UnwrapRef<T>'.`
+
+```typescript
+export function useInsert<T>(
+    list: Ref<T[]>,
+    callback: (data: T) => Promise<HttpResponse>
+) {
+    // const insertOb = shallowRef<T>({} as T);
+    // const insertOb = ref({}) as Ref<T>;
+    const insertOb = ref<T>({} as T);
+    const isOpen = ref(false);
+    const insert = () => (isOpen.value = true);
+    const cancelInsert = () => (isOpen.value = false);
+
+    async function confirmInsert(): Promise<void> {
+        cancelInsert();
+        // 报错，不知道是为什么
+        const {data} = await callback(insertOb.value);
+        const res = data as Result;
+        if (res.code === 0) {
+            list.value.unshift(insertOb.value);
+            // 展示页面需为 10
+            list.value.pop();
+            ElMessage.success(res.msg);
+        } else ElMessage.error("操作失败，请重试");
+        insertOb.value = {} as T;
+    }
+
+    return {
+        insertOb,
+        insert,
+        cancelInsert,
+        confirmInsert,
+    };
+}
+```

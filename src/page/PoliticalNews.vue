@@ -64,7 +64,7 @@
         <span>{{ item.time }}</span>
       </template>
     </base-list-item>
-    <empty v-if="list.length === 0" desc="没有数据了"></empty>
+    <empty v-if="list.length === 0" desc="没有数据了" />
   </div>
   <div id="base-pagination">
     <el-pagination
@@ -122,13 +122,11 @@
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import BaseFilter from "../components/BaseFilter.vue";
 import BaseListItem from "../components/BaseListItem.vue";
-import { News, Result } from "../model/model";
+import { News } from "../model/model";
 import { FilterNews } from "../model/filter";
 import { useRouter } from "vue-router";
 import { useNewsStore } from "@/store/new";
-import empty from "./empty.vue";
 import {
   deletePoliticalNews,
   getPoliticalNewsByDetails,
@@ -142,6 +140,9 @@ import ContentHeader from "@/components/ContentHeader.vue";
 import { ElMessage } from "element-plus";
 import BaseDialog from "../components/BaseDialog.vue";
 import { NewsType } from "@/types";
+import { Result } from "@/@types/http";
+import { useInsert } from "@/page/pageOption";
+import empty from "./empty.vue";
 
 let list = ref<News[]>([]);
 
@@ -173,6 +174,7 @@ function deleteFilterOption(key: string) {
     getList(currentPage.value);
   }
 }
+
 function toInfoDetail(index: number) {
   const newsStore = useNewsStore();
   newsStore.updateNewsUrl(list.value[index - 1].url);
@@ -252,20 +254,6 @@ const selectDel = (index: number, isDel = false) => {
   }
 };
 // 插入
-let insertOb = ref<News>({} as News);
-const isOpen = ref(false);
-const insert = () => (isOpen.value = true);
-const cancelInsert = () => (isOpen.value = false);
-const confirmInsert = async () => {
-  cancelInsert();
-  const { data } = await insertPoliticalNews(insertOb.value);
-  const res = data as Result;
-  if (res.code === 0) {
-    list.value.unshift(insertOb.value);
-    // 展示页面需为 10
-    list.value.pop();
-    ElMessage.success(res.msg);
-  } else ElMessage.error("操作失败，请重试");
-  insertOb.value = {} as News;
-};
+const { insertOb, isOpen, insert, cancelInsert, confirmInsert } =
+  useInsert<News>(list, insertPoliticalNews);
 </script>

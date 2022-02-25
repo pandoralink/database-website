@@ -92,10 +92,11 @@ import {
 import ContentHeader from "@/components/ContentHeader.vue";
 import BugDialog from "@/components/dialog/BugDialog.vue";
 import { FilterBug } from "@/model/filter";
-import { Bug, Result } from "@/model/model";
+import { Bug } from "@/model/model";
 import { FormMethod } from "@/types";
 import { ElMessage } from "element-plus";
 import { ref, watch } from "vue";
+import { Result } from "@/@types/http";
 
 const list = ref<Bug[]>([]);
 

@@ -76,15 +76,13 @@
 <script lang="ts" setup>
 import { updateDepartment } from "@/api/department";
 import BaseDialog from "@/components/BaseDialog.vue";
-import {
-  DepartmentDataType,
-  Result,
-} from "@/model/model";
+import { DepartmentDataType } from "@/model/model";
 import { useDepartmentStore } from "@/store/department";
 import { ElMessage } from "element-plus";
 import { ref } from "vue";
 import info from "./info.vue";
 import MilitaryEquipment from "./MilitaryEquipment.vue";
+import { Result } from "@/@types/http";
 
 const active = ref<DepartmentDataType>(DepartmentDataType.people);
 

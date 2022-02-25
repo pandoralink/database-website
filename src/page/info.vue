@@ -118,7 +118,7 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import BaseListItem from "../components/BaseListItem.vue";
-import { People, Result } from "../model/model";
+import { People } from "../model/model";
 import { FilterInfo } from "../model/filter";
 import { useRouter } from "vue-router";
 import {
@@ -135,6 +135,7 @@ import { ElMessage } from "element-plus";
 import empty from "./empty.vue";
 import ContentHeader from "@/components/ContentHeader.vue";
 import { multipleFilter, multipleFilterByKey, toArray } from "@/utils/filter";
+import { Result } from "@/@types/http";
 
 // info 作为 DepartDetail 子组件时需暴露 update, 给父组件更新部门信息
 interface Props {

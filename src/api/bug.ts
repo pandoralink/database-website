@@ -1,5 +1,6 @@
 import { Bug } from "@/model/model";
 import axios from "@/utils/axios";
+import { HttpResponse } from "@/@types/http";
 
 // TODO: 只能通过 name 来查询，没有批量返回
 export const getBugList = (num: number) => {
@@ -12,7 +13,7 @@ export const getBugList = (num: number) => {
   });
 };
 
-export const searchBugByAuthor = (auther: string) => {
+export const searchBugByAuthor = (auther: string): Promise<HttpResponse> => {
   return axios({
     url: "/Reptile/auther",
     method: "get",

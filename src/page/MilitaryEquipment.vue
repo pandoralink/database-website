@@ -136,13 +136,14 @@ import { useMilitaryEquipmentStore } from "@/store/militaryEquipment";
 import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import BaseListItem from "../components/BaseListItem.vue";
-import { MilitaryEquipment, Result } from "../model/model";
+import { MilitaryEquipment } from "../model/model";
 import BaseDialog from "../components/BaseDialog.vue";
 import { ElMessage } from "element-plus";
 import empty from "./empty.vue";
 import ContentHeader from "@/components/ContentHeader.vue";
 import { FilterEquipment } from "@/model/filter";
 import { multipleFilter } from "@/utils/filter";
+import { Result } from "@/@types/http";
 
 interface Props {
   showUpdate?: boolean;

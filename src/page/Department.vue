@@ -134,7 +134,7 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import BaseListItem from "../components/BaseListItem.vue";
-import { Department, Result } from "../model/model";
+import { Department } from "../model/model";
 import { FilterDepartment } from "../model/filter";
 import { useRouter } from "vue-router";
 import {
@@ -152,6 +152,7 @@ import ContentHeader from "@/components/ContentHeader.vue";
 import BaseDialog from "../components/BaseDialog.vue";
 import empty from "./empty.vue";
 import { useDepartmentStore } from "@/store/department";
+import { Result } from "@/@types/http";
 
 let list = ref<Department[]>([]);
 

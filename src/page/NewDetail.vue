@@ -51,7 +51,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { News, Result } from "../model/model";
+import { News } from "../model/model";
 import { FilterNews } from "../model/filter";
 import { useNewsStore } from "@/store/new";
 import ContentHeader from "@/components/ContentHeader.vue";
@@ -59,6 +59,7 @@ import { updateMilitaryNews, updatePoliticalNews } from "@/api/news";
 import { NewsType } from "@/types";
 import { ElMessage } from "element-plus";
 import NewsDialog from "@/components/NewsDialog.vue";
+import { Result } from "@/@types/http";
 
 const filterOptions: string[] = ["姓名", "时间"];
 const filterList = ref<FilterNews>({

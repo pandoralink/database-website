@@ -88,7 +88,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { MilitaryEquipment, Result } from "../model/model";
+import { MilitaryEquipment } from "../model/model";
 import { FilterEquipment } from "../model/filter";
 import BaseListItem from "../components/BaseListItem.vue";
 import { useMilitaryEquipmentStore } from "@/store/militaryEquipment";
@@ -96,6 +96,7 @@ import { updateMilitaryEquipment } from "@/api/militaryEquipment";
 import { ElMessage } from "element-plus";
 import ContentHeader from "@/components/ContentHeader.vue";
 import BaseDialog from "@/components/BaseDialog.vue";
+import { Result } from "@/@types/http";
 
 const list: MilitaryEquipment[] = [];
 

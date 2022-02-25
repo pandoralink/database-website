@@ -81,12 +81,6 @@ export interface News extends BaseItem {
   author: string;
 }
 
-export interface Result {
-  code: number;
-  msg: string;
-  data?: any;
-}
-
 export interface UserInfo {
   name: string;
   password: string;
@@ -114,7 +108,6 @@ export interface Bug {
   switchs: number;
   auther: string;
 }
-
 
 export interface Paternity {
   Fname: string;
