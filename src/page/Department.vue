@@ -134,8 +134,8 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import BaseListItem from "../components/BaseListItem.vue";
-import { Department } from "../model/model";
-import { FilterDepartment } from "../model/filter";
+import { Department } from "@/model/model";
+import { FilterDepartment } from "@/model/filter";
 import { useRouter } from "vue-router";
 import {
   deleteDepartment,
@@ -147,14 +147,11 @@ import {
   insertDepartment,
 } from "@/api/department";
 import { multipleFilter } from "@/utils/filter";
-import { ElMessage } from "element-plus";
 import ContentHeader from "@/components/ContentHeader.vue";
 import BaseDialog from "../components/BaseDialog.vue";
 import empty from "./empty.vue";
 import { useDepartmentStore } from "@/store/department";
-import { Result } from "@/@types/http";
 import { useInsert } from "@/mixins/insert";
-import { deletePeople, insertPeople } from "@/api/people";
 import { useDelete } from "@/mixins/delete";
 
 let list = ref<Department[]>([]);

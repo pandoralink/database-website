@@ -115,3 +115,45 @@ export interface Paternity {
   Cname: string;
   Cnumber: string;
 }
+
+export interface Experiences {
+  eventDetails: string;
+  name: string;
+  number: string;
+  time: string;
+  title: string;
+  url: string;
+}
+
+export interface Spouse {
+  Mname: string;
+  MIDnumber: string;
+  Wname: string;
+  WIDnumber: string;
+}
+
+export interface Physiological {
+  age: number;
+  bloodType: string;
+  gender: string;
+  health: string;
+  name: string;
+  number: string;
+  skinColour: string;
+}
+
+export interface Hierarchy {
+  superIDnumber: string;
+  subordName: string;
+  supername: string;
+  subordIDnumber: string;
+}
+
+export interface Employment {
+  name: string;
+  number: string;
+  employPlace: string;
+  employName: string;
+  positionNumber: string;
+  dpNUmber: string;
+}
