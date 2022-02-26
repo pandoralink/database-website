@@ -49,7 +49,7 @@
       </div>
     </template>
   </content-header>
-  <slot name="header-tag"> </slot>
+  <slot name="header-tag"></slot>
   <div class="base-content">
     <base-list-item
       :class="{ delete: item.isDel }"
@@ -136,14 +136,14 @@ import { useMilitaryEquipmentStore } from "@/store/militaryEquipment";
 import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import BaseListItem from "../components/BaseListItem.vue";
-import { MilitaryEquipment } from "../model/model";
+import { MilitaryEquipment } from "@/model/model";
 import BaseDialog from "../components/BaseDialog.vue";
-import { ElMessage } from "element-plus";
 import empty from "./empty.vue";
 import ContentHeader from "@/components/ContentHeader.vue";
 import { FilterEquipment } from "@/model/filter";
 import { multipleFilter } from "@/utils/filter";
-import { Result } from "@/@types/http";
+import { useInsert } from "@/mixins/insert";
+import { useDelete } from "@/mixins/delete";
 
 interface Props {
   showUpdate?: boolean;
@@ -198,6 +198,7 @@ function deleteFilterOption(key: string) {
     getList(currentPage.value);
   }
 }
+
 function toInfoDetail(index: number) {
   const militaryEquipmentStore = useMilitaryEquipmentStore();
   militaryEquipmentStore.updateMilitaryEquipment(list.value[index - 1]);
@@ -260,50 +261,13 @@ const filterChange = async () => {
   );
 };
 
-let isDelete = ref(false);
-const del = (value: boolean) => {
-  isDelete.value = value;
-};
-const cancelDel = () => {
-  const arr = list.value;
-  for (let i = 0; i < arr.length; i++) {
-    arr[i].isDel = false;
-  }
-};
-const confirmDel = async () => {
-  list.value.forEach(async (item) => {
-    if (item.isDel) {
-      const { data } = await deleteMilitaryEquipment(item.number);
-      const res = data as Result;
-      if (res.code !== 0) {
-        item.isDel = false;
-        ElMessage.error("操作失败，请重试");
-      }
-    }
-  });
-  list.value = list.value.filter((item) => !item.isDel);
-};
-const selectDel = (index: number, isDel = false) => {
-  if (isDelete.value) {
-    // <base-list-item> emit 的 index 以 1 为起点
-    list.value[index - 1].isDel = !isDel;
-  }
-};
-// 插入
-let insertOb = ref<MilitaryEquipment>({} as MilitaryEquipment);
-const isOpen = ref(false);
-const insert = () => (isOpen.value = true);
-const cancelInsert = () => (isOpen.value = false);
-const confirmInsert = async () => {
-  cancelInsert();
-  const { data } = await insertMilitaryEquipment(insertOb.value);
-  const res = data as Result;
-  if (res.code === 0) {
-    list.value.unshift(insertOb.value);
-    // 展示页面需为 10
-    list.value.pop();
-    ElMessage.success(res.msg);
-  } else ElMessage.error("操作失败，请重试");
-  insertOb.value = {} as MilitaryEquipment;
-};
+const { del, cancelDel, confirmDel, selectDel } = useDelete(
+  list,
+  deleteMilitaryEquipment,
+  "number"
+);
+const { insertOb, isOpen, insert, cancelInsert, confirmInsert } = useInsert(
+  list,
+  insertMilitaryEquipment
+);
 </script>

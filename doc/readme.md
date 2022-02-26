@@ -154,3 +154,48 @@ export function useInsert<T>(
     };
 }
 ```
+
+typescript 能够自动推导泛型，比如下面这个
+
+```typescript
+function useDelete<T extends BaseItem, K extends keyof T>(
+    list: Ref<T[]>,
+    callback: (key: K) => Promise<HttpResponse>,
+    key: K
+) {
+}
+
+// 两种等价的写法
+useDelete<News, keyof News>(list, deleteMilitaryNews, "url");
+// 这种更简洁，而且可以能够自动推导类型
+useDelete(list, deleteMilitaryNews, "url");
+```
+
+使用 `ts` 时要注意 `API` 参数的设定，因为一旦设定好参数名称，将成为一个**模板**，这个时候抽调逻辑的时候可能无法会很困难，比如
+
+```typescript
+// 我的 delete API 回调的参数都是不一样的
+// 因为每个删除依靠的键是不一样的
+export const deleteMilitaryNews = (url: string) => {
+    return axios({
+        url: "/MilitaryNews/delete",
+        method: "delete",
+        params: {
+            url,
+        },
+    });
+};
+
+// 但在后期抽调函数时，因为不同的 API 不同键，删除逻辑的回调 API 参数反而不会写了
+export function useDelete<T extends BaseItem, K extends keyof T>(
+    list: Ref<T[]>,
+    // callback 怎么变成动态的呢？
+    callback: (key: T[K]) => Promise<HttpResponse>,
+    key: K
+) {
+}
+
+// 但最后的解决方案略显粗糙，解决方案如下
+// 照常调用，即使 `deleteMilitaryNews` 和 `callback` 的参数名称不一致，但是只要位置对上了，就能够成功调用
+const { data } = await callback(item[key]);
+```

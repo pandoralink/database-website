@@ -118,8 +118,8 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import BaseListItem from "../components/BaseListItem.vue";
-import { People } from "../model/model";
-import { FilterInfo } from "../model/filter";
+import { People } from "@/model/model";
+import { FilterInfo } from "@/model/filter";
 import { useRouter } from "vue-router";
 import {
   getPeopleList,
@@ -129,13 +129,13 @@ import {
   deletePeople,
 } from "@/api/people";
 import { usePeopleStore } from "@/store/people";
-import { initIsDel } from "../utils/init";
+import { initIsDel } from "@/utils/init";
 import BaseDialog from "../components/BaseDialog.vue";
-import { ElMessage } from "element-plus";
 import empty from "./empty.vue";
 import ContentHeader from "@/components/ContentHeader.vue";
-import { multipleFilter, multipleFilterByKey, toArray } from "@/utils/filter";
-import { Result } from "@/@types/http";
+import { multipleFilterByKey, toArray } from "@/utils/filter";
+import { useInsert } from "@/mixins/insert";
+import { useDelete } from "@/mixins/delete";
 
 // info 作为 DepartDetail 子组件时需暴露 update, 给父组件更新部门信息
 interface Props {
@@ -209,56 +209,13 @@ const filterChange = async () => {
   list.value = multipleFilterByKey<People>("name", res);
 };
 
-// 操作
-// 删除
-/**
- * isDelete 是列表项删除状态，父组件依赖其维护是否具有选中状态
- * 值需要和子组件保持一致
- */
-let isDelete = ref(false);
-const del = (value: boolean) => {
-  isDelete.value = value;
-};
-const cancelDel = () => {
-  const arr = list.value;
-  for (let i = 0; i < arr.length; i++) {
-    arr[i].isDel = false;
-  }
-};
-const confirmDel = async () => {
-  list.value.forEach(async (item) => {
-    if (item.isDel) {
-      const { data } = await deletePeople(item.number);
-      const res = data as Result;
-      if (res.code !== 0) {
-        item.isDel = false;
-        ElMessage.error("操作失败，请重试");
-      }
-    }
-  });
-  list.value = list.value.filter((item) => !item.isDel);
-};
-const selectDel = (index: number, isDel = false) => {
-  if (isDelete.value) {
-    // <base-list-item> emit 的 index 以 1 为起点
-    list.value[index - 1].isDel = !isDel;
-  }
-};
-// 插入
-let insertOb = ref<People>({} as People);
-const isOpen = ref(false);
-const insert = () => (isOpen.value = true);
-const cancelInsert = () => (isOpen.value = false);
-const confirmInsert = async () => {
-  cancelInsert();
-  const { data } = await insertPeople(insertOb.value);
-  const res = data as Result;
-  if (res.code === 0) {
-    list.value.unshift(insertOb.value);
-    // 展示页面需为 10
-    list.value.pop();
-    ElMessage.success(res.msg);
-  } else ElMessage.error("操作失败，请重试");
-  insertOb.value = {} as People;
-};
+const { del, selectDel, confirmDel, cancelDel } = useDelete(
+  list,
+  deletePeople,
+  "number"
+);
+const { insertOb, isOpen, cancelInsert, confirmInsert, insert } = useInsert(
+  list,
+  insertPeople
+);
 </script>

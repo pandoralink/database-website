@@ -123,8 +123,8 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import BaseListItem from "../components/BaseListItem.vue";
-import { News } from "../model/model";
-import { FilterNews } from "../model/filter";
+import { News } from "@/model/model";
+import { FilterNews } from "@/model/filter";
 import { useRouter } from "vue-router";
 import { useNewsStore } from "@/store/new";
 import {
@@ -137,12 +137,11 @@ import {
 } from "@/api/news";
 import { multipleFilter } from "@/utils/filter";
 import ContentHeader from "@/components/ContentHeader.vue";
-import { ElMessage } from "element-plus";
 import BaseDialog from "../components/BaseDialog.vue";
 import { NewsType } from "@/types";
-import { Result } from "@/@types/http";
-import { useInsert } from "@/page/pageOption";
+import { useInsert } from "@/mixins/insert";
 import empty from "./empty.vue";
+import { useDelete } from "@/mixins/delete";
 
 let list = ref<News[]>([]);
 
@@ -224,35 +223,11 @@ const filterChange = async () => {
   );
 };
 
-let isDelete = ref(false);
-const del = (value: boolean) => {
-  isDelete.value = value;
-};
-const cancelDel = () => {
-  const arr = list.value;
-  for (let i = 0; i < arr.length; i++) {
-    arr[i].isDel = false;
-  }
-};
-const confirmDel = async () => {
-  list.value.forEach(async (item) => {
-    if (item.isDel) {
-      const { data } = await deletePoliticalNews(item.url);
-      const res = data as Result;
-      if (res.code !== 0) {
-        item.isDel = false;
-        ElMessage.error("操作失败，请重试");
-      }
-    }
-  });
-  list.value = list.value.filter((item) => !item.isDel);
-};
-const selectDel = (index: number, isDel = false) => {
-  if (isDelete.value) {
-    // <base-list-item> emit 的 index 以 1 为起点
-    list.value[index - 1].isDel = !isDel;
-  }
-};
+const { del, cancelDel, confirmDel, selectDel } = useDelete(
+  list,
+  deletePoliticalNews,
+  "url"
+);
 // 插入
 const { insertOb, isOpen, insert, cancelInsert, confirmInsert } =
   useInsert<News>(list, insertPoliticalNews);

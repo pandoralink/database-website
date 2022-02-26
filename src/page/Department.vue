@@ -153,6 +153,9 @@ import BaseDialog from "../components/BaseDialog.vue";
 import empty from "./empty.vue";
 import { useDepartmentStore } from "@/store/department";
 import { Result } from "@/@types/http";
+import { useInsert } from "@/mixins/insert";
+import { deletePeople, insertPeople } from "@/api/people";
+import { useDelete } from "@/mixins/delete";
 
 let list = ref<Department[]>([]);
 
@@ -187,6 +190,7 @@ function deleteFilterOption(key: string) {
     getList(currentPage.value);
   }
 }
+
 function toDetail(index: number) {
   const departmentStore = useDepartmentStore();
   departmentStore.updateDepartment(list.value[index - 1]);
@@ -243,51 +247,13 @@ const filterChange = async () => {
   );
 };
 
-// XXX: del/insert 逻辑高度一致，或许可以进行再次封装
-let isDelete = ref(false);
-const del = (value: boolean) => {
-  isDelete.value = value;
-};
-const cancelDel = () => {
-  const arr = list.value;
-  for (let i = 0; i < arr.length; i++) {
-    arr[i].isDel = false;
-  }
-};
-const confirmDel = async () => {
-  list.value.forEach(async (item) => {
-    if (item.isDel) {
-      const { data } = await deleteDepartment(item.number);
-      const res = data as Result;
-      if (res.code !== 0) {
-        item.isDel = false;
-        ElMessage.error("操作失败，请重试");
-      }
-    }
-  });
-  list.value = list.value.filter((item) => !item.isDel);
-};
-const selectDel = (index: number, isDel = false) => {
-  if (isDelete.value) {
-    // <base-list-item> emit 的 index 以 1 为起点
-    list.value[index - 1].isDel = !isDel;
-  }
-};
-// 插入
-let insertOb = ref<Department>({} as Department);
-const isOpen = ref(false);
-const insert = () => (isOpen.value = true);
-const cancelInsert = () => (isOpen.value = false);
-const confirmInsert = async () => {
-  cancelInsert();
-  const { data } = await insertDepartment(insertOb.value);
-  const res = data as Result;
-  if (res.code === 0) {
-    list.value.unshift(insertOb.value);
-    // 展示页面需为 10
-    list.value.pop();
-    ElMessage.success(res.msg);
-  } else ElMessage.error("操作失败，请重试");
-  insertOb.value = {} as Department;
-};
+const { del, selectDel, confirmDel, cancelDel } = useDelete(
+  list,
+  deleteDepartment,
+  "number"
+);
+const { insertOb, isOpen, cancelInsert, confirmInsert, insert } = useInsert(
+  list,
+  insertDepartment
+);
 </script>

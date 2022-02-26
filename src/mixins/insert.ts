@@ -2,6 +2,11 @@ import { ElMessage } from "element-plus";
 import { Ref, ref } from "vue";
 import { HttpResponse, Result } from "@/@types/http";
 
+/**
+ * 插入逻辑的 hooks
+ * @param list: 待删除列表
+ * @param callback: 插入回调 API
+ */
 export function useInsert<T>(
   list: Ref<T[]>,
   callback: (data: T) => Promise<HttpResponse>
@@ -19,7 +24,9 @@ export function useInsert<T>(
     if (res.code === 0) {
       list.value.unshift(insertOb.value);
       // 展示页面需为 10
-      list.value.pop();
+      if (list.value.length > 10) {
+        list.value.pop();
+      }
       ElMessage.success(res.msg);
     } else ElMessage.error("操作失败，请重试");
     insertOb.value = {} as T;
