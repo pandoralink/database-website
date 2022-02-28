@@ -1,4 +1,7 @@
-export function toArray<T>(data: T[] | []): T[] {
+import { ValueAlias } from "@/model/filter";
+import { HttpResponse } from "@/@types/http";
+
+export function toArray<T>(data: T[] | T): T[] {
   const res: T[] = [];
   if (data instanceof Array) {
     res.push(...data);
@@ -20,7 +23,10 @@ export const multipleFilter = (filterKey: string, a: any[], ...b: any[]) => {
   return res;
 };
 
-export function multipleFilterByKey<T>(filterKey: keyof T, filterlist: T[][]): T[] {
+export function multipleFilterByKey<T>(
+  filterKey: keyof T,
+  filterlist: T[][]
+): T[] {
   let res: T[] = [];
   for (let i = 0; i < filterlist.length; i++) {
     if (filterlist[i].length > 0 && res.length > 0) {
@@ -55,3 +61,50 @@ export const intersect = (
   });
   return res;
 };
+
+/**
+ * 是否所有的筛选条件都为空
+ * @param filterList: 筛选条件
+ */
+export function isEmpty<T extends Record<string, ValueAlias>>(filterList: T) {
+  let key: keyof T;
+  let isEmpty = true;
+  for (key in filterList) {
+    const item: ValueAlias = filterList[key];
+    isEmpty = isEmpty && !item.value;
+  }
+  return isEmpty;
+}
+
+/**
+ * 筛选工具函数
+ * @param filterList
+ * @param callback
+ * @param num
+ * @param callbackByKey
+ * @param filterKey
+ */
+async function filterChange<T extends Record<string, ValueAlias>, K>(
+  filterList: T,
+  callback: (num: number) => Promise<HttpResponse>,
+  num: number,
+  callbackByKey: Record<keyof T, (key: string) => Promise<HttpResponse>>,
+  filterKey: keyof K
+) {
+  if (isEmpty(filterList)) {
+    callback(num);
+  } else {
+    const res: K[][] = [];
+    let key: keyof T;
+    for (key in filterList) {
+      // XXX: 空值其实不只 ""
+      if (filterList[key].value !== "") {
+        const { data } = await callbackByKey[key](
+          filterList.name.value as string
+        );
+        res.push(toArray<K>(data as K | K[]));
+      }
+    }
+    return multipleFilterByKey<K>(filterKey, res);
+  }
+}

@@ -1,8 +1,9 @@
 <template>
   <content-header
     :show-text-list="filterList"
+    default-filter-option="author"
+    @change="filterChange"
     :show-del="false"
-    @option-delete="deleteFilterOption"
     @insert="insert"
   >
     <template #default>
@@ -34,6 +35,7 @@
       <el-table-column prop="rule" label="规则"></el-table-column>
       <el-table-column prop="auther" label="作者"></el-table-column>
       <el-table-column prop="switchs" label="状态" width="100" #default="scope">
+        <!--FIXME: element 会警告，说没有有效子元素 --->
         <el-tooltip
           class="box-item"
           effect="light"
@@ -43,21 +45,21 @@
             @click="changeBugState(scope.$index)"
             :type="!list[scope.$index].switchs ? 'info' : 'success'"
             round
-            >{{ !list[scope.$index].switchs ? "暂停" : "运行" }}</el-button
-          >
+            >{{ !list[scope.$index].switchs ? "暂停" : "运行" }}
+          </el-button>
         </el-tooltip>
       </el-table-column>
       <el-table-column label="操作">
         <template #default="scope">
           <el-button type="primary" round @click="update(scope.$index)"
-            >更新</el-button
-          >
+            >更新
+          </el-button>
           <el-button
             type="danger"
             round
             @click="del(list[scope.$index], scope.$index)"
-            >删除</el-button
-          >
+            >删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -92,29 +94,18 @@ import {
 import ContentHeader from "@/components/ContentHeader.vue";
 import BugDialog from "@/components/dialog/BugDialog.vue";
 import { FilterBug } from "@/model/filter";
-import { Bug } from "@/model/model";
+import { Bug, MilitaryEquipment } from "@/model/model";
 import { FormMethod } from "@/types";
 import { ElMessage } from "element-plus";
 import { ref, watch } from "vue";
 import { Result } from "@/@types/http";
+import { isEmpty, toArray } from "@/utils/filter";
 
 const list = ref<Bug[]>([]);
 
-const filterOptions: string[] = ["作者名称"];
 const filterList = ref<FilterBug>({
-  author: "",
+  author: { value: "", alias: "作者名称" },
 });
-let activeFilterOption = ref(0);
-
-function deleteFilterOption(key: string) {
-  if (key === "author") {
-    filterList.value.author = "";
-  }
-  filterChange();
-  if (!filterList.value.author) {
-    getList(currentPage.value);
-  }
-}
 
 const currentPage = ref(1);
 const getList = async (num = 1) => {
@@ -127,15 +118,19 @@ watch(currentPage, (newCurrentPage, oldCurrentPage) => {
   getList(newCurrentPage);
 });
 
-const filterChange = async () => {
-  let bugFilterList: Bug[] = [];
-  if (filterList.value.author !== "") {
-    const { data } = await searchBugByAuthor(filterList.value.author);
-    if (data instanceof Array) {
-      bugFilterList.push(...data);
-    } else bugFilterList.push(data);
+const filterChange = async (filterList: FilterBug) => {
+  if (isEmpty(filterList)) {
+    getList(currentPage.value);
+  } else {
+    let res: Bug[] = [];
+    if (filterList.author.value !== "") {
+      const { data } = await searchBugByAuthor(
+        filterList.author.value as string
+      );
+      res = toArray<Bug>(data as Bug | Bug[]);
+    }
+    list.value = res;
   }
-  list.value = bugFilterList;
 };
 
 const changeBugState = (index: number) => {

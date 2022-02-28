@@ -39,6 +39,7 @@ export const getPeopleByName = (name: string) => {
   });
 };
 
+// TODO: 输入错误的 number 会出现奇怪的错误，比如 1002
 export const getPeopleById = (number: string) => {
   return axios({
     url: "/people/get",

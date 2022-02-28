@@ -1,9 +1,10 @@
 <template>
   <div class="content-head">
-    <base-filter :show-text-list="showTextList" @delete="optionDelete">
-      <template #default>
-        <slot></slot>
-      </template>
+    <base-filter
+      :show-text-list="showTextList"
+      :default-filter-option="defaultFilterOption"
+      @change="change"
+    >
     </base-filter>
     <div class="header-option">
       <el-button type="primary" v-if="showIns" :icon="Plus" @click="insert"
@@ -31,12 +32,15 @@
 import { ref, toRef, toRefs, watch } from "vue";
 import BaseFilter from "./BaseFilter.vue";
 import { Plus, Delete, Edit } from "@element-plus/icons";
+import { ValueAlias } from "@/model/filter";
 
+// TODO: defaultFilterOption 应该为 keyof showTextList
 interface Props {
   showDel?: boolean;
   showIns?: boolean;
   showUpdate?: boolean;
-  showTextList: Record<string, unknown>;
+  showTextList: Record<string, ValueAlias>;
+  defaultFilterOption: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -49,17 +53,13 @@ const props = withDefaults(defineProps<Props>(), {
  * onIsDelete: 当组件内部`删除`按钮标志位发生改变时
  */
 const emits = defineEmits<{
-  (e: "optionDelete", key: string): void;
+  (e: "change", filterOption: Record<string, ValueAlias>): void;
   (e: "cancelDel"): void;
   (e: "insert"): void;
   (e: "update"): void;
   (e: "confirmDel"): void;
   (e: "onIsDelete", value: boolean): void;
 }>();
-
-const optionDelete = (key: string) => {
-  emits("optionDelete", key);
-};
 
 let isDelete = ref(false);
 const del = () => {
@@ -80,6 +80,10 @@ const insert = () => {
 };
 const update = () => {
   emits("update");
+};
+// 筛选
+const change = (filterOption: Record<string, ValueAlias>) => {
+  emits("change", filterOption);
 };
 
 watch(isDelete, (newIsDelete, oldIsDelete) => {

@@ -1,7 +1,8 @@
 <template>
   <content-header
     :show-text-list="filterList"
-    @option-delete="deleteFilterOption"
+    default-filter-option="name"
+    @change="filterChange"
     @insert="insert"
     @cancel-del="cancelDel"
     @confirm-del="confirmDel"
@@ -9,33 +10,6 @@
     :show-update="showUpdate"
     @update="update"
   >
-    <template #default>
-      <div class="filter-content">
-        <el-button
-          class="filter-content-button"
-          v-for="(item, index) in filterOptions"
-          :key="item"
-          @click="activeFilterOption = index"
-          :class="{ active: activeFilterOption === index }"
-        >
-          {{ item }}
-        </el-button>
-      </div>
-      <div class="filter-content" style="margin-top: 10px">
-        <el-input
-          v-model="filterList.name"
-          placeholder="姓名"
-          v-if="activeFilterOption === 0"
-          @change="filterChange"
-        ></el-input>
-        <el-input
-          v-model="filterList.id"
-          placeholder="身份证"
-          v-if="activeFilterOption === 1"
-          @change="filterChange"
-        ></el-input>
-      </div>
-    </template>
   </content-header>
   <slot name="header-tag"></slot>
   <div class="base-content">
@@ -133,7 +107,7 @@ import { initIsDel } from "@/utils/init";
 import BaseDialog from "../components/BaseDialog.vue";
 import empty from "./empty.vue";
 import ContentHeader from "@/components/ContentHeader.vue";
-import { multipleFilterByKey, toArray } from "@/utils/filter";
+import { multipleFilterByKey, toArray, isEmpty } from "@/utils/filter";
 import { useInsert } from "@/mixins/insert";
 import { useDelete } from "@/mixins/delete";
 
@@ -158,25 +132,10 @@ const router = useRouter();
 
 let list = ref<People[]>([]);
 
-const filterOptions: string[] = ["姓名", "身份证"];
 const filterList = ref<FilterInfo>({
-  name: "",
-  id: "",
+  name: { value: "", alias: "姓名" },
+  id: { value: "", alias: "身份证" },
 });
-let activeFilterOption = ref(0);
-
-function deleteFilterOption(key: string) {
-  if (key === "name") {
-    filterList.value.name = "";
-    filterChange();
-  } else if (key === "id") {
-    filterList.value.id = "";
-    filterChange();
-  }
-  if (!filterList.value.name && !filterList.value.id) {
-    getList(currentPage.value);
-  }
-}
 
 function toInfoDetail(index: number) {
   const peopleStore = usePeopleStore();
@@ -196,17 +155,21 @@ watch(currentPage, (newCurrentPage, oldCurrentPage) => {
   getList(newCurrentPage);
 });
 
-const filterChange = async () => {
-  let res: People[][] = [];
-  if (filterList.value.name !== "") {
-    const { data } = await getPeopleByName(filterList.value.name);
-    res.push(toArray<People>(data));
+const filterChange = async (filterList: FilterInfo) => {
+  if (isEmpty(filterList)) {
+    getList(currentPage.value);
+  } else {
+    const res: People[][] = [];
+    if (filterList.name.value !== "") {
+      const { data } = await getPeopleByName(filterList.name.value as string);
+      res.push(toArray<People>(data));
+    }
+    if (filterList.id.value !== "") {
+      const { data } = await getPeopleById(filterList.id.value as string);
+      res.push(toArray<People>(data));
+    }
+    list.value = multipleFilterByKey<People>("name", res);
   }
-  if (filterList.value.id !== "") {
-    const { data } = await getPeopleById(filterList.value.id);
-    res.push(toArray<People>(data));
-  }
-  list.value = multipleFilterByKey<People>("name", res);
 };
 
 const { del, selectDel, confirmDel, cancelDel } = useDelete(

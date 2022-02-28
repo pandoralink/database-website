@@ -1,14 +1,14 @@
 /**
  * 筛选部分的实体
  */
- export interface FilterBug {
-  author: string;
+export interface FilterBug extends Record<string, ValueAlias> {
+  author: ValueAlias;
 }
 
-export interface FilterNews {
-  time: string;
-  title: string;
-  details: string;
+export interface FilterNews extends Record<string, ValueAlias> {
+  time: ValueAlias;
+  title: ValueAlias;
+  details: ValueAlias;
 }
 
 export interface FilterNew {
@@ -16,21 +16,27 @@ export interface FilterNew {
   time: string;
 }
 
-export interface FilterDepartment {
-  number: string;
-  name: string;
-  position: string;
-  address: string;
+export interface FilterDepartment extends Record<string, ValueAlias> {
+  number: ValueAlias;
+  name: ValueAlias;
+  position: ValueAlias;
+  address: ValueAlias;
 }
 
-export interface FilterInfo {
-  name: string;
-  id: string;
+export interface FilterInfo extends Record<string, ValueAlias> {
+  name: ValueAlias;
+  id: ValueAlias;
 }
 
-export interface FilterEquipment {
-  number: string;
-  DpNumber: string;
-  name: string;
-  location: string;
+export interface FilterEquipment extends Record<string, ValueAlias> {
+  number: ValueAlias;
+  DpNumber: ValueAlias;
+  name: ValueAlias;
+  location: ValueAlias;
+}
+
+// 筛选对象的键值和别名
+export interface ValueAlias {
+  value: string | number | boolean;
+  alias: string;
 }

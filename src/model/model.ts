@@ -157,3 +157,13 @@ export interface Employment {
   positionNumber: string;
   dpNUmber: string;
 }
+
+/**
+ * 比如：姓名 -> name
+ * name: 对象属性的中文名称
+ * key: 对象的属性
+ */
+export interface KeyAlias {
+  alias: string;
+  [key: string]: string | number;
+}

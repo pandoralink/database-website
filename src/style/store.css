@@ -336,6 +336,7 @@ body {
 .base-filter-button {
   display: flex;
   cursor: pointer;
+  align-items: center;
 }
 
 .base-content {

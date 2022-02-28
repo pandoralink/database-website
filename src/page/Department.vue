@@ -1,52 +1,13 @@
 <template>
   <content-header
     :show-text-list="filterList"
-    @option-delete="deleteFilterOption"
+    default-filter-option="position"
+    @change="filterChange"
     @insert="insert"
     @cancel-del="cancelDel"
     @confirm-del="confirmDel"
     @on-is-delete="del"
   >
-    <template #default>
-      <div class="filter-content">
-        <el-button
-          class="filter-content-button"
-          v-for="(item, index) in filterOptions"
-          :key="item"
-          @click="activeFilterOption = index"
-          :class="{ active: activeFilterOption === index }"
-        >
-          {{ item }}
-        </el-button>
-      </div>
-      <div class="filter-content" style="margin-top: 10px">
-        <!-- 没有选择和 button 一起循环是为了方便扩展 -->
-        <el-input
-          v-model="filterList.position"
-          placeholder="职位"
-          v-if="activeFilterOption === 0"
-          @change="filterChange"
-        ></el-input>
-        <el-input
-          v-model="filterList.number"
-          placeholder="编号"
-          v-if="activeFilterOption === 1"
-          @change="filterChange"
-        ></el-input>
-        <el-input
-          v-model="filterList.name"
-          placeholder="名称"
-          v-if="activeFilterOption === 2"
-          @change="filterChange"
-        ></el-input>
-        <el-input
-          v-model="filterList.address"
-          placeholder="地点"
-          v-if="activeFilterOption === 3"
-          @change="filterChange"
-        ></el-input>
-      </div>
-    </template>
   </content-header>
   <div class="base-content">
     <base-list-item
@@ -146,7 +107,7 @@ import {
   getDepartmentList,
   insertDepartment,
 } from "@/api/department";
-import { multipleFilter } from "@/utils/filter";
+import { isEmpty, multipleFilterByKey, toArray } from "@/utils/filter";
 import ContentHeader from "@/components/ContentHeader.vue";
 import BaseDialog from "../components/BaseDialog.vue";
 import empty from "./empty.vue";
@@ -156,37 +117,13 @@ import { useDelete } from "@/mixins/delete";
 
 let list = ref<Department[]>([]);
 
-const filterOptions: string[] = ["职位", "编号", "名称", "地点"];
 const filterList = ref<FilterDepartment>({
-  number: "",
-  name: "",
-  address: "",
-  position: "",
+  number: { value: "", alias: "编号" },
+  name: { value: "", alias: "名称" },
+  address: { value: "", alias: "地点" },
+  position: { value: "", alias: "职位" },
 });
-let activeFilterOption = ref(0);
 const router = useRouter();
-
-function deleteFilterOption(key: string) {
-  // 不知道为什么无法使用 [index] 的方式访问 ref 对象属性
-  if (key === "name") {
-    filterList.value.name = "";
-  } else if (key === "position") {
-    filterList.value.position = "";
-  } else if (key === "address") {
-    filterList.value.address = "";
-  } else if (key === "number") {
-    filterList.value.number = "";
-  }
-  filterChange();
-  if (
-    !filterList.value.name &&
-    !filterList.value.number &&
-    !filterList.value.address &&
-    !filterList.value.position
-  ) {
-    getList(currentPage.value);
-  }
-}
 
 function toDetail(index: number) {
   const departmentStore = useDepartmentStore();
@@ -205,43 +142,37 @@ watch(currentPage, (newCurrentPage, oldCurrentPage) => {
   getList(newCurrentPage);
 });
 
-const filterChange = async () => {
-  let numberFilterList: Department[] = [];
-  let nameFilterList: Department[] = [];
-  let addressFilterList: Department[] = [];
-  let positionFilterList: Department[] = [];
-  // TODO: 定义工具类去简化代码
-  if (filterList.value.number !== "") {
-    const { data } = await getDepartmentByNumber(filterList.value.number);
-    if (data instanceof Array) {
-      numberFilterList.push(...data);
-    } else numberFilterList.push(data);
+const filterChange = async (filterList: FilterDepartment) => {
+  if (isEmpty(filterList)) {
+    getList(currentPage.value);
+  } else {
+    const res: Department[][] = [];
+    if (filterList.number.value !== "") {
+      const { data } = await getDepartmentByNumber(
+        filterList.number.value as string
+      );
+      res.push(toArray<Department>(data));
+    }
+    if (filterList.name.value !== "") {
+      const { data } = await getDepartmentByName(
+        filterList.name.value as string
+      );
+      res.push(toArray<Department>(data));
+    }
+    if (filterList.address.value !== "") {
+      const { data } = await getDepartmentByLocation(
+        filterList.address.value as string
+      );
+      res.push(toArray<Department>(data));
+    }
+    if (filterList.position.value !== "") {
+      const { data } = await getDepartmentByPosition(
+        filterList.position.value as string
+      );
+      res.push(toArray<Department>(data));
+    }
+    list.value = multipleFilterByKey("number", res);
   }
-  if (filterList.value.name !== "") {
-    const { data } = await getDepartmentByName(filterList.value.name);
-    if (data instanceof Array) {
-      nameFilterList.push(...data);
-    } else nameFilterList.push(data);
-  }
-  if (filterList.value.address !== "") {
-    const { data } = await getDepartmentByLocation(filterList.value.address);
-    if (data instanceof Array) {
-      addressFilterList.push(...data);
-    } else addressFilterList.push(data);
-  }
-  if (filterList.value.position !== "") {
-    const { data } = await getDepartmentByPosition(filterList.value.position);
-    if (data instanceof Array) {
-      positionFilterList.push(...data);
-    } else positionFilterList.push(data);
-  }
-  list.value = multipleFilter(
-    "number",
-    numberFilterList,
-    nameFilterList,
-    addressFilterList,
-    positionFilterList
-  );
 };
 
 const { del, selectDel, confirmDel, cancelDel } = useDelete(

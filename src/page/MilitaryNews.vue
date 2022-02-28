@@ -1,46 +1,13 @@
 <template>
   <content-header
     :show-text-list="filterList"
-    @option-delete="deleteFilterOption"
+    default-filter-option="title"
+    @change="filterChange"
     @insert="insert"
     @cancel-del="cancelDel"
     @confirm-del="confirmDel"
     @on-is-delete="del"
   >
-    <template #default>
-      <div class="filter-content">
-        <el-button
-          class="filter-content-button"
-          v-for="(item, index) in filterOptions"
-          :key="item"
-          @click="activeFilterOption = index"
-          :class="{ active: activeFilterOption === index }"
-        >
-          {{ item }}
-        </el-button>
-      </div>
-      <div class="filter-content" style="margin-top: 10px">
-        <!-- 没有选择和 button 一起循环是为了方便扩展 -->
-        <el-input
-          v-model="filterList.title"
-          placeholder="标题"
-          @change="filterChange"
-          v-if="activeFilterOption === 0 && filterOptions.length !== 0"
-        ></el-input>
-        <el-input
-          v-model="filterList.time"
-          placeholder="时间"
-          @change="filterChange"
-          v-if="activeFilterOption === 1"
-        ></el-input>
-        <el-input
-          v-model="filterList.details"
-          placeholder="内容"
-          @change="filterChange"
-          v-if="activeFilterOption === 2"
-        ></el-input>
-      </div>
-    </template>
   </content-header>
   <div class="base-content">
     <base-list-item
@@ -134,7 +101,7 @@ import {
 } from "@/api/news";
 import { useNewsStore } from "@/store/new";
 import empty from "./empty.vue";
-import { multipleFilterByKey, toArray } from "@/utils/filter";
+import { isEmpty, multipleFilterByKey, toArray } from "@/utils/filter";
 import ContentHeader from "@/components/ContentHeader.vue";
 import BaseDialog from "../components/BaseDialog.vue";
 import { NewsType } from "@/types";
@@ -143,32 +110,12 @@ import { useDelete } from "@/mixins/delete";
 
 let list = ref<News[]>([]);
 
-const filterOptions: string[] = ["标题", "时间", "内容"];
 const filterList = ref<FilterNews>({
-  title: "",
-  time: "",
-  details: "",
+  title: { value: "", alias: "标题" },
+  time: { value: "", alias: "时间" },
+  details: { value: "", alias: "内容" },
 });
-let activeFilterOption = ref(0);
 const router = useRouter();
-
-function deleteFilterOption(key: string) {
-  if (key === "title") {
-    filterList.value.title = "";
-  } else if (key === "time") {
-    filterList.value.time = "";
-  } else {
-    filterList.value.details = "";
-  }
-  filterChange();
-  if (
-    !filterList.value.title &&
-    !filterList.value.time &&
-    !filterList.value.details
-  ) {
-    getList(currentPage.value);
-  }
-}
 
 function toInfoDetail(index: number) {
   const newsStore = useNewsStore();
@@ -188,23 +135,32 @@ watch(currentPage, (newCurrentPage, oldCurrentPage) => {
   getList(newCurrentPage);
 });
 
-const filterChange = async () => {
-  const res: News[][] = [];
-  if (filterList.value.title !== "") {
-    const { data } = await getMilitaryNewsByTitle(filterList.value.title);
-    res.push(toArray<News>(data));
+const filterChange = async (filterList: FilterNews) => {
+  if (isEmpty(filterList)) {
+    getList(currentPage.value);
+  } else {
+    const res: News[][] = [];
+    if (filterList.title.value !== "") {
+      const { data } = await getMilitaryNewsByTitle(
+        filterList.title.value as string
+      );
+      res.push(toArray<News>(data));
+    }
+    if (filterList.time.value !== "") {
+      const { data } = await getMilitaryNewsByTime(
+        filterList.time.value as string
+      );
+      res.push(toArray<News>(data));
+    }
+    if (filterList.details.value !== "") {
+      const { data } = await getMilitaryNewsByDetails(
+        filterList.details.value as string
+      );
+      res.push(toArray<News>(data));
+    }
+    list.value = multipleFilterByKey<News>("title", res);
   }
-  if (filterList.value.time !== "") {
-    const { data } = await getMilitaryNewsByTime(filterList.value.time);
-    res.push(toArray<News>(data));
-  }
-  if (filterList.value.details !== "") {
-    const { data } = await getMilitaryNewsByDetails(filterList.value.details);
-    res.push(toArray<News>(data));
-  }
-  list.value = multipleFilterByKey<News>("title", res);
 };
-
 const { del, cancelDel, confirmDel, selectDel } = useDelete(
   list,
   deleteMilitaryNews,

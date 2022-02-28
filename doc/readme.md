@@ -118,7 +118,7 @@ export async function confirmInsert<T>(
 }
 ```
 
-`TS2345: Argument of type 'UnwrapRef<T>' is not assignable to parameter of type 'T'.   'T' could be instantiated with an arbitrary type which could be unrelated to 'UnwrapRef<T>'.`
+`TS2345: Argument of type 'UnwrapRef<T>' is not assignable to parameter of type 'T'. 'T' could be instantiated with an arbitrary type which could be unrelated to 'UnwrapRef<T>'.`
 
 ```typescript
 export function useInsert<T>(
@@ -197,5 +197,91 @@ export function useDelete<T extends BaseItem, K extends keyof T>(
 
 // 但最后的解决方案略显粗糙，解决方案如下
 // 照常调用，即使 `deleteMilitaryNews` 和 `callback` 的参数名称不一致，但是只要位置对上了，就能够成功调用
-const { data } = await callback(item[key]);
+const {data} = await callback(item[key]);
+```
+
+通过使用 `element-plus` 推荐的自动导入，我的打包大小开始有了如下变化
+
+```
+1.89 -> 1.98 -> 2.83(M)
+```
+
+```js
+// vue.config.js
+/* eslint-disable @typescript-eslint/no-var-requires */
+const {ElementPlusResolver} = require("unplugin-vue-components/resolvers");
+
+module.exports = {
+  productionSourceMap: false,
+  configureWebpack: {
+    plugins: [
+      require("unplugin-auto-import/webpack")({
+        resolvers: [ElementPlusResolver()],
+      }),
+      require("unplugin-vue-components/webpack")({
+        resolvers: [ElementPlusResolver()],
+      }),
+    ],
+  },
+};
+```
+
+```ts
+import {createApp} from "vue";
+import App from "./App.vue";
+import router from "./router/index";
+// import ElementPlus from "element-plus";
+// import "element-plus/dist/index.css";
+import "../src/style/store.css";
+import store from "./store";
+
+const app = createApp(App);
+// app.use(ElementPlus);
+app.use(router);
+app.use(store);
+app.mount("#app");
+```
+
+后面再去考虑优化的打包的问题吧
+
+对于具名插槽，组件暴露时一定要记得把名字加上，否则不会渲染，如下
+
+```vue
+<!-- BaseFilter.vue -->
+<template #dropdown>
+  <!-- error -->
+  <slot></slot>
+</template>
+
+<template #dropdown>
+  <!-- good -->
+  <slot name="dropdown"></slot>
+</template>
+
+<!-- ContentHeader.vue -->
+<base-filter>
+<template #dropdown>
+  <!-- 成功渲染 -->
+  <slot name="dropdown"></slot>
+</template>
+</base-filter>
+```
+
+插槽寻找存在特殊情况，比如 `default` 的情况
+
+```html
+<!-- BaseFilter.vue -->
+<template #dropdown>
+  <!-- error -->
+  <slot></slot>
+</template>
+
+<!-- ContentHeader.vue -->
+<base-filter>
+  <template #dropdown>
+    <!-- 实际上这个 <slot> 等于 <slot name="default"> -->
+    <!--  而不是我们想要的 <slot name="dropdown">  -->
+    <slot></slot>
+  </template>
+</base-filter>
 ```
