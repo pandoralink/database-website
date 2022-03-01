@@ -20,7 +20,6 @@
       :index="index + 1"
       :src="item.image"
       @click-item="selectDel($event, item.isDel)"
-      @click-content="toInfoDetail"
     >
       <template #default>
         <span>名称: {{ item.name }}</span
@@ -33,6 +32,24 @@
         ><br />
         <span>所属部门编号: {{ item.dpNumber }}</span
         ><br />
+      </template>
+      <template #right>
+        <el-icon
+          size="40"
+          style="cursor: pointer"
+          @click="item.isDetail = !item.isDetail"
+        >
+          <caret-bottom v-if="item.isDetail" />
+          <caret-right v-else />
+        </el-icon>
+      </template>
+      <template #bottom v-if="item.isDetail">
+        <el-tag effect="dark" size="large" style="margin-left: 20px">
+          设备详情
+        </el-tag>
+        <p class="equipment-detail" style="width: 80%">
+          {{ item.details }}
+        </p>
       </template>
     </base-list-item>
     <empty v-if="list.length === 0" desc="没有数据了"></empty>
@@ -99,7 +116,7 @@ import { useMilitaryEquipmentStore } from "@/store/militaryEquipment";
 import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import BaseListItem from "../components/BaseListItem.vue";
-import { MilitaryEquipment, People } from "@/model/model";
+import { MilitaryEquipment } from "@/model/model";
 import BaseDialog from "../components/BaseDialog.vue";
 import empty from "./empty.vue";
 import ContentHeader from "@/components/ContentHeader.vue";
@@ -113,6 +130,7 @@ import {
 import { useInsert } from "@/mixins/insert";
 import { useDelete } from "@/mixins/delete";
 import { useGetList } from "@/mixins/useGetList";
+import { CaretBottom, CaretRight } from "@element-plus/icons";
 
 interface Props {
   showUpdate?: boolean;
@@ -140,11 +158,14 @@ const filterList = ref<FilterEquipment>({
 } as FilterEquipment);
 const router = useRouter();
 
-function toInfoDetail(index: number) {
-  const militaryEquipmentStore = useMilitaryEquipmentStore();
-  militaryEquipmentStore.updateMilitaryEquipment(list.value[index - 1]);
-  router.push("/equipmentDetail");
-}
+// XXX: 暂时取消
+// function toInfoDetail(index: number) {
+//   const militaryEquipmentStore = useMilitaryEquipmentStore();
+//   militaryEquipmentStore.updateMilitaryEquipment(list.value[index - 1]);
+//   router.push("/equipmentDetail");
+// }
+
+const showDetail = ref(false);
 
 const { currentPage, total, getList } = useGetList(
   list,

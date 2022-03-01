@@ -1,7 +1,6 @@
 import axios from "@/utils/axios";
 import { MilitaryEquipment } from "@/model/model";
 
-// FIXME: 每次都返回一样的数据
 export const getMilitaryEquipmentList = (num: number) => {
   return axios({
     url: "/militaryEquipment/list",
@@ -12,6 +11,7 @@ export const getMilitaryEquipmentList = (num: number) => {
   });
 };
 
+// FIXME: 出错了
 export const getMilitaryEquipmentListTotal = () => {
   return axios({
     url: "/militaryEquipment/total",

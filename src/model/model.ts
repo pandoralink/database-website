@@ -15,6 +15,11 @@ export interface BaseItem {
   isDel?: boolean;
 }
 
+// XXX: 也许可以和 BaseItem 和在一起？
+export interface BaseItemDetails {
+  isDetail?: boolean;
+}
+
 /**
  * 给对象的 key 取个中文名
  */
@@ -67,7 +72,7 @@ export interface Department extends BaseItem {
   image: string;
 }
 
-export interface MilitaryEquipment extends BaseItem {
+export interface MilitaryEquipment extends BaseItem, BaseItemDetails {
   name: string;
   number: string;
   function: string;

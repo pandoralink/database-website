@@ -291,8 +291,8 @@ webstorm 比 vscode 做的不足的地方，`vue` 组件 `<script lang="ts" setu
 ```typescript
 // EQUIPMENT 会被提示未被使用
 enum DepartDataType {
-  EMPLOY = 0,
-  EQUIPMENT = 1,
+    EMPLOY = 0,
+    EQUIPMENT = 1,
 }
 ```
 
@@ -305,3 +305,7 @@ VueComponent
 ```
 
 在模板上绑定数据的时候无法自动补全变量名
+
+# CSS
+
+只要设置了 `overflow: scroll` 就一定会出现滑动条组，`overflow: auto` 相对来说更加智能

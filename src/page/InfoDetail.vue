@@ -28,95 +28,112 @@
         ><br />
       </template>
     </base-list-item>
-    <!--    TODO: 不适合使用固定列-->
-    <el-row style="padding: 10px">
-      <el-col :span="8">
-        <div>
-          <el-tag effect="dark" size="large"> 人物关系</el-tag>
-          <br />
-          <!-- 可以考虑使用 v-for 遍历人物关系 -->
-          <div class="empoly-relation">
-            <div
-              class="empoly-relation-detail"
-              v-for="(item, index) in peopleDetails.son"
-              :key="index"
-            >
-              <img
-                :src="EmpolyImg"
-                style="width: 60px; height: 60px; border-radius: 30px"
-              />
-              <br />
-              <!--          <span>{{ "子女：" + item.cname }}</span>-->
-            </div>
-            <div class="empoly-relation-detail">
-              <img
-                :src="EmpolyImg"
-                style="width: 60px; height: 60px; border-radius: 30px"
-              />
-              <br />
-              <!--          <span>{{ "配偶：" + peopleDetails.spouse }}</span>-->
-            </div>
-            <div class="empoly-relation-detail">
-              <img
-                :src="EmpolyImg"
-                style="width: 60px; height: 60px; border-radius: 30px"
-              />
-              <br />
-              <!--          <span>{{ "父亲：" + peopleDetails.father.fname }}</span>-->
-            </div>
+    <div
+      class="detail-row"
+      style="display: flex; flex-wrap: wrap; padding: 10px"
+    >
+      <div>
+        <el-tag effect="dark" size="large"> 人物关系</el-tag>
+        <br />
+        <!-- 可以考虑使用 v-for 遍历人物关系 -->
+        <div class="empoly-relation">
+          <div class="empoly-relation-detail">
+            <img
+              :src="EmpolyImg"
+              style="width: 60px; height: 60px; border-radius: 30px"
+            />
+            <br />
+            <span>子女：罗通</span>
+            <!--          <span>{{ "子女：" + item.cname }}</span>-->
+          </div>
+          <div class="empoly-relation-detail">
+            <img
+              :src="EmpolyImg"
+              style="width: 60px; height: 60px; border-radius: 30px"
+            />
+            <br />
+            <span>妻子：罗通</span>
+            <!--          <span>{{ "配偶：" + peopleDetails.spouse }}</span>-->
+          </div>
+          <!--          <div class="empoly-relation-detail">-->
+          <!--            <img-->
+          <!--              :src="EmpolyImg"-->
+          <!--              style="width: 60px; height: 60px; border-radius: 30px"-->
+          <!--            />-->
+          <!--            <br />-->
+          <!--            &lt;!&ndash;          <span>{{ "父亲：" + peopleDetails.father.fname }}</span>&ndash;&gt;-->
+          <!--          </div>-->
+        </div>
+      </div>
+      <div>
+        <el-tag effect="dark" size="large"> 上下级</el-tag>
+        <br />
+        <!-- 可以考虑使用 v-for 遍历人物关系 -->
+        <div class="empoly-relation">
+          <div v-for="item in 3" :key="item" class="empoly-relation-detail">
+            <img
+              :src="EmpolyImg"
+              style="width: 60px; height: 60px; border-radius: 30px"
+            />
+            <br />
+            <span>领导：罗通</span>
+            <!--            <span>{{ peopleDetails.hierarchy }}</span>-->
           </div>
         </div>
-      </el-col>
-      <el-col :span="8">
-        <div>
-          <el-tag effect="dark" size="large"> 上下级</el-tag>
-          <br />
-          <!-- 可以考虑使用 v-for 遍历人物关系 -->
-          <div v-for="item in 5" :key="item" class="empoly-relation">
-            <div class="empoly-relation-detail">
-              <img
-                :src="EmpolyImg"
-                style="width: 60px; height: 60px; border-radius: 30px"
-              />
-              <br />
-              <span>{{ peopleDetails.hierarchy }}</span>
-            </div>
+      </div>
+      <div>
+        <el-tag effect="dark" size="large"> 所属部门</el-tag>
+        <br />
+        <!-- 可以考虑使用 v-for 遍历人物关系 -->
+        <div class="empoly-relation" @click="toDepartmentDetail">
+          <div class="empoly-relation-detail">
+            <img
+              :src="depart.image"
+              style="width: 60px; height: 60px; border-radius: 30px"
+            />
+            <br />
+            <span>{{ depart.name }}</span>
           </div>
         </div>
-      </el-col>
-      <el-col :span="8">
-        <div>
-          <el-tag effect="dark" size="large"> 所属部门</el-tag>
-          <br />
-          <!-- 可以考虑使用 v-for 遍历人物关系 -->
-          <div class="empoly-relation" @click="toDepartmentDetail">
-            <div class="empoly-relation-detail">
-              <img
-                :src="depart.image"
-                style="width: 60px; height: 60px; border-radius: 30px"
-              />
-              <br />
-              <span>{{ depart.name }}</span>
-            </div>
+      </div>
+      <!-- TODO: 得把这个 relation 封装成组件 -->
+    </div>
+    <div
+      class="detail-row"
+      style="display: flex; flex-wrap: wrap; padding: 10px"
+    >
+      <div>
+        <el-tag effect="dark" size="large"> 相关新闻</el-tag>
+        <br />
+        <!-- 可以考虑使用 v-for 遍历人物关系 -->
+        <div class="empoly-relation">
+          <div class="empoly-relation-detail">
+            <img
+              src="http://inews.gtimg.com/newsapp_ls/0/14576477631_640330/0"
+              style="width: 180px; height: 120px; border-radius: 30px"
+            />
+            <span>测试新闻标题</span>
           </div>
         </div>
-      </el-col>
-      <el-col :span="8"
-        ><!-- 得把这个 relation 封装成组件 -->
-        <div>
-          <el-tag effect="dark" size="large"> 个人经历</el-tag>
-          <br />
-          <!-- 可以考虑使用 v-for 遍历人物关系 -->
-          <div class="empoly-relation">
-            <div class="empoly-relation-detail">
-              <p class="empoly-detail">
-                {{ peopleDetails.eventDetails }}
-              </p>
-            </div>
+      </div>
+    </div>
+    <div
+      class="detail-row"
+      style="display: flex; flex-wrap: wrap; padding: 10px"
+    >
+      <div>
+        <el-tag effect="dark" size="large"> 个人经历</el-tag>
+        <br />
+        <!-- 可以考虑使用 v-for 遍历人物关系 -->
+        <div class="empoly-relation">
+          <div class="empoly-relation-detail">
+            <p class="empoly-detail">
+              {{ peopleDetails.eventDetails }}
+            </p>
           </div>
         </div>
-      </el-col>
-    </el-row>
+      </div>
+    </div>
   </div>
 </template>
 

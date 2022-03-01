@@ -1,7 +1,6 @@
 <template>
   <content-header
-    :show-text-list="filterList"
-    @option-delete="deleteFilterOption"
+    :show-filter="false"
     :show-del="false"
     :show-ins="false"
     :show-update="true"
@@ -52,7 +51,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { News } from "../model/model";
-import { FilterNews } from "../model/filter";
 import { useNewsStore } from "@/store/new";
 import ContentHeader from "@/components/ContentHeader.vue";
 import { updateMilitaryNews, updatePoliticalNews } from "@/api/news";
@@ -60,24 +58,6 @@ import { NewsType } from "@/types";
 import { ElMessage } from "element-plus";
 import NewsDialog from "@/components/NewsDialog.vue";
 import { Result } from "@/@types/http";
-
-const filterOptions: string[] = ["姓名", "时间"];
-const filterList = ref<FilterNews>({
-  title: "",
-  time: "",
-  details: "",
-});
-let activeFilterOption = ref(0);
-
-function deleteFilterOption(key: string) {
-  if (key === "title") {
-    filterList.value.title = "";
-  } else if (key === "time") {
-    filterList.value.time = "";
-  } else {
-    filterList.value.details = "";
-  }
-}
 
 const newsStore = useNewsStore();
 const newsUrl = newsStore.url;

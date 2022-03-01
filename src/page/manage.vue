@@ -3,7 +3,7 @@
     ><el-col :span="24"> <head-top></head-top> </el-col
   ></el-row>
   <el-row class="main-page">
-    <el-col :span="4" class="store-sidebar">
+    <el-col :span="3" class="store-sidebar">
       <el-menu
         default-active="1"
         text-color="#FFFFFF"
@@ -30,7 +30,7 @@
       </el-menu>
     </el-col>
     <el-col
-      :span="20"
+      :span="21"
       style="
         height: 100%;
         overflow: auto;
@@ -38,7 +38,7 @@
         padding: 12px 24px;
       "
     >
-    <!-- TODO: 部分路由需要做 keep-alive -->
+      <!-- TODO: 部分路由需要做 keep-alive -->
       <router-view />
     </el-col>
   </el-row>
