@@ -18,7 +18,7 @@
       v-for="(item, index) in list"
       :key="index"
       :index="index + 1"
-      :src="item.image"
+      :src="item.images"
       @click-item="selectDel($event, item.isDel)"
       @click-content="toInfoDetail"
     >
@@ -80,7 +80,7 @@
         </el-form-item>
         <el-form-item label="照片">
           <el-input
-            v-model="insertOb['image']"
+            v-model="insertOb['images']"
             placeholder="照片链接"
           ></el-input>
         </el-form-item>

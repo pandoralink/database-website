@@ -1,5 +1,6 @@
-import { Employment } from "../../database-website-main（1）/database-website-main/src/model/model";
-import axios from "../../database-website-main（1）/database-website-main/src/utils/axios";
+import { Employment } from "@/model/model";
+import axios from "@/utils/axios";
+import { HttpResponse } from "@/@types/http";
 
 export const insertEmployment = (data: Employment) => {
   return axios({

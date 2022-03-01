@@ -2,24 +2,15 @@
   <template v-if="active === 0">
     <info :show-update="true" @update="update">
       <template #header-tag>
-        <el-button @click="changeDataType(0)" type="primary">
-          成员列表
-        </el-button>
-        <el-button @click="changeDataType(1)" type="primary">
-          武器库
-        </el-button>
+        <!-- XXX: 可能会重复渲染 -->
+        <department-header :data="department" @change="changeDataType" />
       </template>
     </info>
   </template>
   <template v-if="active === 1">
     <military-equipment :show-update="true" @update="update">
       <template #header-tag>
-        <el-button @click="changeDataType(0)" type="primary">
-          成员列表
-        </el-button>
-        <el-button @click="changeDataType(1)" type="primary">
-          武器库
-        </el-button>
+        <department-header :data="department" @change="changeDataType" />
       </template>
     </military-equipment>
   </template>
@@ -83,6 +74,8 @@ import { ref } from "vue";
 import info from "./info.vue";
 import MilitaryEquipment from "./MilitaryEquipment.vue";
 import { Result } from "@/@types/http";
+import Header from "@/components/department/DepartmentHeader.vue";
+import DepartmentHeader from "@/components/department/DepartmentHeader.vue";
 
 const active = ref<DepartmentDataType>(DepartmentDataType.people);
 
@@ -99,6 +92,7 @@ function changeDataType(type: number) {
 // 更新
 const departmentStore = useDepartmentStore();
 let updateOb = departmentStore.department;
+const department = updateOb;
 const isOpen = ref(false);
 const update = () => (isOpen.value = true);
 const cancelUpdate = () => (isOpen.value = false);

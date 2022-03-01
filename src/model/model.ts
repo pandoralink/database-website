@@ -26,11 +26,17 @@ export interface People extends BaseItem {
   name: string;
   age: number;
   nationality: string;
-  image: string;
+  images: string;
   number: string;
   parties: string;
   education: string;
 }
+
+export type PeopleDetail = People &
+  Partial<Employment> &
+  Partial<Paternity> &
+  Partial<Experiences> &
+  Partial<Spouse>;
 
 export interface PeopleDetails extends People {
   eventDetails: string;
@@ -165,5 +171,6 @@ export interface Employment {
  */
 export interface KeyAlias {
   alias: string;
+
   [key: string]: string | number;
 }

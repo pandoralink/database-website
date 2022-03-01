@@ -1,6 +1,7 @@
 <template>
   <div class="content-head">
     <base-filter
+      v-if="showFilter"
       :show-text-list="showTextList"
       :default-filter-option="defaultFilterOption"
       @change="change"
@@ -39,6 +40,7 @@ interface Props {
   showDel?: boolean;
   showIns?: boolean;
   showUpdate?: boolean;
+  showFilter?: boolean;
   showTextList: Record<string, ValueAlias>;
   defaultFilterOption: string;
 }
@@ -47,6 +49,7 @@ const props = withDefaults(defineProps<Props>(), {
   showDel: true,
   showIns: true,
   showUpdate: false,
+  showFilter: true,
 });
 
 /**

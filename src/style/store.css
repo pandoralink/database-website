@@ -312,6 +312,10 @@ body {
   justify-content: space-between;
 }
 
+.header-option {
+  padding: 10px;
+}
+
 /* 直接修改 element-plus 的样式 */
 .el-popper.el-popover {
   border-radius: 10px;
@@ -344,8 +348,8 @@ body {
   min-height: calc(100% - (56px + 10px) - 32px - 12px * 2);
 }
 .base-content.new {
-  /* 56 + 10 = 筛选, 12*2 = 父 padding */
-  height: calc(100% - (56px + 10px) - 12px * 2);
+  /* 52 = 选项，padding 不被算在 height 内 */
+  height: calc(100% - 52px);
   background-color: white;
   overflow: scroll;
 }
@@ -388,6 +392,7 @@ body {
 .empoly-relation {
   display: flex;
   margin-top: 20px;
+  cursor: pointer;
 }
 
 .empoly-relation > div {
@@ -404,4 +409,10 @@ body {
   width: 500px;
   word-break: break-all;
   margin: 0;
+}
+
+.info-detail {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: 20px
 }

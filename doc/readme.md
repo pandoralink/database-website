@@ -285,3 +285,23 @@ app.mount("#app");
   </template>
 </base-filter>
 ```
+
+webstorm 比 vscode 做的不足的地方，`vue` 组件 `<script lang="ts" setup>` 自定义的 `props` 不能够自动补全，而 `vscode` 的 `volar` 能做到
+
+```typescript
+// EQUIPMENT 会被提示未被使用
+enum DepartDataType {
+  EMPLOY = 0,
+  EQUIPMENT = 1,
+}
+```
+
+无法自动找到 `vue` 组件，比如
+
+```
+不会自动补全
+import VueComponent
+VueComponent
+```
+
+在模板上绑定数据的时候无法自动补全变量名

@@ -1,5 +1,8 @@
 import axios from "@/utils/axios";
-import { People } from "@/model/model";
+import { Employment, People, PeopleDetail } from "@/model/model";
+import { searchPaternityByFId } from "@/api/paternity";
+import { searchEmploymentByNumber } from "@/api/employment";
+import { getDepartmentByNumber } from "@/api/department";
 
 export const insertPeople = (data: People) => {
   return axios({
@@ -102,4 +105,19 @@ export const getPeopleSonById = (Fnumber: string) => {
       Fnumber,
     },
   });
+};
+
+export const getPeopleDetail = async (people: People) => {
+  // const { data } = await searchPaternityByFId(id);
+  const { data: employment } = await searchEmploymentByNumber(people.number);
+  const employ = employment as Employment;
+  const { data: department } = await getDepartmentByNumber(employ.dpNUmber);
+  return {
+    peopleDetail: Object.assign(
+      {},
+      people,
+      employment as Employment
+    ) as PeopleDetail,
+    department: department,
+  };
 };
