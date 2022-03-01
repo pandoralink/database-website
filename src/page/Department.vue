@@ -43,7 +43,7 @@
       v-model:currentPage="currentPage"
       background
       layout="prev, pager, next"
-      :total="100"
+      :total="total"
     >
     </el-pagination>
   </div>
@@ -105,6 +105,7 @@ import {
   getDepartmentByNumber,
   getDepartmentByPosition,
   getDepartmentList,
+  getDepartmentListTotal,
   insertDepartment,
 } from "@/api/department";
 import { isEmpty, multipleFilterByKey, toArray } from "@/utils/filter";
@@ -114,6 +115,7 @@ import empty from "./empty.vue";
 import { useDepartmentStore } from "@/store/department";
 import { useInsert } from "@/mixins/insert";
 import { useDelete } from "@/mixins/delete";
+import { useGetList } from "@/mixins/useGetList";
 
 let list = ref<Department[]>([]);
 
@@ -131,16 +133,11 @@ function toDetail(index: number) {
   router.push("/departDetail");
 }
 
-const currentPage = ref(1);
-const getList = async (num = 1) => {
-  const { data } = await getDepartmentList(num);
-  list.value = data;
-};
-getList();
-
-watch(currentPage, (newCurrentPage, oldCurrentPage) => {
-  getList(newCurrentPage);
-});
+const { currentPage, total, getList } = useGetList(
+  list,
+  getDepartmentListTotal,
+  getDepartmentList
+);
 
 const filterChange = async (filterList: FilterDepartment) => {
   if (isEmpty(filterList)) {

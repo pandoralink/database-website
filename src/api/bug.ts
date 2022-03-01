@@ -13,6 +13,13 @@ export const getBugList = (num: number) => {
   });
 };
 
+export const getReptileListTotal = () => {
+  return axios({
+    url: "/Reptile/total",
+    method: "get",
+  });
+};
+
 export const searchBugByAuthor = (auther: string): Promise<HttpResponse> => {
   return axios({
     url: "/Reptile/auther",

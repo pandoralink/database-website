@@ -69,7 +69,7 @@
       v-model:currentPage="currentPage"
       background
       layout="prev, pager, next"
-      :total="100"
+      :total="total"
     >
     </el-pagination>
   </div>
@@ -90,16 +90,18 @@ import {
   insertBug,
   deleteBug,
   updateBug,
+  getReptileListTotal,
 } from "@/api/bug";
 import ContentHeader from "@/components/ContentHeader.vue";
 import BugDialog from "@/components/dialog/BugDialog.vue";
 import { FilterBug } from "@/model/filter";
-import { Bug, MilitaryEquipment } from "@/model/model";
+import { Bug } from "@/model/model";
 import { FormMethod } from "@/types";
 import { ElMessage } from "element-plus";
 import { ref, watch } from "vue";
 import { Result } from "@/@types/http";
 import { isEmpty, toArray } from "@/utils/filter";
+import { useGetList } from "@/mixins/useGetList";
 
 const list = ref<Bug[]>([]);
 
@@ -107,16 +109,11 @@ const filterList = ref<FilterBug>({
   author: { value: "", alias: "作者名称" },
 });
 
-const currentPage = ref(1);
-const getList = async (num = 1) => {
-  const { data } = await getBugList(num);
-  list.value = data;
-};
-getList();
-
-watch(currentPage, (newCurrentPage, oldCurrentPage) => {
-  getList(newCurrentPage);
-});
+const { currentPage, total, getList } = useGetList(
+  list,
+  getReptileListTotal,
+  getBugList
+);
 
 const filterChange = async (filterList: FilterBug) => {
   if (isEmpty(filterList)) {

@@ -4,6 +4,13 @@ import { searchPaternityByFId } from "@/api/paternity";
 import { searchEmploymentByNumber } from "@/api/employment";
 import { getDepartmentByNumber } from "@/api/department";
 
+export const getPeopleListTotal = () => {
+  return axios({
+    url: "/people/total",
+    method: "get",
+  });
+};
+
 export const insertPeople = (data: People) => {
   return axios({
     url: "/people/insert",

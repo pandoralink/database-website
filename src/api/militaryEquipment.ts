@@ -12,6 +12,13 @@ export const getMilitaryEquipmentList = (num: number) => {
   });
 };
 
+export const getMilitaryEquipmentListTotal = () => {
+  return axios({
+    url: "/militaryEquipment/total",
+    method: "get",
+  });
+};
+
 export const insertMilitaryEquipment = (data: MilitaryEquipment) => {
   return axios({
     url: "/militaryEquipment/insert",

@@ -10,7 +10,7 @@ export interface GetResponse {
   status: number;
   statusText: string;
   data: {
-    data?: any;
+    data?: any | any[];
   };
 }
 

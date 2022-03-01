@@ -44,7 +44,7 @@
       v-model:currentPage="currentPage"
       background
       layout="prev, pager, next"
-      :total="100"
+      :total="total"
     >
     </el-pagination>
   </div>
@@ -90,7 +90,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import BaseListItem from "../components/BaseListItem.vue";
 import { People } from "@/model/model";
 import { FilterInfo } from "@/model/filter";
@@ -101,15 +101,16 @@ import {
   getPeopleByName,
   insertPeople,
   deletePeople,
+  getPeopleListTotal,
 } from "@/api/people";
 import { usePeopleStore } from "@/store/people";
-import { initIsDel } from "@/utils/init";
 import BaseDialog from "../components/BaseDialog.vue";
 import empty from "./empty.vue";
 import ContentHeader from "@/components/ContentHeader.vue";
 import { multipleFilterByKey, toArray, isEmpty } from "@/utils/filter";
 import { useInsert } from "@/mixins/insert";
 import { useDelete } from "@/mixins/delete";
+import { useGetList } from "@/mixins/useGetList";
 
 // info 作为 DepartDetail 子组件时需暴露 update, 给父组件更新部门信息
 interface Props {
@@ -143,17 +144,11 @@ function toInfoDetail(index: number) {
   router.push("/infoDetail");
 }
 
-const currentPage = ref(1);
-const getList = async (num = 1) => {
-  const { data } = await getPeopleList(num);
-  initIsDel(data);
-  list.value = data;
-};
-getList();
-
-watch(currentPage, (newCurrentPage, oldCurrentPage) => {
-  getList(newCurrentPage);
-});
+const { currentPage, total, getList } = useGetList(
+  list,
+  getPeopleListTotal,
+  getPeopleList
+);
 
 const filterChange = async (filterList: FilterInfo) => {
   if (isEmpty(filterList)) {

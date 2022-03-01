@@ -42,7 +42,7 @@
       v-model:currentPage="currentPage"
       background
       layout="prev, pager, next"
-      :total="100"
+      :total="total"
     >
     </el-pagination>
   </div>
@@ -88,6 +88,7 @@
 import {
   deleteMilitaryEquipment,
   getMilitaryEquipmentList,
+  getMilitaryEquipmentListTotal,
   insertMilitaryEquipment,
   selectMilitaryEquipmentByDpNumber,
   selectMilitaryEquipmentByLocation,
@@ -111,6 +112,7 @@ import {
 } from "@/utils/filter";
 import { useInsert } from "@/mixins/insert";
 import { useDelete } from "@/mixins/delete";
+import { useGetList } from "@/mixins/useGetList";
 
 interface Props {
   showUpdate?: boolean;
@@ -144,16 +146,11 @@ function toInfoDetail(index: number) {
   router.push("/equipmentDetail");
 }
 
-const currentPage = ref(1);
-const getList = async (num = 1) => {
-  const { data } = await getMilitaryEquipmentList(num);
-  list.value = data;
-};
-getList();
-
-watch(currentPage, (newCurrentPage, oldCurrentPage) => {
-  getList(newCurrentPage);
-});
+const { currentPage, total, getList } = useGetList(
+  list,
+  getMilitaryEquipmentListTotal,
+  getMilitaryEquipmentList
+);
 
 const filterChange = async (filterList: FilterEquipment) => {
   if (isEmpty(filterList)) {

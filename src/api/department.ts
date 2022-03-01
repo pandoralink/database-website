@@ -11,6 +11,13 @@ export const getDepartmentList = (num: number) => {
   });
 };
 
+export const getDepartmentListTotal = () => {
+  return axios({
+    url: "/department/total",
+    method: "get",
+  });
+};
+
 export const getDepartmentByNumber = (number: string) => {
   return axios({
     url: "/department/selectByNumber",

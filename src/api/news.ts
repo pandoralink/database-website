@@ -12,6 +12,13 @@ export const getNewList = (num: number) => {
   });
 };
 
+export const getMilitaryNewsListTotal = () => {
+  return axios({
+    url: "/MilitaryNews/total",
+    method: "get",
+  });
+};
+
 export const getMilitaryNewsByTitle = (title: string) => {
   return axios({
     url: "/MilitaryNews/getByTitle",
@@ -77,6 +84,13 @@ export const getPoliticalNewsList = (num: number) => {
     params: {
       num,
     },
+  });
+};
+
+export const getPoliticalNewsListTotal = () => {
+  return axios({
+    url: "/politicalNews/total",
+    method: "get",
   });
 };
 

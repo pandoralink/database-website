@@ -37,7 +37,7 @@
       v-model:currentPage="currentPage"
       background
       layout="prev, pager, next"
-      :total="100"
+      :total="total"
     >
     </el-pagination>
   </div>
@@ -98,6 +98,7 @@ import {
   getNewList,
   deleteMilitaryNews,
   insertMilitaryNews,
+  getMilitaryNewsListTotal,
 } from "@/api/news";
 import { useNewsStore } from "@/store/new";
 import empty from "./empty.vue";
@@ -107,6 +108,7 @@ import BaseDialog from "../components/BaseDialog.vue";
 import { NewsType } from "@/types";
 import { useInsert } from "@/mixins/insert";
 import { useDelete } from "@/mixins/delete";
+import { useGetList } from "@/mixins/useGetList";
 
 let list = ref<News[]>([]);
 
@@ -124,16 +126,11 @@ function toInfoDetail(index: number) {
   router.push("/newDetail");
 }
 
-const currentPage = ref(1);
-const getList = async (num = 1) => {
-  const { data } = await getNewList(num);
-  list.value = data;
-};
-getList();
-
-watch(currentPage, (newCurrentPage, oldCurrentPage) => {
-  getList(newCurrentPage);
-});
+const { currentPage, total, getList } = useGetList(
+  list,
+  getMilitaryNewsListTotal,
+  getNewList
+);
 
 const filterChange = async (filterList: FilterNews) => {
   if (isEmpty(filterList)) {
