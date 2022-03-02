@@ -389,24 +389,23 @@ body {
   margin: 0;
 }
 
-.empoly-relation {
+.employ-relation {
   display: flex;
   margin-top: 20px;
   cursor: pointer;
 }
 
-.empoly-relation > div {
+.employ-relation > div {
   margin-right: 20px;
 }
 
-.empoly-relation-detail {
+.employ-relation-detail {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.empoly-detail {
-  width: 500px;
+.employ-detail {
   word-break: break-all;
   margin: 0;
 }

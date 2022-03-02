@@ -8,24 +8,27 @@
     >
     </base-filter>
     <div class="header-option">
-      <el-button type="primary" v-if="showIns" :icon="Plus" @click="insert"
-        >新增
-      </el-button>
-      <el-tooltip class="box-item" effect="light" content="选中删除">
-        <el-button type="primary" v-if="showDel" :icon="Delete" @click="del"
-          >{{ isDelete ? "取消删除" : "删除" }}
+      <!-- 右边按钮组 -->
+      <slot name="right">
+        <el-button type="primary" v-if="showIns" :icon="Plus" @click="insert"
+          >新增
         </el-button>
-      </el-tooltip>
-      <el-button
-        type="danger"
-        :icon="Delete"
-        v-if="isDelete"
-        @click="confirmDel"
-        >确认删除
-      </el-button>
-      <el-button type="primary" v-if="showUpdate" :icon="Edit" @click="update"
-        >更新
-      </el-button>
+        <el-tooltip class="box-item" effect="light" content="选中删除">
+          <el-button type="primary" v-if="showDel" :icon="Delete" @click="del"
+            >{{ isDelete ? "取消删除" : "删除" }}
+          </el-button>
+        </el-tooltip>
+        <el-button
+          type="danger"
+          :icon="Delete"
+          v-if="isDelete"
+          @click="confirmDel"
+          >确认删除
+        </el-button>
+        <el-button type="primary" v-if="showUpdate" :icon="Edit" @click="update"
+          >更新
+        </el-button>
+      </slot>
     </div>
   </div>
 </template>
@@ -41,8 +44,8 @@ interface Props {
   showIns?: boolean;
   showUpdate?: boolean;
   showFilter?: boolean;
-  showTextList: Record<string, ValueAlias>;
-  defaultFilterOption: string;
+  showTextList?: Record<string, ValueAlias>;
+  defaultFilterOption?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {

@@ -91,6 +91,7 @@ import {
   deleteBug,
   updateBug,
   getReptileListTotal,
+  updateBugState,
 } from "@/api/bug";
 import ContentHeader from "@/components/ContentHeader.vue";
 import BugDialog from "@/components/dialog/BugDialog.vue";
@@ -130,11 +131,15 @@ const filterChange = async (filterList: FilterBug) => {
   }
 };
 
-const changeBugState = (index: number) => {
-  const state = list.value[index].switchs;
-  list.value[index].switchs = !state ? 1 : 0;
+const changeBugState = async (index: number) => {
+  const bug = list.value[index];
+  bug.switchs = !bug.switchs ? 1 : 0;
+  const { data } = await updateBugState(bug);
+  const res = data as Result;
+  if (res.code === 0) {
+    ElMessage.success(res.msg);
+  } else ElMessage.error("操作失败，请重试");
 };
-
 let formValue = ref<Bug>({} as Bug);
 let methodType = ref<FormMethod>("insert");
 const updateDataIndex = ref(0);

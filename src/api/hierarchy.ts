@@ -1,5 +1,5 @@
-import { Hierarchy } from "../../database-website-main（1）/database-website-main/src/model/model";
-import axios from "../../database-website-main（1）/database-website-main/src/utils/axios";
+import { Hierarchy } from "@/model/model";
+import axios from "@/utils/axios";
 
 export const insertHierarchy = (data: Hierarchy) => {
   return axios({

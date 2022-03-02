@@ -47,6 +47,18 @@ export const updateBug = (data: Bug) => {
   });
 };
 
+/**
+ * 修改爬虫运行状态
+ * @param data
+ */
+export const updateBugState = (data: Bug) => {
+  return axios({
+    url: "/Reptile/update",
+    method: "put",
+    data,
+  });
+};
+
 export const deleteBug = (url: string) => {
   return axios({
     url: "/Reptile/delete",

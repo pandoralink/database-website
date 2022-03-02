@@ -41,7 +41,8 @@ export type PeopleDetail = People &
   Partial<Employment> &
   Partial<Paternity> &
   Partial<Experiences> &
-  Partial<Spouse>;
+  Partial<Spouse> &
+  Partial<Hierarchy>;
 
 export interface PeopleDetails extends People {
   eventDetails: string;
@@ -110,7 +111,7 @@ export interface NewResult {
 // TODO: rule
 /**
  * remarks: 功能备注
- * switchs: 状态
+ * switchs: 状态 0 是暂停 1 是运行
  */
 export interface Bug {
   url: string;

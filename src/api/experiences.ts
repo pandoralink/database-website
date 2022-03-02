@@ -1,5 +1,5 @@
-import { Experiences } from "../../database-website-main（1）/database-website-main/src/model/model";
-import axios from "../../database-website-main（1）/database-website-main/src/utils/axios";
+import { Experiences } from "@/model/model";
+import axios from "@/utils/axios";
 
 export const insertExperiences = (data: Experiences) => {
   return axios({
@@ -27,7 +27,7 @@ export const deleteExperiences = (ID: string) => {
   });
 };
 
-export const searchExperiencesByNuber = (number: string) => {
+export const searchExperiencesByNumber = (number: string) => {
   return axios({
     url: "/experiences/get",
     method: "get",

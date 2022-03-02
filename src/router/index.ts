@@ -45,7 +45,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "",
         component: info,
-        meta: { desc: ["文件查看"] },
+        meta: { desc: ["个人信息"] },
       },
       // TODO: 修改 info 和 infoDetail 在路由层级上的关系, 参考 https://hooray.gitee.io/fantastic-admin/guide/router.html#%E5%B0%8F%E6%8A%80%E5%B7%A7
       {

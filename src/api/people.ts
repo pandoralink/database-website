@@ -1,8 +1,9 @@
 import axios from "@/utils/axios";
-import { Employment, People, PeopleDetail } from "@/model/model";
+import { Employment, Experiences, People, PeopleDetail } from "@/model/model";
 import { searchPaternityByFId } from "@/api/paternity";
 import { searchEmploymentByNumber } from "@/api/employment";
 import { getDepartmentByNumber } from "@/api/department";
+import { searchExperiencesByNumber } from "@/api/experiences";
 
 export const getPeopleListTotal = () => {
   return axios({
@@ -119,11 +120,13 @@ export const getPeopleDetail = async (people: People) => {
   const { data: employment } = await searchEmploymentByNumber(people.number);
   const employ = employment as Employment;
   const { data: department } = await getDepartmentByNumber(employ.dpNUmber);
+  const { data: experience } = await searchExperiencesByNumber(people.number);
   return {
-    peopleDetail: Object.assign(
+    detail: Object.assign(
       {},
       people,
-      employment as Employment
+      employment as Employment,
+      experience as Experiences
     ) as PeopleDetail,
     department: department,
   };

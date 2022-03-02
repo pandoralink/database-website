@@ -1,5 +1,5 @@
-import { Physiological } from "../../database-website-main（1）/database-website-main/src/model/model";
-import axios from "../../database-website-main（1）/database-website-main/src/utils/axios";
+import { Physiological } from "@/model/model";
+import axios from "@/utils/axios";
 
 export const insertPhysiological = (data: Physiological) => {
   return axios({

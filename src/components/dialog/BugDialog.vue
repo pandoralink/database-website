@@ -15,7 +15,8 @@
           <el-input v-model="data['auther']" placeholder="作者"></el-input>
         </el-form-item>
         <el-form-item label="状态">
-          <el-input v-model="data['switchs']" placeholder="状态"></el-input>
+          <el-radio v-model="data['switchs']" label="1">运行</el-radio>
+          <el-radio v-model="data['switchs']" label="0">暂停</el-radio>
         </el-form-item>
       </el-form>
     </template>
@@ -24,7 +25,7 @@
 <script lang="ts" setup>
 import { Bug } from "@/model/model";
 import { FormMethod } from "@/types";
-import { computed, ref, shallowRef, toRef, toRefs, unref, watch } from "vue";
+import { ref, toRefs, watch } from "vue";
 import BaseDialog from "../BaseDialog.vue";
 
 const props = defineProps<{

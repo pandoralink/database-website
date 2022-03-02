@@ -1,5 +1,5 @@
-import { Spouse } from "../../database-website-main（1）/database-website-main/src/model/model";
-import axios from "../../database-website-main（1）/database-website-main/src/utils/axios";
+import { Spouse } from "@/model/model";
+import axios from "@/utils/axios";
 
 export const insertSpouse = (data: Spouse) => {
   return axios({
