@@ -1,6 +1,6 @@
 <template>
   <el-row
-    ><el-col :span="24"> <head-top></head-top> </el-col
+    ><el-col :span="24"> <breadcrumb></breadcrumb> </el-col
   ></el-row>
   <el-row class="main-page">
     <el-col :span="3" class="store-sidebar">
@@ -47,7 +47,7 @@
 <script lang="ts" setup>
 import { ElNotification } from "element-plus";
 import { onMounted } from "vue";
-import headTop from "../components/headTop.vue";
+import Breadcrumb from "@/components/Breadcrumb.vue";
 
 onMounted(() => {
   ElNotification({

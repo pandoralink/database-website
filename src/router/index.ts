@@ -11,6 +11,15 @@ const BugManage = () => import("../page/BugManage.vue");
 const EquipmentDetail = () => import("../page/EquipmentDetail.vue");
 const DepartDetail = () => import("../page/DepartDetail.vue");
 const InfoDetail = () => import("../page/InfoDetail.vue");
+const Login = () => import("../page/Login.vue");
+
+const Middleware = { template: "<root-view></root-view>" };
+
+declare module "vue-router" {
+  interface RouteMeta {
+    desc?: string | string[];
+  }
+}
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -23,11 +32,11 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/",
-    component: () => import("../page/login.vue"),
+    component: Login,
   },
   {
     path: "/login",
-    component: () => import("../page/login.vue"),
+    component: Login,
   },
   {
     path: "/register",
@@ -36,36 +45,44 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/manage",
     component: () => import("../page/manage.vue"),
-    name: "",
+    name: "manage",
+    meta: { desc: "主页" },
     children: [
+      {
+        path: "",
+        component: info,
+        meta: { desc: "个人信息" },
+      },
       {
         path: "/map",
         component: map,
       },
-      {
-        path: "",
-        component: info,
-        meta: { desc: ["个人信息"] },
-      },
       // TODO: 修改 info 和 infoDetail 在路由层级上的关系, 参考 https://hooray.gitee.io/fantastic-admin/guide/router.html#%E5%B0%8F%E6%8A%80%E5%B7%A7
       {
         path: "/info",
-        component: info,
-        meta: { desc: ["文件查看"] },
+        redirect: "/info/infoList",
+        meta: { desc: "个人信息" },
+        children: [
+          {
+            path: "/info/infoList",
+            component: info,
+            meta: { desc: "个人信息列表" },
+          },
+          {
+            path: "/info/infoDetail",
+            component: InfoDetail,
+            meta: { desc: "个人信息详情" },
+          },
+        ],
       },
       {
         path: "/infoDetail",
         component: InfoDetail,
-        meta: { desc: ["文件查看"] },
+        meta: { desc: "个人信息详情" },
       },
       {
         path: "/departDetail",
         component: DepartDetail,
-        meta: { desc: ["文件查看"] },
-      },
-      {
-        path: "/equipmentDetail",
-        component: EquipmentDetail,
         meta: { desc: ["文件查看"] },
       },
       {
@@ -99,6 +116,12 @@ const routes: Array<RouteRecordRaw> = [
         path: "/militaryEquipment",
         name: "militaryEquipment",
         component: MilitaryEquipment,
+        meta: { desc: "" },
+      },
+      {
+        path: "/equipmentDetail",
+        component: EquipmentDetail,
+        meta: { desc: "" },
       },
     ],
   },

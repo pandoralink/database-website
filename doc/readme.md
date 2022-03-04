@@ -309,3 +309,18 @@ VueComponent
 # CSS
 
 只要设置了 `overflow: scroll` 就一定会出现滑动条组，`overflow: auto` 相对来说更加智能
+
+# 小技巧
+
+`computed` 可以返回一个不可变的响应式式对象
+
+`watch(() => xxx)` 监听一个 `getter`，有时候我们可以利用这个去监听 `props`
+
+```typescript
+// watch 必须监听一个响应式对象
+const {formValue} = toRefs(props);
+watch(formValue, updateData);
+
+// 但是还可以这样写
+watch(() => props.formValue, updateData);
+```
