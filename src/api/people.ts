@@ -1,9 +1,18 @@
 import axios from "@/utils/axios";
-import { Employment, Experiences, People, PeopleDetail } from "@/model/model";
+import {
+  Employment,
+  Experiences,
+  Hierarchy,
+  Paternity,
+  People,
+  PeopleDetail,
+  Spouse,
+} from "@/model/model";
 import { searchPaternityByFId } from "@/api/paternity";
 import { searchEmploymentByNumber } from "@/api/employment";
 import { getDepartmentByNumber } from "@/api/department";
 import { searchExperiencesByNumber } from "@/api/experiences";
+import { toArray } from "@/utils/filter";
 
 export const getPeopleListTotal = () => {
   return axios({
@@ -115,8 +124,86 @@ export const getPeopleSonById = (Fnumber: string) => {
   });
 };
 
+export const getPeopleRelationship = (number: string) => {
+  return axios({
+    url: "/people/getRelationship",
+    method: "get",
+    params: {
+      number,
+    },
+  });
+};
+
+/**
+ * SupHierarchy: 上级人物
+ * SubHierarchy: 下级人物
+ * CPaternity:子女
+ * FPaternity: 父母
+ * Spouse: 配偶
+ */
+interface Relationship {
+  SupHierarchy: Hierarchy[];
+  SubHierarchy: Hierarchy[];
+  CPaternity: Paternity[];
+  FPaternity: Paternity;
+  Spouse: Spouse[];
+}
+
+interface Relation {
+  sup: People[];
+  sub: People[];
+  cPaternity: People[];
+  fPaternity: People | null;
+  spouse: People[];
+}
+
 export const getPeopleDetail = async (people: People) => {
-  // const { data } = await searchPaternityByFId(id);
+  const res: Relation = {
+    sup: [],
+    sub: [],
+    cPaternity: [],
+    fPaternity: null,
+    spouse: [],
+  };
+  const { data: relation } = await getPeopleRelationship(people.number);
+  const relationship: Relationship = relation;
+  if (relationship.SupHierarchy.length > 0) {
+    for (let i = 0; i < relationship.SupHierarchy.length; i++) {
+      const { data } = await getPeopleById(
+        relationship.SupHierarchy[i].superIDnumber
+      );
+      res.sup.push(data);
+    }
+  }
+  if (relationship.SubHierarchy.length > 0) {
+    for (let i = 0; i < relationship.SubHierarchy.length; i++) {
+      const { data } = await getPeopleById(
+        relationship.SubHierarchy[i].subordIDnumber
+      );
+      res.sub.push(data);
+    }
+  }
+  if (relationship.CPaternity.length > 0) {
+    for (let i = 0; i < relationship.CPaternity.length; i++) {
+      const { data } = await getPeopleById(relationship.CPaternity[i].cnumber);
+      res.cPaternity.push(data);
+    }
+  }
+  if (relationship.FPaternity !== null) {
+    const { data } = await getPeopleById(relationship.FPaternity.fnumber);
+    res.fPaternity = data;
+  }
+  if (relationship.Spouse.length > 0) {
+    for (let i = 0; i < relationship.Spouse.length; i++) {
+      if (relationship.Spouse[i].mname === people.name) {
+        const { data } = await getPeopleById(relationship.Spouse[i].widnumber);
+        res.spouse.push(data);
+      } else {
+        const { data } = await getPeopleById(relationship.Spouse[i].midnumber);
+        res.spouse.push(data);
+      }
+    }
+  }
   const { data: employment } = await searchEmploymentByNumber(people.number);
   const employ = employment as Employment;
   const { data: department } = await getDepartmentByNumber(employ.dpNUmber);
@@ -129,5 +216,6 @@ export const getPeopleDetail = async (people: People) => {
       experience as Experiences
     ) as PeopleDetail,
     department: department,
+    relation: res,
   };
 };

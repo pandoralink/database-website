@@ -20,7 +20,7 @@
   </base-dialog>
 </template>
 <script lang="ts" setup>
-import { People, PeopleDetail } from "@/model/model";
+import { Experiences, People, PeopleDetail } from "@/model/model";
 import { ref, toRefs, watch } from "vue";
 import BaseDialog from "../BaseDialog.vue";
 
@@ -30,7 +30,7 @@ const props = defineProps<{
 
 const emits = defineEmits<{
   (e: "close"): void;
-  (e: "confirm", data: People): void;
+  (e: "confirm", data: PeopleDetail): void;
 }>();
 
 function close() {
@@ -44,9 +44,9 @@ function confirm() {
 const { form } = toRefs(props);
 
 let data = ref(props.form);
-const updateData = () => {
-  data.value = Object.assign({}, props.form);
+const updateData = (peopleDetail: PeopleDetail) => {
+  data.value = Object.assign({}, peopleDetail);
 };
 
-watch(form, updateData);
+watch(() => props.form, updateData);
 </script>

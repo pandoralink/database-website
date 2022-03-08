@@ -35,55 +35,61 @@
       class="detail-row"
       style="display: flex; flex-wrap: wrap; padding: 10px"
     >
-      <div>
-        <el-tag effect="dark" size="large"> 人物关系</el-tag>
-        <br />
-        <!-- 可以考虑使用 v-for 遍历人物关系 -->
-        <div class="employ-relation">
-          <div class="employ-relation-detail">
-            <img
-              :src="EmpolyImg"
-              style="width: 60px; height: 60px; border-radius: 30px"
-            />
-            <br />
-            <span>子女：罗通</span>
-            <!--          <span>{{ "子女：" + item.cname }}</span>-->
-          </div>
-          <div class="employ-relation-detail">
-            <img
-              :src="EmpolyImg"
-              style="width: 60px; height: 60px; border-radius: 30px"
-            />
-            <br />
-            <span>妻子：罗通</span>
-            <!--          <span>{{ "配偶：" + peopleDetail.spouse }}</span>-->
-          </div>
-          <!--          <div class="empoly-relation-detail">-->
-          <!--            <img-->
-          <!--              :src="EmpolyImg"-->
-          <!--              style="width: 60px; height: 60px; border-radius: 30px"-->
-          <!--            />-->
-          <!--            <br />-->
-          <!--            &lt;!&ndash;          <span>{{ "父亲：" + peopleDetail.father.fname }}</span>&ndash;&gt;-->
-          <!--          </div>-->
-        </div>
-      </div>
-      <div>
-        <el-tag effect="dark" size="large"> 上下级</el-tag>
-        <br />
-        <!-- 可以考虑使用 v-for 遍历人物关系 -->
-        <div class="employ-relation">
-          <div v-for="item in 3" :key="item" class="employ-relation-detail">
-            <img
-              :src="EmpolyImg"
-              style="width: 60px; height: 60px; border-radius: 30px"
-            />
-            <br />
-            <span>领导：罗通</span>
-            <!--            <span>{{ peopleDetail.hierarchy }}</span>-->
-          </div>
-        </div>
-      </div>
+      <i-tag
+        title="人物关系"
+        v-if="
+          relation.cPaternity?.length > 0 ||
+          relation.fPaternity !== null ||
+          relation.spouse?.length > 0
+        "
+      >
+        <template #content>
+          <tag-detail
+            @click="toPeopleDetail(item)"
+            v-for="(item, index) in relation.cPaternity"
+            :key="index"
+            :img="item.images"
+            :content="'子女：' + item.name"
+          ></tag-detail>
+          <tag-detail
+            @click="toPeopleDetail(item)"
+            v-for="(item, index) in relation.spouse"
+            :key="index"
+            :img="item.images"
+            :content="'配偶：' + item.name"
+          ></tag-detail>
+          <template v-if="relation.fPaternity !== null">
+            <tag-detail
+              @click="toPeopleDetail(item)"
+              v-for="(item, index) in [relation.fPaternity]"
+              :key="index"
+              :img="item.images"
+              :content="'父母：' + item.name"
+            ></tag-detail>
+          </template>
+        </template>
+      </i-tag>
+      <i-tag
+        title="上下级"
+        v-if="relation.sub?.length > 0 || relation.sup?.length > 0"
+      >
+        <template #content>
+          <tag-detail
+            @click="toPeopleDetail(item)"
+            v-for="(item, index) in relation.sub"
+            :key="index"
+            :img="item.images"
+            :content="'上级：' + item.name"
+          ></tag-detail>
+          <tag-detail
+            @click="toPeopleDetail(item)"
+            v-for="(item, index) in relation.sup"
+            :key="index"
+            :img="item.images"
+            :content="'下级：' + item.name"
+          ></tag-detail>
+        </template>
+      </i-tag>
       <div>
         <el-tag effect="dark" size="large"> 所属部门</el-tag>
         <br />
@@ -99,26 +105,21 @@
           </div>
         </div>
       </div>
-      <!-- TODO: 得把这个 relation 封装成组件 -->
     </div>
     <div
       class="detail-row"
       style="display: flex; flex-wrap: wrap; padding: 10px"
     >
-      <div>
-        <el-tag effect="dark" size="large"> 相关新闻</el-tag>
-        <br />
-        <!-- 可以考虑使用 v-for 遍历人物关系 -->
-        <div class="employ-relation">
-          <div class="employ-relation-detail">
-            <img
-              src="http://inews.gtimg.com/newsapp_ls/0/14576477631_640330/0"
-              style="width: 180px; height: 120px; border-radius: 30px"
-            />
-            <span>测试新闻标题</span>
-          </div>
-        </div>
-      </div>
+      <i-tag
+        title="测试新闻"
+        :list="[
+          {
+            img: 'http://inews.gtimg.com/newsapp_ls/0/14576477631_640330/0',
+            content: '测试新闻标题',
+            round: true,
+          },
+        ]"
+      />
     </div>
     <div
       class="detail-row"
@@ -154,19 +155,11 @@
 </template>
 
 <script setup lang="ts">
+import { Edit } from "@element-plus/icons";
 import { ref } from "vue";
-import {
-  People,
-  PeopleDetails,
-  Paternity,
-  PeopleDetail,
-  Department,
-  Experiences,
-} from "../model/model";
-import { FilterNews } from "../model/filter";
+import { People, PeopleDetail, Department } from "../model/model";
 import BaseListItem from "../components/BaseListItem.vue";
 import { useRouter } from "vue-router";
-import { EmpolyImg } from "../utils/constant";
 import { usePeopleStore } from "@/store/people";
 import { getPeopleDetail } from "@/api/people";
 import ContentHeader from "@/components/ContentHeader.vue";
@@ -174,19 +167,37 @@ import { useDepartmentStore } from "@/store/department";
 import PeopleDialog from "@/components/dialog/PeopleDialog.vue";
 import { useUpdate } from "@/mixins/update";
 import ExperienceDialog from "@/components/dialog/ExperienceDialog.vue";
+import TagDetail from "@/components/detail/TagDetail.vue";
+import ITag from "@/components/detail/ITag.vue";
+
+interface Relation {
+  sup: People[];
+  sub: People[];
+  cPaternity: People[];
+  fPaternity: People | null;
+  spouse: People[];
+}
 
 const list: People[] = [];
 
 const peopleStore = usePeopleStore();
 const people = peopleStore.people;
-let peopleDetail = ref<PeopleDetail>(Object.assign({}, people));
 list.push(people);
+let peopleDetail = ref<PeopleDetail>(Object.assign({}, people));
+
 const depart = ref<Department>({} as Department);
+const paternity = ref<People[]>([]);
+const relation = ref<Relation>({} as Relation);
 
 const init = async () => {
-  const { detail, department } = await getPeopleDetail(people);
+  const {
+    detail,
+    department,
+    relation: relationship,
+  } = await getPeopleDetail(people);
   depart.value = department;
   peopleDetail.value = Object.assign({}, peopleDetail, detail);
+  relation.value = relationship;
 };
 init();
 
@@ -195,6 +206,11 @@ const toDepartmentDetail = () => {
   const departmentStore = useDepartmentStore();
   departmentStore.updateDepartment(depart.value);
   router.push("/departDetail");
+};
+const toPeopleDetail = (people: People) => {
+  const peopleStore = usePeopleStore();
+  peopleStore.updatePeople(people);
+  router.push(`/infoDetail/${people.name}`);
 };
 
 const { isUpdate, update, confirmUpdate, cancelUpdate } = useUpdate();

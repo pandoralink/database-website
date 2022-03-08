@@ -25,7 +25,7 @@
         </el-form-item>
         <el-form-item label="人物关系/可选/测试专用" label-width="100px" />
         <el-form-item label="配偶">
-          <el-select v-model="data.Mname" placeholder="选一个吧">
+          <el-select v-model="data.mname" placeholder="选一个吧">
             <el-option label="罗通" value="罗通"></el-option>
             <el-option label="罗通" value="罗通"></el-option>
           </el-select>

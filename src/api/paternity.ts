@@ -13,7 +13,7 @@ export const updatePaternity = (data: Paternity) => {
   return axios({
     url: "/paternity/update",
     method: "put",
-    data
+    data,
   });
 };
 
@@ -27,12 +27,12 @@ export const deletePaternity = (ID: string) => {
   });
 };
 
-export const searchPaternityByFId = (FID: string) => {
+export const searchPaternityByFId = (Fnumber: string) => {
   return axios({
     url: "/paternity/selectFID",
     method: "get",
     params: {
-      FID,
+      Fnumber,
     },
   });
 };

@@ -138,10 +138,10 @@ export interface Experiences {
 }
 
 export interface Spouse {
-  Mname: string;
-  MIDnumber: string;
-  Wname: string;
-  WIDnumber: string;
+  mname: string;
+  midnumber: string;
+  wname: string;
+  widnumber: string;
 }
 
 export interface Physiological {

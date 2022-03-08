@@ -43,6 +43,16 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../page/register.vue"),
   },
   {
+    path: "/redirect",
+    component: () => import("../page/manage.vue"),
+    children: [
+      {
+        path: "/redirect/:path(.*)",
+        component: () => import("@/page/redirect.vue"),
+      },
+    ],
+  },
+  {
     path: "/manage",
     component: () => import("../page/manage.vue"),
     name: "manage",
@@ -60,23 +70,16 @@ const routes: Array<RouteRecordRaw> = [
       // TODO: 修改 info 和 infoDetail 在路由层级上的关系, 参考 https://hooray.gitee.io/fantastic-admin/guide/router.html#%E5%B0%8F%E6%8A%80%E5%B7%A7
       {
         path: "/info",
-        redirect: "/info/infoList",
+        component: info,
         meta: { desc: "个人信息" },
-        children: [
-          {
-            path: "/info/infoList",
-            component: info,
-            meta: { desc: "个人信息列表" },
-          },
-          {
-            path: "/info/infoDetail",
-            component: InfoDetail,
-            meta: { desc: "个人信息详情" },
-          },
-        ],
       },
       {
         path: "/infoDetail",
+        component: InfoDetail,
+        meta: { desc: "个人信息详情" },
+      },
+      {
+        path: "/infoDetail/:name",
         component: InfoDetail,
         meta: { desc: "个人信息详情" },
       },
