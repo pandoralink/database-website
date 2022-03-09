@@ -58,13 +58,11 @@
             :img="item.images"
             :content="'配偶：' + item.name"
           ></tag-detail>
-          <template v-if="relation.fPaternity !== null">
+          <template v-if="relation.fPaternity">
             <tag-detail
-              @click="toPeopleDetail(item)"
-              v-for="(item, index) in [relation.fPaternity]"
-              :key="index"
-              :img="item.images"
-              :content="'父母：' + item.name"
+              @click="toPeopleDetail(relation.fPaternity)"
+              :img="relation.fPaternity.images"
+              :content="'父母：' + relation.fPaternity.name"
             ></tag-detail>
           </template>
         </template>
@@ -174,7 +172,7 @@ interface Relation {
   sup: People[];
   sub: People[];
   cPaternity: People[];
-  fPaternity: People | null;
+  fPaternity?: People;
   spouse: People[];
 }
 

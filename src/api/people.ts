@@ -153,7 +153,7 @@ interface Relation {
   sup: People[];
   sub: People[];
   cPaternity: People[];
-  fPaternity: People | null;
+  fPaternity?: People;
   spouse: People[];
 }
 
@@ -162,7 +162,6 @@ export const getPeopleDetail = async (people: People) => {
     sup: [],
     sub: [],
     cPaternity: [],
-    fPaternity: null,
     spouse: [],
   };
   const { data: relation } = await getPeopleRelationship(people.number);

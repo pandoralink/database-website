@@ -1,7 +1,7 @@
 <template>
   <el-row>
     <el-col :span="24" style="height: 60px">
-      <breadcrumb></breadcrumb>
+      <!--      <breadcrumb></breadcrumb>-->
     </el-col>
   </el-row>
   <el-row class="main-page">

@@ -324,3 +324,26 @@ watch(formValue, updateData);
 // 但是还可以这样写
 watch(() => props.formValue, updateData);
 ```
+
+`ts` 使用异常，`{} as People`
+
+```typescript
+// 此时 p 不会是一个空对象
+const p: People = {} as People;
+// 禁止使用下面的判断，都不会成功！
+if (p) {
+}
+if (p !== null) {
+}
+```
+
+```html
+// 禁止使用下面的 v-for，relation.fPaternity 是一个对象，但加上 [] 也仍然不是一个可迭代对象
+<tag-detail
+  @click="toPeopleDetail(item)"
+  v-for="(item, index) in [relation.fPaternity]"
+  :key="index"
+  :img="item.images"
+  :content="'父母：' + item.name"
+></tag-detail>
+```
