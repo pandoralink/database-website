@@ -5,6 +5,9 @@
       <el-button type="primary" :icon="Edit" @click="updateExperiences"
         >个人经历
       </el-button>
+      <el-button type="primary" :icon="Edit" @click="updateParent"
+        >更新父母
+      </el-button>
     </template>
   </content-header>
   <div class="base-content new">
@@ -150,6 +153,12 @@
     @close="cancelUpdateExperiences"
     @confirm="confirmUpdateExperiences"
   />
+  <parent-dialog
+    v-model="isUpdateParent"
+    :form="relation.fPaternity ? relation.fPaternity : {}"
+    @close="cancelUpdateParent"
+    @confirm="confirmUpdateParent"
+  />
 </template>
 
 <script setup lang="ts">
@@ -167,14 +176,8 @@ import { useUpdate } from "@/mixins/update";
 import ExperienceDialog from "@/components/dialog/ExperienceDialog.vue";
 import TagDetail from "@/components/detail/TagDetail.vue";
 import ITag from "@/components/detail/ITag.vue";
-
-interface Relation {
-  sup: People[];
-  sub: People[];
-  cPaternity: People[];
-  fPaternity?: People;
-  spouse: People[];
-}
+import { Relation } from "@/@types/model";
+import ParentDialog from "@/components/dialog/ParentDialog.vue";
 
 const list: People[] = [];
 
@@ -208,7 +211,13 @@ const toDepartmentDetail = () => {
 const toPeopleDetail = (people: People) => {
   const peopleStore = usePeopleStore();
   peopleStore.updatePeople(people);
-  router.push(`/infoDetail/${people.name}`);
+  router.push({
+    path: "/infoDetail",
+    query: {
+      t: +new Date(),
+    },
+  });
+  // router.push(`/infoDetail/${people.name}`);
 };
 
 const { isUpdate, update, confirmUpdate, cancelUpdate } = useUpdate();
@@ -217,5 +226,11 @@ const {
   update: updateExperiences,
   confirmUpdate: confirmUpdateExperiences,
   cancelUpdate: cancelUpdateExperiences,
+} = useUpdate();
+const {
+  isUpdate: isUpdateParent,
+  update: updateParent,
+  confirmUpdate: confirmUpdateParent,
+  cancelUpdate: cancelUpdateParent,
 } = useUpdate();
 </script>

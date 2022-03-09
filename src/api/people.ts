@@ -13,6 +13,7 @@ import { searchEmploymentByNumber } from "@/api/employment";
 import { getDepartmentByNumber } from "@/api/department";
 import { searchExperiencesByNumber } from "@/api/experiences";
 import { toArray } from "@/utils/filter";
+import { Relation } from "@/@types/model";
 
 export const getPeopleListTotal = () => {
   return axios({
@@ -147,14 +148,6 @@ interface Relationship {
   CPaternity: Paternity[];
   FPaternity: Paternity;
   Spouse: Spouse[];
-}
-
-interface Relation {
-  sup: People[];
-  sub: People[];
-  cPaternity: People[];
-  fPaternity?: People;
-  spouse: People[];
 }
 
 export const getPeopleDetail = async (people: People) => {

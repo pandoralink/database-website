@@ -41,7 +41,7 @@
       "
     >
       <!-- TODO: 部分路由需要做 keep-alive -->
-      <router-view />
+      <router-view :key="$route.fullPath" />
     </el-col>
   </el-row>
 </template>
