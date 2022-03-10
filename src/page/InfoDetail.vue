@@ -8,6 +8,13 @@
       <el-button type="primary" :icon="Edit" @click="updateParent"
         >更新父母
       </el-button>
+      <el-button type="primary" :icon="Edit" @click="updateDepartment"
+        >部门
+      </el-button>
+      <el-button type="primary" :icon="Edit" @click="toSpouse">配偶</el-button>
+      <el-button type="primary" :icon="Edit" @click="updateDepartment"
+        >子女
+      </el-button>
     </template>
   </content-header>
   <div class="base-content new">
@@ -42,7 +49,7 @@
         title="人物关系"
         v-if="
           relation.cPaternity?.length > 0 ||
-          relation.fPaternity !== null ||
+          relation.fPaternity ||
           relation.spouse?.length > 0
         "
       >
@@ -91,21 +98,16 @@
           ></tag-detail>
         </template>
       </i-tag>
-      <div>
-        <el-tag effect="dark" size="large"> 所属部门</el-tag>
-        <br />
-        <!-- 可以考虑使用 v-for 遍历人物关系 -->
-        <div class="employ-relation" @click="toDepartmentDetail">
-          <div class="employ-relation-detail">
-            <img
-              :src="depart.image"
-              style="width: 60px; height: 60px; border-radius: 30px"
-            />
-            <br />
-            <span>{{ depart.name }}</span>
-          </div>
-        </div>
-      </div>
+      <i-tag title="所属部门" v-if="depart">
+        <template #content>
+          <tag-detail
+            @click="toDepartmentDetail"
+            :img="depart.image"
+            :content="depart.name"
+            round
+          ></tag-detail>
+        </template>
+      </i-tag>
     </div>
     <div
       class="detail-row"
@@ -176,8 +178,10 @@ import { useUpdate } from "@/mixins/update";
 import ExperienceDialog from "@/components/dialog/ExperienceDialog.vue";
 import TagDetail from "@/components/detail/TagDetail.vue";
 import ITag from "@/components/detail/ITag.vue";
-import { Relation } from "@/@types/model";
+import { Relation, Relationship } from "@/@types/model";
 import ParentDialog from "@/components/dialog/ParentDialog.vue";
+import { ElMessage } from "element-plus";
+import { useSpouseStore } from "@/store/spouse";
 
 const list: People[] = [];
 
@@ -186,26 +190,31 @@ const people = peopleStore.people;
 list.push(people);
 let peopleDetail = ref<PeopleDetail>(Object.assign({}, people));
 
-const depart = ref<Department>({} as Department);
+const depart = ref<Department | undefined>();
 const paternity = ref<People[]>([]);
 const relation = ref<Relation>({} as Relation);
+const relationship = ref<Relationship>({} as Relationship);
 
 const init = async () => {
   const {
     detail,
     department,
-    relation: relationship,
+    relation: relationOnPeople,
+    relationship: originRelation,
   } = await getPeopleDetail(people);
   depart.value = department;
   peopleDetail.value = Object.assign({}, peopleDetail, detail);
-  relation.value = relationship;
+  relation.value = relationOnPeople;
+  relationship.value = originRelation;
 };
 init();
 
 const router = useRouter();
 const toDepartmentDetail = () => {
   const departmentStore = useDepartmentStore();
-  departmentStore.updateDepartment(depart.value);
+  if (depart.value) {
+    departmentStore.updateDepartment(depart.value);
+  }
   router.push("/departDetail");
 };
 const toPeopleDetail = (people: People) => {
@@ -233,4 +242,15 @@ const {
   confirmUpdate: confirmUpdateParent,
   cancelUpdate: cancelUpdateParent,
 } = useUpdate();
+const updateDepartment = () => {
+  ElMessage.info("暂未开发");
+};
+const toSpouse = () => {
+  const spouseStore = useSpouseStore();
+  spouseStore.updateSpouseName(people.name);
+  if (relationship.value.Spouse) {
+    spouseStore.updateSpouse(relationship.value.Spouse);
+  }
+  router.push("/spouse");
+};
 </script>

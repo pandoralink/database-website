@@ -106,6 +106,16 @@ const routes: Array<RouteRecordRaw> = [
         name: "militaryEquipment",
         component: MilitaryEquipment,
       },
+      {
+        path: "/spouse",
+        name: "spouse",
+        component: () => import("@/components/table/Spouse.vue"),
+      },
+      {
+        path: "/paternity",
+        name: "paternity",
+        component: () => import("@/components/table/Paternity.vue"),
+      },
     ],
   },
 ];

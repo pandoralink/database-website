@@ -1,5 +1,6 @@
 import axios from "@/utils/axios";
 import {
+  Department,
   Employment,
   Experiences,
   Hierarchy,
@@ -12,8 +13,7 @@ import { searchPaternityByFId } from "@/api/paternity";
 import { searchEmploymentByNumber } from "@/api/employment";
 import { getDepartmentByNumber } from "@/api/department";
 import { searchExperiencesByNumber } from "@/api/experiences";
-import { toArray } from "@/utils/filter";
-import { Relation } from "@/@types/model";
+import { Relation, Relationship } from "@/@types/model";
 
 export const getPeopleListTotal = () => {
   return axios({
@@ -135,21 +135,6 @@ export const getPeopleRelationship = (number: string) => {
   });
 };
 
-/**
- * SupHierarchy: 上级人物
- * SubHierarchy: 下级人物
- * CPaternity:子女
- * FPaternity: 父母
- * Spouse: 配偶
- */
-interface Relationship {
-  SupHierarchy: Hierarchy[];
-  SubHierarchy: Hierarchy[];
-  CPaternity: Paternity[];
-  FPaternity: Paternity;
-  Spouse: Spouse[];
-}
-
 export const getPeopleDetail = async (people: People) => {
   const res: Relation = {
     sup: [],
@@ -164,7 +149,9 @@ export const getPeopleDetail = async (people: People) => {
       const { data } = await getPeopleById(
         relationship.SupHierarchy[i].superIDnumber
       );
-      res.sup.push(data);
+      if (data) {
+        res.sup.push(data);
+      }
     }
   }
   if (relationship.SubHierarchy.length > 0) {
@@ -198,7 +185,13 @@ export const getPeopleDetail = async (people: People) => {
   }
   const { data: employment } = await searchEmploymentByNumber(people.number);
   const employ = employment as Employment;
-  const { data: department } = await getDepartmentByNumber(employ.dpNUmber);
+  let department: Department | undefined;
+  try {
+    const { data: depart } = await getDepartmentByNumber(employ.dpNUmber);
+    department = depart;
+  } catch (e) {
+    console.log(e);
+  }
   const { data: experience } = await searchExperiencesByNumber(people.number);
   return {
     detail: Object.assign(
@@ -209,5 +202,6 @@ export const getPeopleDetail = async (people: People) => {
     ) as PeopleDetail,
     department: department,
     relation: res,
+    relationship: relationship,
   };
 };
