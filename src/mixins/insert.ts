@@ -13,6 +13,9 @@ export function useInsert<T>(
 ) {
   // const insertOb = shallowRef<T>({} as T);
   const insertOb = ref({}) as Ref<T>;
+  const setInsertOb = (value: T) => {
+    insertOb.value = value;
+  };
   const isOpen = ref(false);
   const insert = () => (isOpen.value = true);
   const cancelInsert = () => (isOpen.value = false);
@@ -38,5 +41,6 @@ export function useInsert<T>(
     insert,
     cancelInsert,
     confirmInsert,
+    setInsertOb,
   };
 }

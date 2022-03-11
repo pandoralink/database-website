@@ -17,13 +17,16 @@ export const updateHierarchy = (data: Hierarchy) => {
   });
 };
 
-export const deletepHierarchy = (superID: string, subordID: string) => {
+export const deletepHierarchy = (
+  SuperIDnumber: string,
+  SubordIDnumber: string
+) => {
   return axios({
     url: "/hierarchy/delete",
     method: "delete",
     params: {
-      superID,
-      subordID,
+      SuperIDnumber,
+      SubordIDnumber,
     },
   });
 };

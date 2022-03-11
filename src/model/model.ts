@@ -121,13 +121,6 @@ export interface Bug {
   auther: string;
 }
 
-export interface Paternity {
-  Fname: string;
-  Fnumber: string;
-  Cname: string;
-  Cnumber: string;
-}
-
 export interface Experiences {
   eventDetails: string;
   name: string;

@@ -2,32 +2,32 @@
   <base-dialog title="父母" @close="close" @confirm="confirm">
     <template #content>
       <el-form ref="form" :model="data" label-width="80px">
-        <el-form-item label="配偶">
+        <el-form-item label="上级名称">
           <el-input
-            v-model="data.mname"
-            placeholder="配偶名称"
-            :disabled="data.mname === spouseName"
+            v-model="data.supername"
+            placeholder="上级名称"
+            :disabled="type === 'sup'"
           ></el-input>
         </el-form-item>
-        <el-form-item label="配偶身份证">
+        <el-form-item label="上级身份证">
           <el-input
-            v-model="data.midnumber"
-            placeholder="配偶身份证"
-            :disabled="data.mname === spouseName"
+            v-model="data.superIDnumber"
+            placeholder="上级身份证"
+            :disabled="type === 'sup'"
           ></el-input>
         </el-form-item>
-        <el-form-item label="配偶">
+        <el-form-item label="下级名称">
           <el-input
-            v-model="data.wname"
-            placeholder="配偶名称"
-            :disabled="data.wname === spouseName"
+            v-model="data.subordName"
+            placeholder="下级名称"
+            :disabled="type === 'sub'"
           ></el-input>
         </el-form-item>
-        <el-form-item label="配偶身份证">
+        <el-form-item label="下级身份证">
           <el-input
-            v-model="data.widnumber"
-            placeholder="配偶身份证"
-            :disabled="data.wname === spouseName"
+            v-model="data.subordIDnumber"
+            placeholder="下级身份证"
+            :disabled="type === 'sub'"
           ></el-input>
         </el-form-item>
       </el-form>
@@ -35,18 +35,18 @@
   </base-dialog>
 </template>
 <script lang="ts" setup>
-import { Spouse } from "@/model/model";
+import { Hierarchy, Spouse } from "@/model/model";
 import { ref, toRefs, watch } from "vue";
 import BaseDialog from "../BaseDialog.vue";
 
 const props = defineProps<{
-  form: Spouse;
-  spouseName?: string;
+  form: Hierarchy;
+  type: "sup" | "sub";
 }>();
 
 const emits = defineEmits<{
   (e: "close"): void;
-  (e: "confirm", data: Spouse): void;
+  (e: "confirm", data: Hierarchy): void;
 }>();
 
 function close() {
@@ -59,7 +59,7 @@ function confirm() {
 
 const { form } = toRefs(props);
 
-const data = ref({} as Spouse);
+const data = ref({} as Hierarchy);
 const updateData = () => {
   data.value = Object.assign({}, props.form);
 };

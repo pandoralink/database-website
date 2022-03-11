@@ -1,19 +1,27 @@
 <template>
   <content-header :show-filter="false">
     <template #right>
-      <el-button type="primary" :icon="Edit" @click="update">更新</el-button>
-      <el-button type="primary" :icon="Edit" @click="updateExperiences"
+      <el-button type="primary" :icon="Edit" @click="update"
+        >个人信息
+      </el-button>
+      <el-button type="primary" :icon="Edit" @click="updateExperience"
         >个人经历
       </el-button>
       <el-button type="primary" :icon="Edit" @click="updateParent"
-        >更新父母
+        >父母
       </el-button>
       <el-button type="primary" :icon="Edit" @click="updateDepartment"
         >部门
       </el-button>
       <el-button type="primary" :icon="Edit" @click="toSpouse">配偶</el-button>
-      <el-button type="primary" :icon="Edit" @click="updateDepartment"
+      <el-button type="primary" :icon="Edit" @click="toChildrenPaternity"
         >子女
+      </el-button>
+      <el-button type="primary" :icon="Edit" @click="toSupHierarchy"
+        >上级
+      </el-button>
+      <el-button type="primary" :icon="Edit" @click="toSubHierarchy"
+        >下级
       </el-button>
     </template>
   </content-header>
@@ -147,7 +155,7 @@
     v-model="isUpdate"
     :form="peopleDetail"
     @close="cancelUpdate"
-    @confirm="confirmUpdate"
+    @confirm="confirmPeopleUpdate"
   />
   <experience-dialog
     v-model="isUpdateExperiences"
@@ -166,11 +174,17 @@
 <script setup lang="ts">
 import { Edit } from "@element-plus/icons";
 import { ref } from "vue";
-import { People, PeopleDetail, Department } from "../model/model";
+import {
+  People,
+  PeopleDetail,
+  Department,
+  Paternity,
+  Experiences,
+} from "../model/model";
 import BaseListItem from "../components/BaseListItem.vue";
 import { useRouter } from "vue-router";
 import { usePeopleStore } from "@/store/people";
-import { getPeopleDetail } from "@/api/people";
+import { getPeopleDetail, updatePeople } from "@/api/people";
 import ContentHeader from "@/components/ContentHeader.vue";
 import { useDepartmentStore } from "@/store/department";
 import PeopleDialog from "@/components/dialog/PeopleDialog.vue";
@@ -182,12 +196,16 @@ import { Relation, Relationship } from "@/@types/model";
 import ParentDialog from "@/components/dialog/ParentDialog.vue";
 import { ElMessage } from "element-plus";
 import { useSpouseStore } from "@/store/spouse";
+import { usePeopleDetailStore } from "@/store/peopledetail";
+import { usePaternityStore } from "@/store/paternity";
+import { Result } from "@/@types/http";
+import { updateExperiences } from "@/api/experiences";
 
-const list: People[] = [];
+const list = ref<People[]>([]);
 
 const peopleStore = usePeopleStore();
 const people = peopleStore.people;
-list.push(people);
+list.value.push(people);
 let peopleDetail = ref<PeopleDetail>(Object.assign({}, people));
 
 const depart = ref<Department | undefined>();
@@ -226,22 +244,41 @@ const toPeopleDetail = (people: People) => {
       t: +new Date(),
     },
   });
-  // router.push(`/infoDetail/${people.name}`);
 };
 
-const { isUpdate, update, confirmUpdate, cancelUpdate } = useUpdate();
+const { isUpdate, update, cancelUpdate } = useUpdate();
+const confirmPeopleUpdate = async (updateOb: People) => {
+  cancelUpdate();
+  const { data } = await updatePeople(updateOb);
+  const res = data as Result;
+  if (res.code === 0) {
+    list.value[0] = updateOb;
+    ElMessage.success(res.msg);
+  } else ElMessage.error("操作失败，请重试");
+};
 const {
   isUpdate: isUpdateExperiences,
-  update: updateExperiences,
-  confirmUpdate: confirmUpdateExperiences,
+  update: updateExperience,
   cancelUpdate: cancelUpdateExperiences,
 } = useUpdate();
+const confirmUpdateExperiences = async (updateOb: Experiences) => {
+  cancelUpdateExperiences();
+  const { data } = await updateExperiences(updateOb);
+  const res = data as Result;
+  if (res.code === 0) {
+    peopleDetail.value = { ...peopleDetail.value, ...updateOb };
+    // Object.assign() peopleDetail.value
+    ElMessage.success(res.msg);
+  } else ElMessage.error("操作失败，请重试");
+};
 const {
   isUpdate: isUpdateParent,
-  update: updateParent,
   confirmUpdate: confirmUpdateParent,
   cancelUpdate: cancelUpdateParent,
 } = useUpdate();
+const updateParent = () => {
+  ElMessage.info("接口暂存争议");
+};
 const updateDepartment = () => {
   ElMessage.info("暂未开发");
 };
@@ -252,5 +289,25 @@ const toSpouse = () => {
     spouseStore.updateSpouse(relationship.value.Spouse);
   }
   router.push("/spouse");
+};
+const toSupHierarchy = () => {
+  const peopleDetailStore = usePeopleDetailStore();
+  peopleDetailStore.updateHierarchy(relationship.value.SupHierarchy);
+  peopleDetailStore.updatePeople(people);
+  peopleDetailStore.updateType("sub");
+  router.push("/supHierarchy");
+};
+const toSubHierarchy = () => {
+  const peopleDetailStore = usePeopleDetailStore();
+  peopleDetailStore.updateHierarchy(relationship.value.SubHierarchy);
+  peopleDetailStore.updatePeople(people);
+  peopleDetailStore.updateType("sup");
+  router.push("/supHierarchy");
+};
+const toChildrenPaternity = () => {
+  const peopleDetailStore = usePaternityStore();
+  peopleDetailStore.updatePaternity(relationship.value.CPaternity);
+  peopleDetailStore.updatePeople(people);
+  router.push("/paternity");
 };
 </script>

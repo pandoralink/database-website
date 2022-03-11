@@ -9,7 +9,6 @@ import {
   PeopleDetail,
   Spouse,
 } from "@/model/model";
-import { searchPaternityByFId } from "@/api/paternity";
 import { searchEmploymentByNumber } from "@/api/employment";
 import { getDepartmentByNumber } from "@/api/department";
 import { searchExperiencesByNumber } from "@/api/experiences";
@@ -26,6 +25,14 @@ export const insertPeople = (data: People) => {
   return axios({
     url: "/people/insert",
     method: "post",
+    data,
+  });
+};
+
+export const updatePeople = (data: People) => {
+  return axios({
+    url: "/people/update",
+    method: "put",
     data,
   });
 };
@@ -74,17 +81,6 @@ export const getPeopleById = (number: string) => {
 export const getPeopleEventDetailsById = (number: string) => {
   return axios({
     url: "/experiences/get",
-    method: "get",
-    params: {
-      number,
-    },
-  });
-};
-
-// TODO: 疑似没有提供给单个 people 找部门的功能
-export const getPeopleDepartmentsById = (number: string) => {
-  return axios({
-    url: "/department/selectByNumber",
     method: "get",
     params: {
       number,

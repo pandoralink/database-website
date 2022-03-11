@@ -2,7 +2,7 @@
   <content-header
     :show-filter="false"
     :show-del="false"
-    @insert="insert"
+    @insert="insertOnSpouse"
   ></content-header>
   <div class="base-content">
     <el-table :data="list" style="width: 100%" :border="true">
@@ -29,8 +29,9 @@
   <spouse-dialog
     v-model="isOpen"
     :form="insertOb"
+    :spouse-name="spouseName"
     @close="cancelInsert"
-    @confirm="confirmInsert"
+    @confirm="confirmInsertOnSpouse"
   />
   <spouse-dialog
     v-model="isUpdate"
@@ -42,47 +43,63 @@
 </template>
 
 <script lang="ts" setup>
-import { deleteBug } from "@/api/bug";
 import ContentHeader from "@/components/ContentHeader.vue";
-import { Bug, Spouse } from "@/model/model";
-import { FormMethod } from "@/types";
+import { Spouse } from "@/model/model";
 import { ElMessage } from "element-plus";
 import { ref } from "vue";
 import { Result } from "@/@types/http";
 import { useSpouseStore } from "@/store/spouse";
 import { useInsert } from "@/mixins/insert";
-import { insertSpouse, updateSpouse } from "@/api/spouse";
+import { deleteSpouse, insertSpouse, updateSpouse } from "@/api/spouse";
 import SpouseDialog from "@/components/dialog/SpouseDialog.vue";
 import { useUpdateOnTable } from "@/mixins/table/update";
 
 const list = ref<Spouse[]>([]);
 
 const spouseStore = useSpouseStore();
-const spouseName = spouseStore.spouseName;
 list.value = spouseStore.spouse;
-let formValue = ref<Bug>({} as Bug);
-let methodType = ref<FormMethod>("insert");
+const spouseName = spouseStore.spouseName;
+let spouseNumber = "";
+// 这段配偶关系中不会被修改的角色性别
+let gender = "";
+for (const spouse of list.value) {
+  if (spouse.mname === spouseName) {
+    gender = "m";
+    spouseNumber = spouse.midnumber;
+    break;
+  }
+  if (spouse.wname === spouseName) {
+    gender = "w";
+    spouseNumber = spouse.widnumber;
+    break;
+  }
+}
 
-const { insertOb, isOpen, cancelInsert, confirmInsert, insert } = useInsert(
-  list,
-  insertSpouse
-);
-
-const { updateOb, isUpdate, update, confirmUpdate, cancelUpdate } =
-  useUpdateOnTable(list, updateSpouse);
-
-const del = async (value: Bug, index: number) => {
-  const { data } = await deleteBug(value.url);
+const { insertOb, isOpen, cancelInsert, confirmInsert, insert, setInsertOb } =
+  useInsert(list, insertSpouse);
+const insertOnSpouse = () => {
+  setInsertOb({
+    widnumber: gender === "w" ? spouseNumber : "",
+    wname: gender === "w" ? spouseName : "",
+    mname: gender === "m" ? spouseName : "",
+    midnumber: gender === "m" ? spouseNumber : "",
+  });
+  insert();
+};
+const confirmInsertOnSpouse = (spouse: Spouse) => {
+  setInsertOb(spouse);
+  confirmInsert();
+};
+const del = async (value: Spouse, index: number) => {
+  const { data } = await deleteSpouse(
+    spouseName === value.mname ? value.midnumber : value.widnumber
+  );
   const res = data as Result;
   if (res.code === 0) {
     list.value.splice(index, 1);
     ElMessage.success(res.msg);
   } else ElMessage.error("操作失败，请重试");
 };
-
-// const changeFormValue = (bug: Bug, type: FormMethod, index?: number) => {
-//   isOpen.value = false;
-//   if (type === "insert") insertData(bug);
-//   else updateData(bug, index as number);
-// };
+const { updateOb, isUpdate, update, confirmUpdate, cancelUpdate } =
+  useUpdateOnTable(list, updateSpouse);
 </script>

@@ -2,7 +2,7 @@
   <content-header
     :show-filter="false"
     :show-del="false"
-    @insert="insert"
+    @insert="insertOnPaternity"
   ></content-header>
   <div class="base-content">
     <el-table :data="list" style="width: 100%" :border="true">
@@ -26,93 +26,64 @@
       </el-table-column>
     </el-table>
   </div>
-  <bug-dialog
+  <paternity-dialog
     v-model="isOpen"
-    :form-value="formValue"
-    :method-type="methodType"
-    :index="updateDataIndex"
-    @close="close"
-    @confirm="changeFormValue"
-  ></bug-dialog>
+    :type="'parent'"
+    :form="insertOb"
+    @close="cancelInsert"
+    @confirm="confirmInsertOnPaternity"
+  />
+  <paternity-dialog
+    v-model="isUpdate"
+    :type="'parent'"
+    :form="updateOb"
+    @close="cancelUpdate"
+    @confirm="confirmUpdate"
+  />
 </template>
 
 <script lang="ts" setup>
-import {
-  getBugList,
-  searchBugByAuthor,
-  insertBug,
-  deleteBug,
-  updateBug,
-  getReptileListTotal,
-  updateBugState,
-} from "@/api/bug";
 import ContentHeader from "@/components/ContentHeader.vue";
-import BugDialog from "@/components/dialog/BugDialog.vue";
-import { FilterBug } from "@/model/filter";
-import { Bug, Paternity, People, PeopleDetail } from "@/model/model";
-import { FormMethod } from "@/types";
-import { ElMessage } from "element-plus";
-import { ref, watch } from "vue";
-import { Result } from "@/@types/http";
-import { isEmpty, toArray } from "@/utils/filter";
-import { useGetList } from "@/mixins/useGetList";
-import { usePeopleStore } from "@/store/people";
-import { useSpouseStore } from "@/store/spouse";
+import { Paternity } from "@/model/model";
+import { ref } from "vue";
+import { usePaternityStore } from "@/store/paternity";
+import { useInsert } from "@/mixins/insert";
+import { insertPaternity, updatePaternity } from "@/api/paternity";
+import PaternityDialog from "@/components/dialog/PaternityDialog.vue";
+import { useUpdateOnTable } from "@/mixins/table/update";
 
 const list = ref<Paternity[]>([]);
 
-const spouseStore = useSpouseStore();
-list.value = spouseStore.spouse;
-let formValue = ref<Bug>({} as Bug);
-let methodType = ref<FormMethod>("insert");
-const updateDataIndex = ref(0);
+const paternityStore = usePaternityStore();
+const people = paternityStore.people;
+list.value = paternityStore.paternity;
 
-const isOpen = ref(false);
-const insert = () => {
-  isOpen.value = true;
-  formValue.value = {} as Bug;
-  methodType.value = "insert";
+const { insertOb, isOpen, cancelInsert, confirmInsert, insert, setInsertOb } =
+  useInsert(list, insertPaternity);
+const insertOnPaternity = () => {
+  // 默认使用 Paternity.vue 的只有父母不可修改
+  setInsertOb({
+    cnumber: "",
+    cname: "",
+    fname: people.name,
+    fnumber: people.number,
+  });
+  insert();
 };
-const insertData = async (value: Bug) => {
-  const { data } = await insertBug(value);
-  const res = data as Result;
-  if (res.code === 0) {
-    list.value.unshift(value);
-    if (list.value.length === 10) list.value.pop();
-    ElMessage.success(res.msg);
-  } else ElMessage.error("操作失败，请重试");
-};
-
-const update = (index: number) => {
-  isOpen.value = true;
-  formValue.value = list.value[index];
-  methodType.value = "update";
-  updateDataIndex.value = index;
-};
-const updateData = async (value: Bug, index: number) => {
-  const { data } = await updateBug(value);
-  const res = data as Result;
-  if (res.code === 0) {
-    list.value[index] = value;
-    ElMessage.success(res.msg);
-  } else ElMessage.error("操作失败，请重试");
+const confirmInsertOnPaternity = (paternity: Paternity) => {
+  setInsertOb(paternity);
+  confirmInsert();
 };
 
-const del = async (value: Bug, index: number) => {
-  const { data } = await deleteBug(value.url);
-  const res = data as Result;
-  if (res.code === 0) {
-    list.value.splice(index, 1);
-    ElMessage.success(res.msg);
-  } else ElMessage.error("操作失败，请重试");
-};
+// const del = async (value: Paternity, index: number) => {
+//   const { data } = await deletePaternity(value.url);
+//   const res = data as Result;
+//   if (res.code === 0) {
+//     list.value.splice(index, 1);
+//     ElMessage.success(res.msg);
+//   } else ElMessage.error("操作失败，请重试");
+// };
 
-const changeFormValue = (bug: Bug, type: FormMethod, index?: number) => {
-  isOpen.value = false;
-  if (type === "insert") insertData(bug);
-  else updateData(bug, index as number);
-};
-const close = () => {
-  isOpen.value = false;
-};
+const { updateOb, isUpdate, update, confirmUpdate, cancelUpdate } =
+  useUpdateOnTable(list, updatePaternity);
 </script>
