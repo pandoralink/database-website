@@ -180,13 +180,15 @@ export const getPeopleDetail = async (people: People) => {
     }
   }
   const { data: employment } = await searchEmploymentByNumber(people.number);
-  const employ = employment as Employment;
   let department: Department | undefined;
-  try {
-    const { data: depart } = await getDepartmentByNumber(employ.dpNUmber);
-    department = depart;
-  } catch (e) {
-    console.log(e);
+  if (employment) {
+    const employ = employment as Employment;
+    try {
+      const { data: depart } = await getDepartmentByNumber(employ.dpNUmber);
+      department = depart;
+    } catch (e) {
+      console.log(e);
+    }
   }
   const { data: experience } = await searchExperiencesByNumber(people.number);
   return {

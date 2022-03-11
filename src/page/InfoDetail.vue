@@ -277,6 +277,7 @@ const updateDepartment = () => {
   ElMessage.info("暂未开发");
 };
 const toSpouse = () => {
+  debugger;
   const spouseStore = useSpouseStore();
   spouseStore.updateSpouseName(people.name);
   if (relationship.value.Spouse) {

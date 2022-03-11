@@ -5,7 +5,7 @@ import { ref } from "vue";
 /**
  * 上下级信息的 store
  */
-export const usePeopleDetailStore = defineStore("spouse", () => {
+export const usePeopleDetailStore = defineStore("Hierarchy", () => {
   const hierarchy = ref<Hierarchy[]>([]);
   const updateHierarchy = (data: Hierarchy[]) => {
     hierarchy.value = data;
