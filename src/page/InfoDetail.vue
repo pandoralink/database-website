@@ -174,13 +174,7 @@
 <script setup lang="ts">
 import { Edit } from "@element-plus/icons";
 import { ref } from "vue";
-import {
-  People,
-  PeopleDetail,
-  Department,
-  Paternity,
-  Experiences,
-} from "../model/model";
+import { People, PeopleDetail, Department, Experiences } from "../model/model";
 import BaseListItem from "../components/BaseListItem.vue";
 import { useRouter } from "vue-router";
 import { usePeopleStore } from "@/store/people";

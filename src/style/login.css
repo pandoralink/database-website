@@ -35,7 +35,7 @@
     top: 50%;
     left: 50%;
     -webkit-transform: translate(-50%, -50%);
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
     width: 65%;
     z-index: 5;
     -webkit-transition: all .3s ease;
@@ -91,9 +91,6 @@
 /* 当 box-sizing: border-box 时，padding, border, margin 会被算在 width 和 height 里面 */
 .login-input input {
     border: 0;
-    border-bottom: 1px solid #eee;
-    height: 46px;
-    padding: 8px 11px;
 }
 
 .form-structure .signup .form-holder .input:last-child {
@@ -168,7 +165,6 @@
     visibility: visible;
     -webkit-transition: all .3s ease;
 }
-
 
 
 .form-structure .login .center .form-holder .input:last-child {

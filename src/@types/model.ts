@@ -22,3 +22,12 @@ export interface Relationship {
   FPaternity: Paternity;
   Spouse: Spouse[];
 }
+
+/**
+ * jurisdiction: 验证码？
+ */
+export interface User {
+  user: string;
+  password: string;
+  jurisdiction?: string;
+}
