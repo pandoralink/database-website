@@ -53,16 +53,6 @@ export interface PeopleDetails extends People {
   spouse: string;
 }
 
-/**
- * 我不是很明白为啥叫这个
- */
-export interface Paternity {
-  fnumber: string;
-  cnumber: string;
-  fname: string;
-  cname: string;
-}
-
 export interface Department extends BaseItem {
   name: string;
   position: string;
@@ -93,13 +83,6 @@ export interface News extends BaseItem {
   author: string;
 }
 
-export interface UserInfo {
-  name: string;
-  password: string;
-  age: number;
-  phone: string;
-}
-
 export interface NewResult {
   data: {
     code: number;
@@ -121,6 +104,13 @@ export interface Bug {
   auther: string;
 }
 
+export interface Paternity {
+  Fnumber: string;
+  Cnumber: string;
+  Fname: string;
+  Cname: string;
+}
+
 export interface Experiences {
   eventDetails: string;
   name: string;
@@ -131,10 +121,10 @@ export interface Experiences {
 }
 
 export interface Spouse {
-  mname: string;
-  midnumber: string;
-  wname: string;
-  widnumber: string;
+  Mname: string;
+  MIDnumber: string;
+  Wname: string;
+  WIDnumber: string;
 }
 
 export interface Physiological {
@@ -148,10 +138,10 @@ export interface Physiological {
 }
 
 export interface Hierarchy {
-  superIDnumber: string;
-  subordName: string;
-  supername: string;
-  subordIDnumber: string;
+  Supername: string;
+  SuperIDnumber: string;
+  SubordName: string;
+  SubordIDnumber: string;
 }
 
 export interface Employment {

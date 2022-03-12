@@ -5,28 +5,28 @@
       <el-form ref="form" :model="data" label-width="80px">
         <el-form-item label="父母名称">
           <el-input
-            v-model="data.fname"
+            v-model="data.Fname"
             placeholder="父母名称"
             :disabled="type === 'parent'"
           ></el-input>
         </el-form-item>
         <el-form-item label="父母身份证">
           <el-input
-            v-model="data.fnumber"
+            v-model="data.Fnumber"
             placeholder="父母身份证"
             :disabled="type === 'parent'"
           ></el-input>
         </el-form-item>
         <el-form-item label="子女名称">
           <el-input
-            v-model="data.cname"
+            v-model="data.Cname"
             placeholder="子女名称"
             :disabled="type === 'children'"
           ></el-input>
         </el-form-item>
         <el-form-item label="子女身份证">
           <el-input
-            v-model="data.cnumber"
+            v-model="data.Cnumber"
             placeholder="子女身份证"
             :disabled="type === 'children'"
           ></el-input>

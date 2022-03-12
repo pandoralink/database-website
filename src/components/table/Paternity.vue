@@ -7,10 +7,10 @@
   <div class="base-content">
     <el-table :data="list" style="width: 100%" :border="true">
       <el-table-column type="index" label="序号" width="60" />
-      <el-table-column prop="fname" label="父母名称"></el-table-column>
-      <el-table-column prop="fnumber" label="父母身份证"></el-table-column>
-      <el-table-column prop="cname" label="子女名称"></el-table-column>
-      <el-table-column prop="cnumber" label="子女身份证"></el-table-column>
+      <el-table-column prop="Fname" label="父母名称"></el-table-column>
+      <el-table-column prop="Fnumber" label="父母身份证"></el-table-column>
+      <el-table-column prop="Cname" label="子女名称"></el-table-column>
+      <el-table-column prop="Cnumber" label="子女身份证"></el-table-column>
       <el-table-column label="操作">
         <template #default="scope">
           <el-button type="primary" round @click="update(scope.$index)"
@@ -48,14 +48,21 @@ import { Paternity } from "@/model/model";
 import { ref } from "vue";
 import { usePaternityStore } from "@/store/paternity";
 import { useInsert } from "@/mixins/insert";
-import { insertPaternity, updatePaternity } from "@/api/paternity";
+import {
+  deletePaternity,
+  insertPaternity,
+  updatePaternity,
+} from "@/api/paternity";
 import PaternityDialog from "@/components/dialog/PaternityDialog.vue";
 import { useUpdateOnTable } from "@/mixins/table/update";
+import { Result } from "@/@types/http";
+import { ElMessage } from "element-plus";
 
 const list = ref<Paternity[]>([]);
 
 const paternityStore = usePaternityStore();
 const people = paternityStore.people;
+const type = paternityStore.type;
 list.value = paternityStore.paternity;
 
 const { insertOb, isOpen, cancelInsert, confirmInsert, insert, setInsertOb } =
@@ -63,10 +70,10 @@ const { insertOb, isOpen, cancelInsert, confirmInsert, insert, setInsertOb } =
 const insertOnPaternity = () => {
   // 默认使用 Paternity.vue 的只有父母不可修改
   setInsertOb({
-    cnumber: "",
-    cname: "",
-    fname: people.name,
-    fnumber: people.number,
+    Cnumber: "",
+    Cname: "",
+    Fname: people.name,
+    Fnumber: people.number,
   });
   insert();
 };
@@ -75,14 +82,16 @@ const confirmInsertOnPaternity = (paternity: Paternity) => {
   confirmInsert();
 };
 
-// const del = async (value: Paternity, index: number) => {
-//   const { data } = await deletePaternity(value.url);
-//   const res = data as Result;
-//   if (res.code === 0) {
-//     list.value.splice(index, 1);
-//     ElMessage.success(res.msg);
-//   } else ElMessage.error("操作失败，请重试");
-// };
+const del = async (value: Paternity, index: number) => {
+  const { data } = await deletePaternity(
+    type === "parent" ? value.Cnumber : value.Fnumber
+  );
+  const res = data as Result;
+  if (res.code === 0) {
+    list.value.splice(index, 1);
+    ElMessage.success(res.msg);
+  } else ElMessage.error("操作失败，请重试");
+};
 
 const { updateOb, isUpdate, update, confirmUpdate, cancelUpdate } =
   useUpdateOnTable(list, updatePaternity);

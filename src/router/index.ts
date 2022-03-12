@@ -11,7 +11,6 @@ const BugManage = () => import("../page/BugManage.vue");
 const EquipmentDetail = () => import("../page/EquipmentDetail.vue");
 const DepartDetail = () => import("../page/DepartDetail.vue");
 const InfoDetail = () => import("../page/InfoDetail.vue");
-const Login = () => import("../page/Login.vue");
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -61,11 +60,6 @@ const routes: Array<RouteRecordRaw> = [
         meta: { desc: "个人信息详情" },
       },
       {
-        path: "/departDetail",
-        component: DepartDetail,
-        meta: { desc: "部门" },
-      },
-      {
         path: "/equipmentDetail",
         component: EquipmentDetail,
         meta: { desc: "设备详情" },
@@ -79,6 +73,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "/department",
         component: department,
         meta: { desc: "部门" },
+      },
+      {
+        path: "/departDetail",
+        component: DepartDetail,
+        meta: { desc: "部门详情" },
       },
       {
         path: "/militaryNews",

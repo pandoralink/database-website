@@ -12,11 +12,17 @@ export const usePaternityStore = defineStore("Paternity", () => {
   const updatePeople = (data: People) => {
     people.value = data;
   };
+  const type = ref<"parent" | "children">("parent");
+  const updateType = (value: "parent" | "children") => {
+    type.value = value;
+  };
 
   return {
     paternity,
     updatePaternity,
     people,
     updatePeople,
+    type,
+    updateType,
   };
 });

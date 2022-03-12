@@ -7,10 +7,10 @@
   <div class="base-content">
     <el-table :data="list" style="width: 100%" :border="true">
       <el-table-column type="index" label="序号" width="60" />
-      <el-table-column prop="mname" label="丈夫"></el-table-column>
-      <el-table-column prop="midnumber" label="丈夫身份证"></el-table-column>
-      <el-table-column prop="wname" label="妻子"></el-table-column>
-      <el-table-column prop="widnumber" label="子女身份证"></el-table-column>
+      <el-table-column prop="Mname" label="丈夫"></el-table-column>
+      <el-table-column prop="MIDnumber" label="丈夫身份证"></el-table-column>
+      <el-table-column prop="Wname" label="妻子"></el-table-column>
+      <el-table-column prop="WIDnumber" label="子女身份证"></el-table-column>
       <el-table-column label="操作">
         <template #default="scope">
           <el-button type="primary" round @click="update(scope.$index)"
@@ -63,14 +63,14 @@ let spouseNumber = "";
 // 这段配偶关系中不会被修改的角色性别
 let gender = "";
 for (const spouse of list.value) {
-  if (spouse.mname === spouseName) {
+  if (spouse.Mname === spouseName) {
     gender = "m";
-    spouseNumber = spouse.midnumber;
+    spouseNumber = spouse.MIDnumber;
     break;
   }
-  if (spouse.wname === spouseName) {
+  if (spouse.Wname === spouseName) {
     gender = "w";
-    spouseNumber = spouse.widnumber;
+    spouseNumber = spouse.WIDnumber;
     break;
   }
 }
@@ -79,10 +79,10 @@ const { insertOb, isOpen, cancelInsert, confirmInsert, insert, setInsertOb } =
   useInsert(list, insertSpouse);
 const insertOnSpouse = () => {
   setInsertOb({
-    widnumber: gender === "w" ? spouseNumber : "",
-    wname: gender === "w" ? spouseName : "",
-    mname: gender === "m" ? spouseName : "",
-    midnumber: gender === "m" ? spouseNumber : "",
+    WIDnumber: gender === "w" ? spouseNumber : "",
+    Wname: gender === "w" ? spouseName : "",
+    Mname: gender === "m" ? spouseName : "",
+    MIDnumber: gender === "m" ? spouseNumber : "",
   });
   insert();
 };
@@ -92,7 +92,7 @@ const confirmInsertOnSpouse = (spouse: Spouse) => {
 };
 const del = async (value: Spouse, index: number) => {
   const { data } = await deleteSpouse(
-    spouseName === value.mname ? value.midnumber : value.widnumber
+    spouseName === value.Mname ? value.MIDnumber : value.WIDnumber
   );
   const res = data as Result;
   if (res.code === 0) {

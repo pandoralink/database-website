@@ -3,11 +3,8 @@ import {
   Department,
   Employment,
   Experiences,
-  Hierarchy,
-  Paternity,
   People,
   PeopleDetail,
-  Spouse,
 } from "@/model/model";
 import { searchEmploymentByNumber } from "@/api/employment";
 import { getDepartmentByNumber } from "@/api/department";
@@ -143,7 +140,7 @@ export const getPeopleDetail = async (people: People) => {
   if (relationship.SupHierarchy.length > 0) {
     for (let i = 0; i < relationship.SupHierarchy.length; i++) {
       const { data } = await getPeopleById(
-        relationship.SupHierarchy[i].superIDnumber
+        relationship.SupHierarchy[i].SuperIDnumber
       );
       if (data) {
         res.sup.push(data);
@@ -153,29 +150,33 @@ export const getPeopleDetail = async (people: People) => {
   if (relationship.SubHierarchy.length > 0) {
     for (let i = 0; i < relationship.SubHierarchy.length; i++) {
       const { data } = await getPeopleById(
-        relationship.SubHierarchy[i].subordIDnumber
+        relationship.SubHierarchy[i].SubordIDnumber
       );
       res.sub.push(data);
     }
   }
   if (relationship.CPaternity.length > 0) {
     for (let i = 0; i < relationship.CPaternity.length; i++) {
-      const { data } = await getPeopleById(relationship.CPaternity[i].cnumber);
+      const { data } = await getPeopleById(relationship.CPaternity[i].Cnumber);
       res.cPaternity.push(data);
     }
   }
   if (relationship.FPaternity !== null) {
-    const { data } = await getPeopleById(relationship.FPaternity.fnumber);
+    const { data } = await getPeopleById(relationship.FPaternity.Fnumber);
     res.fPaternity = data;
   }
   if (relationship.Spouse.length > 0) {
     for (let i = 0; i < relationship.Spouse.length; i++) {
-      if (relationship.Spouse[i].mname === people.name) {
-        const { data } = await getPeopleById(relationship.Spouse[i].widnumber);
-        res.spouse.push(data);
+      if (relationship.Spouse[i].Mname === people.name) {
+        const { data } = await getPeopleById(relationship.Spouse[i].WIDnumber);
+        if (data) {
+          res.spouse.push(data);
+        }
       } else {
-        const { data } = await getPeopleById(relationship.Spouse[i].midnumber);
-        res.spouse.push(data);
+        const { data } = await getPeopleById(relationship.Spouse[i].MIDnumber);
+        if (data) {
+          res.spouse.push(data);
+        }
       }
     }
   }

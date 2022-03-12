@@ -7,14 +7,14 @@
   <div class="base-content">
     <el-table :data="list" style="width: 100%" :border="true">
       <el-table-column type="index" label="序号" width="60" />
-      <el-table-column prop="supername" label="上级名称"></el-table-column>
+      <el-table-column prop="Supername" label="上级名称"></el-table-column>
       <el-table-column
-        prop="superIDnumber"
+        prop="SuperIDnumber"
         label="上级身份证"
       ></el-table-column>
-      <el-table-column prop="subordName" label="下级名称"></el-table-column>
+      <el-table-column prop="SubordName" label="下级名称"></el-table-column>
       <el-table-column
-        prop="subordIDnumber"
+        prop="SubordIDnumber"
         label="下级身份证"
       ></el-table-column>
       <el-table-column label="操作">
@@ -76,17 +76,17 @@ const { insertOb, isOpen, cancelInsert, confirmInsert, insert, setInsertOb } =
 const insertOnHierarchy = () => {
   if (peopleDetailStore.type === "sup") {
     setInsertOb({
-      subordIDnumber: "",
-      subordName: "",
-      supername: people.name,
-      superIDnumber: people.number,
+      SubordIDnumber: "",
+      SubordName: "",
+      Supername: people.name,
+      SuperIDnumber: people.number,
     });
   } else {
     setInsertOb({
-      subordIDnumber: people.name,
-      subordName: people.number,
-      supername: "",
-      superIDnumber: "",
+      SubordIDnumber: people.name,
+      SubordName: people.number,
+      Supername: "",
+      SuperIDnumber: "",
     });
   }
   insert();
@@ -97,8 +97,8 @@ const confirmInsertOnHierarchy = (hierarchy: Hierarchy) => {
 };
 const del = async (value: Hierarchy, index: number) => {
   const { data } = await deletepHierarchy(
-    value.superIDnumber,
-    value.subordIDnumber
+    value.SuperIDnumber,
+    value.SubordIDnumber
   );
   const res = data as Result;
   if (res.code === 0) {

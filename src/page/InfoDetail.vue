@@ -163,9 +163,10 @@
     @close="cancelUpdateExperiences"
     @confirm="confirmUpdateExperiences"
   />
-  <parent-dialog
+  <paternity-dialog
     v-model="isUpdateParent"
-    :form="relation.fPaternity ? relation.fPaternity : {}"
+    :type="'children'"
+    :form="relationship.FPaternity ? relationship.FPaternity : {}"
     @close="cancelUpdateParent"
     @confirm="confirmUpdateParent"
   />
@@ -174,7 +175,13 @@
 <script setup lang="ts">
 import { Edit } from "@element-plus/icons";
 import { ref } from "vue";
-import { People, PeopleDetail, Department, Experiences } from "../model/model";
+import {
+  Department,
+  Experiences,
+  Paternity,
+  People,
+  PeopleDetail,
+} from "@/model/model";
 import BaseListItem from "../components/BaseListItem.vue";
 import { useRouter } from "vue-router";
 import { usePeopleStore } from "@/store/people";
@@ -187,13 +194,14 @@ import ExperienceDialog from "@/components/dialog/ExperienceDialog.vue";
 import TagDetail from "@/components/detail/TagDetail.vue";
 import ITag from "@/components/detail/ITag.vue";
 import { Relation, Relationship } from "@/@types/model";
-import ParentDialog from "@/components/dialog/ParentDialog.vue";
 import { ElMessage } from "element-plus";
 import { useSpouseStore } from "@/store/spouse";
 import { usePeopleDetailStore } from "@/store/peopledetail";
 import { usePaternityStore } from "@/store/paternity";
 import { Result } from "@/@types/http";
 import { updateExperiences } from "@/api/experiences";
+import { insertPaternity, updatePaternity } from "@/api/paternity";
+import PaternityDialog from "@/components/dialog/PaternityDialog.vue";
 
 const list = ref<People[]>([]);
 
@@ -203,9 +211,10 @@ list.value.push(people);
 let peopleDetail = ref<PeopleDetail>(Object.assign({}, people));
 
 const depart = ref<Department | undefined>();
-const paternity = ref<People[]>([]);
 const relation = ref<Relation>({} as Relation);
 const relationship = ref<Relationship>({} as Relationship);
+// 是否拥有父母
+const isParent = ref(true);
 
 const init = async () => {
   const {
@@ -218,6 +227,16 @@ const init = async () => {
   peopleDetail.value = Object.assign({}, peopleDetail, detail);
   relation.value = relationOnPeople;
   relationship.value = originRelation;
+
+  if (!relationship.value.FPaternity) {
+    isParent.value = false;
+    relationship.value.FPaternity = {
+      Cname: people.name,
+      Cnumber: people.number,
+      Fnumber: "",
+      Fname: "",
+    };
+  }
 };
 init();
 
@@ -261,23 +280,38 @@ const confirmUpdateExperiences = async (updateOb: Experiences) => {
   const res = data as Result;
   if (res.code === 0) {
     peopleDetail.value = { ...peopleDetail.value, ...updateOb };
-    // Object.assign() peopleDetail.value
     ElMessage.success(res.msg);
   } else ElMessage.error("操作失败，请重试");
 };
 const {
   isUpdate: isUpdateParent,
-  confirmUpdate: confirmUpdateParent,
+  update: updateParent,
   cancelUpdate: cancelUpdateParent,
 } = useUpdate();
-const updateParent = () => {
-  ElMessage.info("接口暂存争议");
+const confirmUpdateParent = async (updateOb: Paternity) => {
+  cancelUpdateParent();
+  if (isParent.value) {
+    const { data } = await updatePaternity(updateOb);
+    const res = data as Result;
+    if (res.code === 0) {
+      relationship.value.FPaternity = updateOb;
+      ElMessage.success(res.msg);
+    } else ElMessage.error("操作失败，请重试");
+  } else {
+    const { data } = await insertPaternity(updateOb);
+    const res = data as Result;
+    if (res.code === 0) {
+      // 该插入父子关系后人物拥有父母
+      isParent.value = true;
+      relationship.value.FPaternity = updateOb;
+      ElMessage.success(res.msg);
+    } else ElMessage.error("操作失败，请重试");
+  }
 };
 const updateDepartment = () => {
   ElMessage.info("暂未开发");
 };
 const toSpouse = () => {
-  debugger;
   const spouseStore = useSpouseStore();
   spouseStore.updateSpouseName(people.name);
   if (relationship.value.Spouse) {

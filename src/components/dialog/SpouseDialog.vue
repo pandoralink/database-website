@@ -1,33 +1,33 @@
 <template>
-  <base-dialog title="父母" @close="close" @confirm="confirm">
+  <base-dialog title="配偶" @close="close" @confirm="confirm">
     <template #content>
       <el-form ref="form" :model="data" label-width="80px">
-        <el-form-item label="配偶">
+        <el-form-item label="丈夫">
           <el-input
-            v-model="data.mname"
-            placeholder="配偶名称"
-            :disabled="data.mname === spouseName"
+            v-model="data.Mname"
+            placeholder="丈夫"
+            :disabled="data.Mname === spouseName"
           ></el-input>
         </el-form-item>
-        <el-form-item label="配偶身份证">
+        <el-form-item label="丈夫身份证">
           <el-input
-            v-model="data.midnumber"
-            placeholder="配偶身份证"
-            :disabled="data.mname === spouseName"
+            v-model="data.MIDnumber"
+            placeholder="丈夫身份证"
+            :disabled="data.Mname === spouseName"
           ></el-input>
         </el-form-item>
-        <el-form-item label="配偶">
+        <el-form-item label="妻子">
           <el-input
-            v-model="data.wname"
-            placeholder="配偶名称"
-            :disabled="data.wname === spouseName"
+            v-model="data.Wname"
+            placeholder="妻子"
+            :disabled="data.Wname === spouseName"
           ></el-input>
         </el-form-item>
-        <el-form-item label="配偶身份证">
+        <el-form-item label="妻子身份证">
           <el-input
-            v-model="data.widnumber"
-            placeholder="配偶身份证"
-            :disabled="data.wname === spouseName"
+            v-model="data.WIDnumber"
+            placeholder="妻子身份证"
+            :disabled="data.Wname === spouseName"
           ></el-input>
         </el-form-item>
       </el-form>
