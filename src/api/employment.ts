@@ -1,6 +1,22 @@
 import { Employment } from "@/model/model";
 import axios from "@/utils/axios";
-import { HttpResponse } from "@/@types/http";
+
+export const getEmploymentListTotal = () => {
+  return axios({
+    url: "/employment/total",
+    method: "get",
+  });
+};
+
+export const getEmploymentList = (num: number) => {
+  return axios({
+    url: "/employment/list",
+    method: "get",
+    params: {
+      num,
+    },
+  });
+};
 
 export const insertEmployment = (data: Employment) => {
   return axios({
@@ -18,12 +34,12 @@ export const updateEmployment = (data: Employment) => {
   });
 };
 
-export const deleteEmployment = (ID: string) => {
+export const deleteEmployment = (number: string) => {
   return axios({
     url: "/employment/delete",
     method: "delete",
     params: {
-      ID,
+      number,
     },
   });
 };
@@ -34,6 +50,16 @@ export const searchEmploymentByNumber = (number: string) => {
     method: "get",
     params: {
       number,
+    },
+  });
+};
+
+export const searchEmploymentByName = (name: string) => {
+  return axios({
+    url: "employment/selectByName",
+    method: "get",
+    params: {
+      name,
     },
   });
 };

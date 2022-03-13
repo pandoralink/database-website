@@ -112,25 +112,19 @@ import {
   selectMilitaryEquipmentByName,
   selectMilitaryEquipmentByNumber,
 } from "@/api/militaryEquipment";
-import { useMilitaryEquipmentStore } from "@/store/militaryEquipment";
-import { ref, watch } from "vue";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import BaseListItem from "../components/BaseListItem.vue";
 import { MilitaryEquipment } from "@/model/model";
 import BaseDialog from "../components/BaseDialog.vue";
-import empty from "./empty.vue";
 import ContentHeader from "@/components/ContentHeader.vue";
 import { FilterEquipment } from "@/model/filter";
-import {
-  isEmpty,
-  multipleFilter,
-  multipleFilterByKey,
-  toArray,
-} from "@/utils/filter";
+import { isEmpty, multipleFilterByKey, toArray } from "@/utils/filter";
 import { useInsert } from "@/mixins/insert";
 import { useDelete } from "@/mixins/delete";
 import { useGetList } from "@/mixins/useGetList";
 import { CaretBottom, CaretRight } from "@element-plus/icons";
+import { useDepartmentStore } from "@/store/department";
 
 interface Props {
   showUpdate?: boolean;
@@ -158,20 +152,20 @@ const filterList = ref<FilterEquipment>({
 } as FilterEquipment);
 const router = useRouter();
 
-// XXX: 暂时取消
-// function toInfoDetail(index: number) {
-//   const militaryEquipmentStore = useMilitaryEquipmentStore();
-//   militaryEquipmentStore.updateMilitaryEquipment(list.value[index - 1]);
-//   router.push("/equipmentDetail");
-// }
-
-const showDetail = ref(false);
-
 const { currentPage, total, getList } = useGetList(
   list,
   getMilitaryEquipmentListTotal,
   getMilitaryEquipmentList
 );
+
+if (props.showUpdate) {
+  onMounted(async () => {
+    const departmentStore = useDepartmentStore();
+    const department = departmentStore.department;
+    const { data } = await selectMilitaryEquipmentByDpNumber(department.number);
+    list.value = toArray(data);
+  });
+}
 
 const filterChange = async (filterList: FilterEquipment) => {
   if (isEmpty(filterList)) {

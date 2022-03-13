@@ -10,8 +10,8 @@
       <el-button type="primary" :icon="Edit" @click="updateParent"
         >父母
       </el-button>
-      <el-button type="primary" :icon="Edit" @click="updateDepartment"
-        >部门
+      <el-button type="primary" :icon="Edit" @click="updateEmployBegin"
+        >职位
       </el-button>
       <el-button type="primary" :icon="Edit" @click="toSpouse">配偶</el-button>
       <el-button type="primary" :icon="Edit" @click="toChildrenPaternity"
@@ -112,7 +112,6 @@
             @click="toDepartmentDetail"
             :img="depart.image"
             :content="depart.name"
-            round
           ></tag-detail>
         </template>
       </i-tag>
@@ -170,6 +169,12 @@
     @close="cancelUpdateParent"
     @confirm="confirmUpdateParent"
   />
+  <employment-dialog
+    v-model="isUpdateEmployment"
+    :form="employment"
+    @close="cancelUpdateEmployment"
+    @confirm="confirmUpdateEmployment"
+  />
 </template>
 
 <script setup lang="ts">
@@ -177,6 +182,7 @@ import { Edit } from "@element-plus/icons";
 import { ref } from "vue";
 import {
   Department,
+  Employment,
   Experiences,
   Paternity,
   People,
@@ -202,7 +208,12 @@ import { Result } from "@/@types/http";
 import { updateExperiences } from "@/api/experiences";
 import { insertPaternity, updatePaternity } from "@/api/paternity";
 import PaternityDialog from "@/components/dialog/PaternityDialog.vue";
+import EmploymentDialog from "@/components/dialog/EmploymentDialog.vue";
+import { updateEmployment } from "@/api/employment";
 
+/**
+ * 300 多行的组件，什么叫做技术壁垒？
+ */
 const list = ref<People[]>([]);
 
 const peopleStore = usePeopleStore();
@@ -213,6 +224,7 @@ let peopleDetail = ref<PeopleDetail>(Object.assign({}, people));
 const depart = ref<Department | undefined>();
 const relation = ref<Relation>({} as Relation);
 const relationship = ref<Relationship>({} as Relationship);
+const employment = ref<Employment | null>();
 // 是否拥有父母
 const isParent = ref(true);
 
@@ -220,6 +232,7 @@ const init = async () => {
   const {
     detail,
     department,
+    employment: employ,
     relation: relationOnPeople,
     relationship: originRelation,
   } = await getPeopleDetail(people);
@@ -228,6 +241,9 @@ const init = async () => {
   relation.value = relationOnPeople;
   relationship.value = originRelation;
 
+  if (employ) {
+    employment.value = employ;
+  }
   if (!relationship.value.FPaternity) {
     isParent.value = false;
     relationship.value.FPaternity = {
@@ -308,9 +324,28 @@ const confirmUpdateParent = async (updateOb: Paternity) => {
     } else ElMessage.error("操作失败，请重试");
   }
 };
-const updateDepartment = () => {
-  ElMessage.info("暂未开发");
+const {
+  isUpdate: isUpdateEmployment,
+  update: updateEmployEnd,
+  cancelUpdate: cancelUpdateEmployment,
+} = useUpdate();
+const updateEmployBegin = () => {
+  if (!employment.value) {
+    ElMessage.info("此人无职位");
+  } else {
+    updateEmployEnd();
+  }
 };
+const confirmUpdateEmployment = async (updateOb: Employment) => {
+  cancelUpdateEmployment();
+  const { data } = await updateEmployment(updateOb);
+  const res = data as Result;
+  if (res.code === 0) {
+    employment.value = updateOb;
+    ElMessage.success(res.msg);
+  } else ElMessage.error("操作失败，请重试");
+};
+
 const toSpouse = () => {
   const spouseStore = useSpouseStore();
   spouseStore.updateSpouseName(people.name);

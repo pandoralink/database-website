@@ -200,6 +200,7 @@ export const getPeopleDetail = async (people: People) => {
       experience as Experiences
     ) as PeopleDetail,
     department: department,
+    employment: employment ? (employment as Employment) : null,
     relation: res,
     relationship: relationship,
   };

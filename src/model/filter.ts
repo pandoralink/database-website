@@ -40,3 +40,10 @@ export interface ValueAlias {
   value: string | number | boolean;
   alias: string;
 }
+
+export interface FilterEmployment extends Record<string, ValueAlias> {
+  positionNumber: ValueAlias;
+  dpNUmber: ValueAlias;
+  name: ValueAlias;
+  employPlace: ValueAlias;
+}

@@ -125,6 +125,12 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/components/table/Hierarchy.vue"),
         meta: { desc: "下级" },
       },
+      {
+        path: "/employment",
+        name: "employment",
+        component: () => import("@/page/Employment.vue"),
+        meta: { desc: "职员" },
+      },
     ],
   },
 ];

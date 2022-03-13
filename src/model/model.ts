@@ -144,7 +144,7 @@ export interface Hierarchy {
   SubordIDnumber: string;
 }
 
-export interface Employment {
+export interface Employment extends BaseItem {
   name: string;
   number: string;
   employPlace: string;

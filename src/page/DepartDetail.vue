@@ -1,11 +1,11 @@
 <template>
   <template v-if="active === 0">
-    <info :show-update="true" @update="update">
+    <employment :show-update="true" @update="update">
       <template #header-tag>
         <!-- XXX: 可能会重复渲染 -->
         <department-header :data="department" @change="changeDataType" />
       </template>
-    </info>
+    </employment>
   </template>
   <template v-if="active === 1">
     <military-equipment :show-update="true" @update="update">
@@ -71,11 +71,10 @@ import { DepartmentDataType } from "@/model/model";
 import { useDepartmentStore } from "@/store/department";
 import { ElMessage } from "element-plus";
 import { ref } from "vue";
-import info from "./info.vue";
 import MilitaryEquipment from "./MilitaryEquipment.vue";
 import { Result } from "@/@types/http";
-import Header from "@/components/department/DepartmentHeader.vue";
 import DepartmentHeader from "@/components/department/DepartmentHeader.vue";
+import Employment from "@/page/Employment.vue";
 
 const active = ref<DepartmentDataType>(DepartmentDataType.people);
 
