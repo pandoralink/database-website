@@ -18,12 +18,13 @@ export const updatePaternity = (data: Paternity) => {
 };
 
 // FIXME: 应该由父子双方 ID 删除
-export const deletePaternity = (ID: string) => {
+export const deletePaternity = (CID: string, FID: string) => {
   return axios({
     url: "/paternity/delete",
     method: "delete",
     params: {
-      ID,
+      CID,
+      FID,
     },
   });
 };

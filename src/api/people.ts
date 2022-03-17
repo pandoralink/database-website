@@ -3,6 +3,7 @@ import {
   Department,
   Employment,
   Experiences,
+  News,
   People,
   PeopleDetail,
 } from "@/model/model";
@@ -10,6 +11,10 @@ import { searchEmploymentByNumber } from "@/api/employment";
 import { getDepartmentByNumber } from "@/api/department";
 import { searchExperiencesByNumber } from "@/api/experiences";
 import { Relation, Relationship } from "@/@types/model";
+import {
+  getMilitaryNewsByDetails,
+  getPoliticalNewsByDetails,
+} from "@/api/news";
 
 export const getPeopleListTotal = () => {
   return axios({
@@ -134,6 +139,7 @@ export const getPeopleDetail = async (people: People) => {
     sub: [],
     cPaternity: [],
     spouse: [],
+    fPaternity: [],
   };
   const { data: relation } = await getPeopleRelationship(people.number);
   const relationship: Relationship = relation;
@@ -161,9 +167,11 @@ export const getPeopleDetail = async (people: People) => {
       res.cPaternity.push(data);
     }
   }
-  if (relationship.FPaternity !== null) {
-    const { data } = await getPeopleById(relationship.FPaternity.Fnumber);
-    res.fPaternity = data;
+  if (relationship.FPaternity.length > 0) {
+    for (let i = 0; i < relationship.FPaternity.length; i++) {
+      const { data } = await getPeopleById(relationship.FPaternity[i].Fnumber);
+      res.fPaternity.push(data);
+    }
   }
   if (relationship.Spouse.length > 0) {
     for (let i = 0; i < relationship.Spouse.length; i++) {
@@ -192,6 +200,16 @@ export const getPeopleDetail = async (people: People) => {
     }
   }
   const { data: experience } = await searchExperiencesByNumber(people.number);
+  const { data: militaryNews } = await getMilitaryNewsByDetails(people.name);
+  const { data: politicalNews } = await getPoliticalNewsByDetails(people.name);
+  const news: News[] = [];
+  if (militaryNews && militaryNews?.length) {
+    news.push(...militaryNews);
+  }
+  if (politicalNews && politicalNews?.length) {
+    news.push(...politicalNews);
+  }
+
   return {
     detail: Object.assign(
       {},
@@ -203,5 +221,6 @@ export const getPeopleDetail = async (people: People) => {
     employment: employment ? (employment as Employment) : null,
     relation: res,
     relationship: relationship,
+    news,
   };
 };

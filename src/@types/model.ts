@@ -4,7 +4,7 @@ export interface Relation {
   sup: People[];
   sub: People[];
   cPaternity: People[];
-  fPaternity?: People;
+  fPaternity: People[];
   spouse: People[];
 }
 
@@ -19,7 +19,7 @@ export interface Relationship {
   SupHierarchy: Hierarchy[];
   SubHierarchy: Hierarchy[];
   CPaternity: Paternity[];
-  FPaternity: Paternity;
+  FPaternity: Paternity[];
   Spouse: Spouse[];
 }
 

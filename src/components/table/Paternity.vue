@@ -83,9 +83,7 @@ const confirmInsertOnPaternity = (paternity: Paternity) => {
 };
 
 const del = async (value: Paternity, index: number) => {
-  const { data } = await deletePaternity(
-    type === "parent" ? value.Cnumber : value.Fnumber
-  );
+  const { data } = await deletePaternity(value.Cnumber, value.Fnumber);
   const res = data as Result;
   if (res.code === 0) {
     list.value.splice(index, 1);

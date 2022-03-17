@@ -113,7 +113,7 @@ const routes: Array<RouteRecordRaw> = [
         path: "/paternity",
         name: "paternity",
         component: () => import("@/components/table/Paternity.vue"),
-        meta: { desc: "子女详情" },
+        meta: { desc: "父母/子女详情" },
       },
       {
         path: "/supHierarchy",

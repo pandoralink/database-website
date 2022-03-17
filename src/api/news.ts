@@ -49,7 +49,7 @@ export const getMilitaryNewsByTime = (time: string) => {
   });
 };
 
-// BUG: 后端没有对字段做校验，不知道哪些是必填项，导致插入后存在 url 为 NULL 的数据，无法删除
+// FIXME: 后端没有对字段做校验，不知道哪些是必填项，导致插入后存在 url 为 NULL 的数据，无法删除
 export const insertMilitaryNews = (data: News) => {
   return axios({
     url: "/MilitaryNews/insert",
@@ -76,7 +76,6 @@ export const updateMilitaryNews = (data: News) => {
   });
 };
 
-// TODO: 新闻部分有重复数据
 export const getPoliticalNewsList = (num: number) => {
   return axios({
     url: "/politicalNews/list",

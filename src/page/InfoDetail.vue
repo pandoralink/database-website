@@ -7,11 +7,11 @@
       <el-button type="primary" :icon="Edit" @click="updateExperience"
         >个人经历
       </el-button>
-      <el-button type="primary" :icon="Edit" @click="updateParent"
-        >父母
-      </el-button>
       <el-button type="primary" :icon="Edit" @click="updateEmployBegin"
         >职位
+      </el-button>
+      <el-button type="primary" :icon="Edit" @click="toParentPaternity"
+        >父母
       </el-button>
       <el-button type="primary" :icon="Edit" @click="toSpouse">配偶</el-button>
       <el-button type="primary" :icon="Edit" @click="toChildrenPaternity"
@@ -57,7 +57,7 @@
         title="人物关系"
         v-if="
           relation.cPaternity?.length > 0 ||
-          relation.fPaternity ||
+          relation.fPaternity?.length > 0 ||
           relation.spouse?.length > 0
         "
       >
@@ -76,13 +76,13 @@
             :img="item.images"
             :content="'配偶：' + item.name"
           ></tag-detail>
-          <template v-if="relation.fPaternity">
-            <tag-detail
-              @click="toPeopleDetail(relation.fPaternity)"
-              :img="relation.fPaternity.images"
-              :content="'父母：' + relation.fPaternity.name"
-            ></tag-detail>
-          </template>
+          <tag-detail
+            @click="toPeopleDetail(item)"
+            v-for="(item, index) in relation.fPaternity"
+            :key="index"
+            :img="item.images"
+            :content="'父母：' + item.name"
+          ></tag-detail>
         </template>
       </i-tag>
       <i-tag
@@ -120,16 +120,17 @@
       class="detail-row"
       style="display: flex; flex-wrap: wrap; padding: 10px"
     >
-      <i-tag
-        title="测试新闻"
-        :list="[
-          {
-            img: 'http://inews.gtimg.com/newsapp_ls/0/14576477631_640330/0',
-            content: '测试新闻标题',
-            round: true,
-          },
-        ]"
-      />
+      <i-tag title="相关新闻" v-if="news?.length > 0">
+        <template #content>
+          <tag-detail
+            v-for="(item, index) in news"
+            :key="index"
+            :img="item.image"
+            :content="item.title"
+            round
+          ></tag-detail>
+        </template>
+      </i-tag>
     </div>
     <div
       class="detail-row"
@@ -162,13 +163,6 @@
     @close="cancelUpdateExperiences"
     @confirm="confirmUpdateExperiences"
   />
-  <paternity-dialog
-    v-model="isUpdateParent"
-    :type="'children'"
-    :form="relationship.FPaternity ? relationship.FPaternity : {}"
-    @close="cancelUpdateParent"
-    @confirm="confirmUpdateParent"
-  />
   <employment-dialog
     v-model="isUpdateEmployment"
     :form="employment"
@@ -184,7 +178,7 @@ import {
   Department,
   Employment,
   Experiences,
-  Paternity,
+  News,
   People,
   PeopleDetail,
 } from "@/model/model";
@@ -206,8 +200,6 @@ import { usePeopleDetailStore } from "@/store/peopledetail";
 import { usePaternityStore } from "@/store/paternity";
 import { Result } from "@/@types/http";
 import { updateExperiences } from "@/api/experiences";
-import { insertPaternity, updatePaternity } from "@/api/paternity";
-import PaternityDialog from "@/components/dialog/PaternityDialog.vue";
 import EmploymentDialog from "@/components/dialog/EmploymentDialog.vue";
 import { updateEmployment } from "@/api/employment";
 
@@ -225,8 +217,7 @@ const depart = ref<Department | undefined>();
 const relation = ref<Relation>({} as Relation);
 const relationship = ref<Relationship>({} as Relationship);
 const employment = ref<Employment | null>();
-// 是否拥有父母
-const isParent = ref(true);
+const news = ref<News[]>();
 
 const init = async () => {
   const {
@@ -235,23 +226,16 @@ const init = async () => {
     employment: employ,
     relation: relationOnPeople,
     relationship: originRelation,
+    news: newsAlias,
   } = await getPeopleDetail(people);
   depart.value = department;
   peopleDetail.value = Object.assign({}, peopleDetail, detail);
   relation.value = relationOnPeople;
   relationship.value = originRelation;
+  news.value = newsAlias;
 
   if (employ) {
     employment.value = employ;
-  }
-  if (!relationship.value.FPaternity) {
-    isParent.value = false;
-    relationship.value.FPaternity = {
-      Cname: people.name,
-      Cnumber: people.number,
-      Fnumber: "",
-      Fname: "",
-    };
   }
 };
 init();
@@ -298,31 +282,6 @@ const confirmUpdateExperiences = async (updateOb: Experiences) => {
     peopleDetail.value = { ...peopleDetail.value, ...updateOb };
     ElMessage.success(res.msg);
   } else ElMessage.error("操作失败，请重试");
-};
-const {
-  isUpdate: isUpdateParent,
-  update: updateParent,
-  cancelUpdate: cancelUpdateParent,
-} = useUpdate();
-const confirmUpdateParent = async (updateOb: Paternity) => {
-  cancelUpdateParent();
-  if (isParent.value) {
-    const { data } = await updatePaternity(updateOb);
-    const res = data as Result;
-    if (res.code === 0) {
-      relationship.value.FPaternity = updateOb;
-      ElMessage.success(res.msg);
-    } else ElMessage.error("操作失败，请重试");
-  } else {
-    const { data } = await insertPaternity(updateOb);
-    const res = data as Result;
-    if (res.code === 0) {
-      // 该插入父子关系后人物拥有父母
-      isParent.value = true;
-      relationship.value.FPaternity = updateOb;
-      ElMessage.success(res.msg);
-    } else ElMessage.error("操作失败，请重试");
-  }
 };
 const {
   isUpdate: isUpdateEmployment,
@@ -372,6 +331,13 @@ const toChildrenPaternity = () => {
   const peopleDetailStore = usePaternityStore();
   peopleDetailStore.updatePaternity(relationship.value.CPaternity);
   peopleDetailStore.updatePeople(people);
+  router.push("/paternity");
+};
+const toParentPaternity = () => {
+  const paternityStore = usePaternityStore();
+  paternityStore.updatePaternity(relationship.value.FPaternity);
+  paternityStore.updatePeople(people);
+  paternityStore.updateType("children");
   router.push("/paternity");
 };
 </script>
